@@ -84,4 +84,5 @@ public class ContactController {
         List<ContactDTO> results = contactService.searchContactByName(userEmail, name);
         return ResponseEntity.ok(results);
     }
+
 }

@@ -72,7 +72,7 @@ export class SigninComponent implements OnInit {
         this.storageService.saveUser(data.user);
         this.isLoading = false;
         console.log('Login Success');
-        // this.router.navigate(['/inbox']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;

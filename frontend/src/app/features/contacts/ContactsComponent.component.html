@@ -1,0 +1,161 @@
+<!-- src/app/pages/contacts/contacts.component.html -->
+<div class="contacts-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="header-content">
+        <div>
+          <h1 class="page-title neon-text">Contacts</h1>
+          <p class="page-subtitle">Manage your contact list</p>
+        </div>
+        <button class="btn-outline" (click)="goToDashboard()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="20" height="16" x="2" y="4" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+          Back to Inbox
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div *ngIf="error" class="error-banner">{{ error }}</div>
+    <div *ngIf="loading" class="loading-state">Loading contacts...</div>
+
+    <div *ngIf="!loading">
+      <!-- Toolbar — Fixed: no overlap, perfect layout -->
+      <div class="toolbar">
+        <div class="search-box compact">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+            placeholder="Search..."
+            class="search-input compact hover-glow"
+          />
+        </div>
+
+        <div class="sort-and-add">
+          <select [(ngModel)]="sortBy" (change)="onSortChange()" class="sort-select compact">
+            <option value="name">Name</option>
+            <option value="email">Email</option>
+          </select>
+
+          <button (click)="openAddModal()" class="btn-primary compact gradient-neon strong-glow">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Add Contact
+          </button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="glass-panel table-wrapper">
+        <table class="contacts-table">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Emails</th>
+            <th class="actions-header">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let contact of filteredContacts; trackBy: trackByContactId" class="table-row compact">
+            <td class="cell-name">{{ contact.name }}</td>
+            <td class="cell-emails">
+              <div class="email-tags">
+                <span *ngFor="let email of contact.emails" class="email-tag small">{{ email }}</span>
+              </div>
+            </td>
+            <td class="cell-actions">
+              <div class="action-buttons-horizontal">
+                <button (click)="openEditModal(contact)" class="action-btn tiny edit" title="Edit">
+                  <svg class="icon-tiny" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                </button>
+                <button (click)="deleteContact(contact)" class="action-btn tiny delete" title="Delete">
+                  <svg class="icon-tiny" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredContacts.length === 0">
+            <td colspan="3" class="empty-state">No contacts found</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal (unchanged from last version) -->
+  <div *ngIf="showAddModal || editingContact" class="modal-overlay" (click)="closeModal()">
+    <div class="modal glass-panel neon-glow" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingContact ? 'Edit Contact' : 'Add Contact' }}</h2>
+        <button (click)="closeModal()" class="close-btn">
+          <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input [(ngModel)]="formName" placeholder="John Doe" class="form-input hover-glow" />
+        </div>
+
+        <div class="form-group">
+          <label>Email Addresses</label>
+          <div class="email-list-input">
+            <div *ngFor="let email of formEmails; let i = index; trackBy: trackByIndex" class="email-row">
+              <div class="input-icon-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+                <input
+                  type="email"
+                  [(ngModel)]="formEmails[i]"
+                  placeholder="john@example.com"
+                  class="form-input with-icon hover-glow"
+                />
+              </div>
+              <button *ngIf="formEmails.length > 1" (click)="removeEmailField(i)" class="remove-email-btn">
+                <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            <button (click)="addEmailField()" class="add-email-btn">
+              <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Add another email
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="saveContact()" class="btn-primary gradient-neon">
+          {{ editingContact ? 'Update' : 'Add' }} Contact
+        </button>
+        <button (click)="closeModal()" class="btn-outline">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
