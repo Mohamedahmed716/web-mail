@@ -1,7 +1,8 @@
 :host {
   display: flex;
   min-height: 100vh;
-  background: #f0f2f5;
+  /* Changed from light grey to deep dark background */
+  background: #050505;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -14,22 +15,27 @@
 }
 
 .auth-card {
-  background: white;
+  /* Changed from white to dark charcoal */
+  background: #0a0a0b;
   border-radius: 50px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  /* Added a subtle purple/blue glow to match the image atmosphere */
+  box-shadow: 0 0 40px rgba(88, 101, 242, 0.1);
   overflow: hidden;
-  border: 1px solid #e5e7eb;
+  /* Darkened border */
+  border: 1px solid #1f1f23;
 }
 
 .card-header {
-  background-color: #1a73e8;
+  /* Removed the solid blue block to match the seamless dark look */
+  background-color: transparent;
   padding: 35px 25px;
   text-align: center;
   color: white;
 }
 
 .icon-wrapper {
-  background: rgba(255, 255, 255, 0.2);
+  /* Added the gradient background seen in the logo icon */
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
   width: 52px;
   height: 52px;
   border-radius: 14px;
@@ -37,6 +43,8 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 15px;
+  /* Added a small glow to the icon */
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
 }
 
 .icon-wrapper svg {
@@ -49,12 +57,14 @@
   font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.5px;
+  color: #ffffff;
 }
 
 .card-header p {
   margin: 8px 0 0;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+  /* Muted grey for subtext */
+  color: #9ca3af;
 }
 
 .card-body {
@@ -78,7 +88,8 @@ label {
   display: block;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  /* Lighter grey for dark mode readability */
+  color: #d1d5db;
   margin-bottom: 6px;
 }
 
@@ -91,28 +102,32 @@ label {
 .rounded-input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #d1d5db;
+  /* Dark input borders */
+  border: 1px solid #27272a;
   border-radius: 15px;
   font-size: 14px;
-  color: #1f2937;
+  /* White text for inputs */
+  color: #ffffff;
   transition: all 0.2s ease-in-out;
-  background-color: #fff;
+  /* Very dark input background */
+  background-color: #121214;
   box-sizing: border-box;
 }
 
 .rounded-input:focus {
   outline: none;
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+  /* Changed focus color to the purple/indigo from the image */
+  border-color: #5865f2;
+  box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.15);
 }
 
 .rounded-input::placeholder {
-  color: #9ca3af;
+  color: #52525b;
 }
 
 .rounded-input.error-border {
   border-color: #ef4444;
-  background-color: #fef2f2;
+  background-color: #2a1215;
 }
 
 .rounded-input.error-border:focus {
@@ -138,12 +153,12 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9ca3af;
+  color: #6b7280;
   transition: color 0.2s;
 }
 
 .eye-btn:hover {
-  color: #4b5563;
+  color: #9ca3af;
 }
 
 .strength-meter {
@@ -155,7 +170,7 @@ label {
 
 .bar {
   flex: 1;
-  background-color: #f3f4f6;
+  background-color: #27272a;
   border-radius: 2px;
   transition: background-color 0.3s;
 }
@@ -208,17 +223,18 @@ label {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  color: #4b5563;
+  color: #9ca3af;
 }
 
 .forgot-link {
-  color: #1a73e8;
+  /* Updated link color to match button/brand */
+  color: #5865f2;
   text-decoration: none;
   font-weight: 500;
 }
 
 .terms-link {
-  color: #1a73e8;
+  color: #5865f2;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
@@ -227,13 +243,14 @@ label {
 .terms-link:hover,
 .forgot-link:hover {
   text-decoration: underline;
-  color: #1557b0;
+  color: #4f46e5;
 }
 
 .submit-btn {
   width: 100%;
   padding: 12px;
-  background-color: #1a73e8;
+  /* The "Sign In" purple/indigo */
+  background-color: #5865f2;
   color: white;
   border: none;
   border-radius: 15px;
@@ -241,7 +258,7 @@ label {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
-  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
+  box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,11 +266,12 @@ label {
 }
 
 .submit-btn:hover {
-  background-color: #1557b0;
+  background-color: #4338ca;
 }
 
 .submit-btn:disabled {
-  background-color: #93c5fd;
+  background-color: #312e81;
+  color: #6366f1;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -279,13 +297,13 @@ label {
   left: 0;
   right: 0;
   height: 1px;
-  background: #e5e7eb;
+  background: #27272a;
 }
 
 .divider span {
-  background: white;
+  background: #0a0a0b;
   padding: 0 10px;
-  color: #9ca3af;
+  color: #52525b;
   font-size: 12px;
   position: relative;
 }
@@ -303,18 +321,19 @@ label {
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  background: white;
-  border: 1px solid #e5e7eb;
+  /* Dark social buttons */
+  background: #121214;
+  border: 1px solid #27272a;
   border-radius: 15px;
   cursor: pointer;
   font-size: 14px;
-  color: #374151;
+  color: #e5e7eb;
   font-weight: 500;
   transition: background 0.2s;
 }
 
 .social-btn:hover {
-  background-color: #f9fafb;
+  background-color: #18181b;
 }
 
 .footer-link {
@@ -324,7 +343,7 @@ label {
 }
 
 .footer-link a {
-  color: #1a73e8;
+  color: #5865f2;
   text-decoration: none;
   font-weight: 600;
 }
@@ -339,12 +358,12 @@ label {
 .error-banner {
   margin-top: 15px;
   padding: 12px;
-  background: #fef2f2;
-  color: #b91c1c;
+  background: #2a1215;
+  color: #fca5a5;
   border-radius: 15px;
   font-size: 13px;
   text-align: center;
-  border: 1px solid #fee2e2;
+  border: 1px solid #451a1d;
 }
 
 .toast-notification {
