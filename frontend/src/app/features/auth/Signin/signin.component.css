@@ -1,7 +1,6 @@
 :host {
   display: flex;
   min-height: 100vh;
-  /* Changed from light grey to deep dark background */
   background: #050505;
   align-items: center;
   justify-content: center;
@@ -15,18 +14,14 @@
 }
 
 .auth-card {
-  /* Changed from white to dark charcoal */
   background: #0a0a0b;
   border-radius: 50px;
-  /* Added a subtle purple/blue glow to match the image atmosphere */
   box-shadow: 0 0 40px rgba(88, 101, 242, 0.1);
   overflow: hidden;
-  /* Darkened border */
   border: 1px solid #1f1f23;
 }
 
 .card-header {
-  /* Removed the solid blue block to match the seamless dark look */
   background-color: transparent;
   padding: 35px 25px;
   text-align: center;
@@ -34,7 +29,6 @@
 }
 
 .icon-wrapper {
-  /* Added the gradient background seen in the logo icon */
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   width: 52px;
   height: 52px;
@@ -43,7 +37,6 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 15px;
-  /* Added a small glow to the icon */
   box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
 }
 
@@ -63,7 +56,6 @@
 .card-header p {
   margin: 8px 0 0;
   font-size: 14px;
-  /* Muted grey for subtext */
   color: #9ca3af;
 }
 
@@ -88,7 +80,6 @@ label {
   display: block;
   font-size: 13px;
   font-weight: 500;
-  /* Lighter grey for dark mode readability */
   color: #d1d5db;
   margin-bottom: 6px;
 }
@@ -102,21 +93,17 @@ label {
 .rounded-input {
   width: 100%;
   padding: 12px 14px;
-  /* Dark input borders */
   border: 1px solid #27272a;
   border-radius: 15px;
   font-size: 14px;
-  /* White text for inputs */
   color: #ffffff;
   transition: all 0.2s ease-in-out;
-  /* Very dark input background */
   background-color: #121214;
   box-sizing: border-box;
 }
 
 .rounded-input:focus {
   outline: none;
-  /* Changed focus color to the purple/indigo from the image */
   border-color: #5865f2;
   box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.15);
 }
@@ -227,7 +214,6 @@ label {
 }
 
 .forgot-link {
-  /* Updated link color to match button/brand */
   color: #5865f2;
   text-decoration: none;
   font-weight: 500;
@@ -249,7 +235,6 @@ label {
 .submit-btn {
   width: 100%;
   padding: 12px;
-  /* The "Sign In" purple/indigo */
   background-color: #5865f2;
   color: white;
   border: none;
@@ -321,7 +306,6 @@ label {
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  /* Dark social buttons */
   background: #121214;
   border: 1px solid #27272a;
   border-radius: 15px;
