@@ -1,1 +1,63 @@
-<p>compose works!</p>
+<div class="overlay" *ngIf="isVisible" (click)="close()">
+  <div class="modal-container" (click)="stopProp($event)">
+
+    <div class="modal-header">
+      <h3>{{ email.subject ? email.subject : 'New Message' }}</h3>
+      <button class="close-btn" (click)="close()">×</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+        <label>To</label>
+        <input type="email" [(ngModel)]="email.to" placeholder="recipient@example.com, another@example.com">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group grow">
+          <label>Subject</label>
+          <input type="text" [(ngModel)]="email.subject" placeholder="What is this regarding?">
+        </div>
+        <div class="form-group">
+          <label>Priority</label>
+          <select [(ngModel)]="email.priority">
+            <option value="1">Very Low</option>
+            <option value="2">Low</option>
+            <option value="3">Medium</option>
+            <option value="4">High</option>
+            <option value="5">Critical</option> </select>
+        </div>
+      </div>
+
+      <div class="attachment-section">
+        <div class="attachment-actions">
+          <input type="file" id="fileUpload" multiple (change)="onFileSelected($event)" style="display: none;">
+          <label for="fileUpload" class="attach-btn">
+            <i class="fa-solid fa-paperclip"></i> Attach Files
+          </label>
+        </div>
+
+        <div class="file-list" *ngIf="attachments.length > 0">
+          <div class="file-chip" *ngFor="let file of attachments; let i = index">
+            <span>{{ file.name }}</span>
+            <span class="remove-file" (click)="removeAttachment(i)">×</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group flex-grow">
+        <textarea [(ngModel)]="email.body" placeholder="Write your message here..."></textarea>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="saveDraft()">Save Draft</button>
+      <div class="right-actions">
+        <button class="btn-cancel" (click)="close()">Discard</button>
+        <button class="btn-primary" (click)="sendEmail()">Send</button>
+      </div>
+    </div>
+
+  </div>
+</div>

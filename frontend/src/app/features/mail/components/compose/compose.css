@@ -1,0 +1,205 @@
+/* Full Screen Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Dimmed background */
+  z-index: 1000; /* On top of everything */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+/* Modal Box */
+.modal-container {
+  width: 600px;
+  height: 500px; /* Fixed height for email composition */
+  background-color: #0b0e11; /* Dark theme bg */
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(79, 70, 229, 0.1);
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #1f2937;
+  color: #fff;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.close-btn:hover { color: #fff; }
+
+/* Body Area */
+.modal-body {
+  padding: 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.grow { flex-grow: 1; }
+.flex-grow { flex-grow: 1; height: 100%; }
+
+label {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+input, select, textarea {
+  background-color: #161b22; /* Slightly lighter than bg */
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box; /* Fixes padding width issues */
+}
+
+textarea {
+  resize: none;
+  height: 100%;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* Footer */
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #1f2937;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.right-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Buttons */
+button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.btn-secondary {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+.btn-secondary:hover { background-color: #374151; }
+
+.btn-cancel {
+  background-color: transparent;
+  color: #9ca3af;
+}
+.btn-cancel:hover { color: #fff; }
+
+.btn-primary {
+  /* Gradient matching your sidebar button */
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.attachment-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.attach-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #818cf8; /* Light blue */
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.attach-btn:hover {
+  text-decoration: underline;
+}
+
+.file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.file-chip {
+  background-color: #1f2937;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #374151;
+}
+
+.remove-file {
+  cursor: pointer;
+  color: #9ca3af;
+  font-weight: bold;
+}
+
+.remove-file:hover {
+  color: #ef4444; /* Red on hover */
+}

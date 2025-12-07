@@ -12,6 +12,6 @@
 
 .content-area {
   flex-grow: 1;
-  overflow-y: auto; /* Allows scrolling within the email list */
-  padding: 20px;
+  overflow-y: auto;
+  background-color: #111418;
 }
