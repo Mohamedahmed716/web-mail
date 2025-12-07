@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ComposeService } from '../../../../services/compose.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,8 +11,12 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidebar.css']
 })
 export class Sidebar {
+  constructor(private composeService: ComposeService) {}
 
-  // This replicates the menu items seen in your image
+  onComposeClick() {
+    this.composeService.openCompose(); // Opens empty
+  }
+
   menuItems = [
     { label: 'Inbox', icon: 'fa-inbox', route: '/mail/inbox', badge: 12 },
     { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority', badge: 3 }, // Added priority based on requirements

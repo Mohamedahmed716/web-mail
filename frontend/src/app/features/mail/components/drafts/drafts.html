@@ -1,1 +1,71 @@
-<p>drafts works!</p>
+<div class="page-container">
+
+  <div class="toolbar">
+    <div class="left-tools">
+      <h2 class="page-title">Drafts <span class="count-badge">2</span></h2>
+    </div>
+    <div class="right-tools">
+      <button class="icon-btn"><i class="fa-solid fa-arrow-down-wide-short"></i> Date</button>
+      <button class="icon-btn"><i class="fa-solid fa-filter"></i></button>
+      <button class="icon-btn"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="selectAll">
+      <label for="selectAll">Select all</label>
+    </div>
+    <div class="actions">
+      <button class="text-btn">Mark Read</button>
+      <button class="text-btn">Move</button>
+      <button class="text-btn danger">Delete</button>
+    </div>
+  </div>
+
+  <div class="email-list">
+
+    <div class="email-item" *ngFor="let draft of drafts" (click)="openDraft(draft)">
+
+      <div class="item-checkbox" (click)="stopProp($event)">
+        <input type="checkbox">
+      </div>
+
+      <div class="item-content">
+
+        <div class="item-header">
+          <span class="sender-name">To: {{ draft.to }}</span>
+
+          <div class="meta-badges">
+            <i *ngIf="draft.hasAttachment" class="fa-solid fa-paperclip clip-icon"></i>
+            <span class="priority-badge" [ngClass]="draft.priority">
+              {{ draft.priority }}
+            </span>
+          </div>
+        </div>
+
+        <div class="item-subject">
+          {{ draft.subject }}
+        </div>
+
+        <div class="item-body">
+          {{ draft.body }}
+        </div>
+      </div>
+
+      <div class="item-date">
+        {{ draft.date }}
+      </div>
+
+    </div>
+  </div>
+
+  <div class="pagination">
+    <span>1-5 of 12</span>
+    <div class="page-arrows">
+      <button disabled><i class="fa-solid fa-chevron-left"></i></button>
+      <button><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+</div>
