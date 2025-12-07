@@ -45,6 +45,7 @@ public class FileAccessLayer {
             throw new RuntimeException("Failed to load users", e);
         }
     }
+
     public List<com.mailSystem.demo.model.Mail> loadMails(String email, String folderName) {
         File folder = new File(Constants.DATA_DIR + "/" + email + "/" + folderName);
         List<com.mailSystem.demo.model.Mail> mails = new ArrayList<>();

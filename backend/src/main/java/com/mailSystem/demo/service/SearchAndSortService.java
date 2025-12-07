@@ -168,11 +168,11 @@ public class SearchAndSortService {
                         Comparator.nullsLast(Comparator.reverseOrder())
                 );
 
-            case "IMPORTANCE":
-                return Comparator.comparing(
-                        Mail::getImportance,
-                        Comparator.nullsLast(Comparator.reverseOrder())
-                );
+//            case "IMPORTANCE":
+//                return Comparator.comparing(
+//                        Mail::getImportance,
+//                        Comparator.nullsLast(Comparator.reverseOrder())
+//                );
 
             default:
                 // Default to date sorting (newest first)
@@ -237,16 +237,16 @@ public class SearchAndSortService {
     /**
      * Filter by importance level
      */
-    public List<Mail> filterByImportance(List<Mail> mails, Integer minImportance) {
-        if (mails == null || mails.isEmpty()) {
-            return mails != null ? mails : new ArrayList<>();
-        }
-
-        return mails.stream()
-                .filter(mail -> mail.getImportance() != null &&
-                        mail.getImportance() >= (minImportance != null ? minImportance : 0))
-                .collect(Collectors.toList());
-    }
+//    public List<Mail> filterByImportance(List<Mail> mails, Integer minImportance) {
+//        if (mails == null || mails.isEmpty()) {
+//            return mails != null ? mails : new ArrayList<>();
+//        }
+//
+//        return mails.stream()
+//                .filter(mail -> mail.getImportance() != null &&
+//                        mail.getImportance() >= (minImportance != null ? minImportance : 0))
+//                .collect(Collectors.toList());
+//    }
 
     /**
      * Get email statistics
@@ -274,10 +274,10 @@ public class SearchAndSortService {
         stats.put("topSenders", senderCount);
 
         // Count by importance
-        Map<Integer, Long> importanceCount = mails.stream()
-                .filter(m -> m.getImportance() != null)
-                .collect(Collectors.groupingBy(Mail::getImportance, Collectors.counting()));
-        stats.put("byImportance", importanceCount);
+//        Map<Integer, Long> importanceCount = mails.stream()
+//                .filter(m -> m.getImportance() != null)
+//                .collect(Collectors.groupingBy(Mail::getImportance, Collectors.counting()));
+//        stats.put("byImportance", importanceCount);
 
         return stats;
     }
