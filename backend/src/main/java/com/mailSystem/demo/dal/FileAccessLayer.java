@@ -45,6 +45,27 @@ public class FileAccessLayer {
             throw new RuntimeException("Failed to load users", e);
         }
     }
+    public List<com.mailSystem.demo.model.Mail> loadMails(String email, String folderName) {
+        File folder = new File(Constants.DATA_DIR + "/" + email + "/" + folderName);
+        List<com.mailSystem.demo.model.Mail> mails = new ArrayList<>();
+
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().endsWith(".json")) {
+                        try {
+                            com.mailSystem.demo.model.Mail mail = JsonMapper.getInstance().readValue(file, com.mailSystem.demo.model.Mail.class);
+                            mails.add(mail);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return mails;
+    }
 
     public void saveUser(User user) {
         // Load existing

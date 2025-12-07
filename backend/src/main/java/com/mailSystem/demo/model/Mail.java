@@ -20,7 +20,6 @@ public class Mail {
     private String body;
     private Date timestamp;
     private Integer priority;      // 1-5 (5 = highest)
-    private Integer importance;    // 1-5 (5 = most important)
     private List<String> attachments;
     private String folder;         // Inbox, Sent, Trash, etc.
 }
