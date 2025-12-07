@@ -16,7 +16,7 @@ import java.util.List;
 public class InboxController {
 
     @Autowired
-    private InboxService inboxService; 
+    private InboxService inboxService;
     @GetMapping
     public ResponseEntity<?> getEmails(
             @RequestHeader(value = "Authorization", required = false) String token,
