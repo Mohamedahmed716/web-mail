@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ComposeModal } from './compose-modal';
+import { Drafts } from './drafts';
 
-describe('ComposeModal', () => {
-  let component: ComposeModal;
-  let fixture: ComponentFixture<ComposeModal>;
+describe('Drafts', () => {
+  let component: Drafts;
+  let fixture: ComponentFixture<Drafts>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ComposeModal]
+      imports: [Drafts]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ComposeModal);
+    fixture = TestBed.createComponent(Drafts);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
