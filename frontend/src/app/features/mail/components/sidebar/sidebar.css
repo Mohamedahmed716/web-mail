@@ -1,0 +1,180 @@
+/* Sidebar Container */
+.sidebar-container {
+  width: 260px; /* Fixed width for sidebar */
+  height: 100vh;
+  background-color: #0b0e11; /* Dark background from image */
+  color: #9ca3af; /* Light gray text */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
+  border-right: 1px solid #1f2937;
+}
+
+/* 1. User Profile */
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.user-email {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* 2. Compose Button */
+.compose-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  /* Gradient from image (Blue to Purple) */
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transition: opacity 0.2s;
+}
+
+.compose-btn:hover {
+  opacity: 0.9;
+}
+
+.plus-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* 3. Navigation Lists */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-bottom: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #9ca3af; /* Default gray text */
+  transition: background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  width: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Hover State */
+.nav-item:hover {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+/* Active State (Matches the Image 'Inbox') */
+.active-link {
+  background-color: #1e1b4b; /* Dark purple/blue background */
+  color: #818cf8; /* Light purple text */
+}
+
+/* Badge Styling */
+.badge {
+  background-color: #1f2937; /* Dark gray badge bg */
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.active-link .badge {
+  background-color: #4f46e5; /* Active badge becomes bright blue */
+  color: white;
+}
+
+/* 4. Section Headers */
+.section-header {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  padding-left: 12px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* New Folder Button specific tweaks */
+.new-folder-btn {
+  background: transparent;
+  border: none;
+  width: 100%;
+  color: #818cf8; /* Light blue/purple text */
+  margin-top: 8px;
+}
+
+.new-folder-btn:hover {
+  background-color: #1f2937;
+}
+
+.plus-icon-small {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.logout-section {
+  margin-top: auto; /* This fills all available empty space above it */
+  padding-top: 15px;
+  border-top: 1px solid #1f2937; /* Adds a separator line */
+}
+
+.logout-link {
+  color: #9ca3af; /* Matches other links by default */
+}
+
+/* Optional: Make it turn red on hover to signify 'Exit' */
+.logout-link:hover {
+  background-color: #2a1215; /* Very dark red background */
+  color: #f87171; /* Light red text */
+}

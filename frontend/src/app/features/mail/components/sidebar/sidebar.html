@@ -1,0 +1,37 @@
+<div class="sidebar-container">
+
+  <div class="user-profile">
+    <img [src]="currentUser.avatar" alt="User Avatar" class="avatar">
+    <div class="user-info">
+      <span class="user-name">{{ currentUser.name }}</span>
+      <span class="user-email">{{ currentUser.email }}</span>
+    </div>
+  </div>
+
+  <button class="compose-btn">
+    <span class="plus-icon">+</span> Compose
+  </button>
+
+  <nav class="main-nav">
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route" routerLinkActive="active-link" class="nav-item">
+          <div class="nav-left">
+            <i class="fa-solid {{ item.icon }} icon"></i> <span class="label">{{ item.label }}</span>
+          </div>
+          <span class="badge" *ngIf="item.badge > 0">{{ item.badge }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="logout-section">
+    <a routerLink="/signin" class="nav-item logout-link">
+      <div class="nav-left">
+        <i class="fa-solid fa-right-from-bracket icon"></i>
+        <span class="label">Logout</span>
+      </div>
+    </a>
+  </div>
+
+</div>
