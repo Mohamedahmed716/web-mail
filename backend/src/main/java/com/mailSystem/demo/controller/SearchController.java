@@ -138,19 +138,19 @@ public class SearchController {
     /**
      * Filter by importance level
      */
-    @PostMapping("/filter/importance")
-    public ResponseEntity<List<Mail>> filterByImportance(
-            @RequestHeader("Authorization") String token,
-            @RequestBody List<Mail> mails,
-            @RequestParam(required = false) Integer minImportance) {
-
-        if (!UserContext.isValid(token)) {
-            return ResponseEntity.status(401).build();
-        }
-
-        List<Mail> results = searchAndSortService.filterByImportance(mails, minImportance);
-        return ResponseEntity.ok(results);
-    }
+//    @PostMapping("/filter/importance")
+//    public ResponseEntity<List<Mail>> filterByImportance(
+//            @RequestHeader("Authorization") String token,
+//            @RequestBody List<Mail> mails,
+//            @RequestParam(required = false) Integer minImportance) {
+//
+//        if (!UserContext.isValid(token)) {
+//            return ResponseEntity.status(401).build();
+//        }
+//
+//        List<Mail> results = searchAndSortService.filterByImportance(mails, minImportance);
+//        return ResponseEntity.ok(results);
+//    }
 
     /**
      * Get statistics about emails
