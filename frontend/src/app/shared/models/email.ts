@@ -1,9 +1,7 @@
-import {User} from './user';
-
 export interface Email {
   id : string;
-  sender: User;
-  receivers: User[];
+  sender: string;
+  receivers: string[];
   subject: string;
   body: string;
   timestamp: Date;

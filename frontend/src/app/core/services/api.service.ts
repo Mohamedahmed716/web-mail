@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Email } from "../../shared/models/email";
 
 @Injectable({
   providedIn: 'root',
@@ -9,16 +10,17 @@ export class ApiService {
   // The base URL for your Spring Boot Backend
   private baseUrl = 'http://localhost:8080/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   // Generic GET request
-  get(path: string, params: HttpParams = new HttpParams()): Observable<any> {
-    return this.http.get(`${this.baseUrl}${path}`, { params });
+  get(path: string, options: { headers?: HttpHeaders, params?: HttpParams } = {}): Observable<any> {
+    return this.http.get(`${this.baseUrl}${path}`, options);
   }
 
   // Generic POST request
-  post(path: string, body: Object = {}): Observable<any> {
-    return this.http.post(`${this.baseUrl}${path}`, body);
+  post(path: string, body: Object = {}, options: { headers?: HttpHeaders, params?: HttpParams } = {}): Observable<any> {
+    return this.http.post(`${this.baseUrl}${path}`, body, options);
   }
 
   // Generic PUT request

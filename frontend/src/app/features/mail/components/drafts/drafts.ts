@@ -4,6 +4,7 @@ import { ComposeService } from '../../../../services/compose.service';
 import { Email } from '../../../../shared/models/email';
 import { User } from '../../../../shared/models/user';
 import { ApiService } from '../../../../core/services/api.service';
+import {HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Component({
   selector: 'app-drafts',
@@ -29,7 +30,15 @@ export class Drafts implements OnInit {
 
   loadDrafts() {
     this.isLoading = true;
-    this.apiService.get('/loadDrafts').subscribe({
+
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('Authorization', token);
+    // const params : HttpParams = {
+    //   page: page.toString(),
+    //   size: size.toString(),
+    //   sort: sort,
+    // };
+    this.apiService.get('draft/loadDrafts', { headers }).subscribe({
       next: (data: Email[]) => {
         this.drafts = data;
         this.isLoading = false;
