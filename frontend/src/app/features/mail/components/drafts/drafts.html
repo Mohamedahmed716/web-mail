@@ -34,12 +34,13 @@
       <div class="item-content">
 
         <div class="item-header">
-          <span class="sender-name">To: {{ draft.to }}</span>
+          <span class="sender-name">To: {{ draft.receivers }}</span>
 
           <div class="meta-badges">
-            <i *ngIf="draft.hasAttachment" class="fa-solid fa-paperclip clip-icon"></i>
-            <span class="priority-badge" [ngClass]="draft.priority">
-              {{ draft.priority }}
+            <i *ngIf="draft.attachments && draft.attachments.length > 0" class="fa-solid fa-paperclip clip-icon"></i>
+
+            <span class="priority-badge" [ngClass]="getPriorityLabel(draft.priority)">
+              {{ getPriorityLabel(draft.priority) }}
             </span>
           </div>
         </div>
@@ -54,7 +55,7 @@
       </div>
 
       <div class="item-date">
-        {{ draft.date }}
+        {{ draft.timestamp | date:'shortTime' }}
       </div>
 
     </div>
