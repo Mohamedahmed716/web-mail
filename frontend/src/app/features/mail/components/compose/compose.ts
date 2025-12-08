@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpHeaders } from '@angular/common/http';
 import { ComposeService } from '../../../../services/compose.service';
-import {Email} from '../../../../shared/models/email';
-import {User} from '../../../../shared/models/user';
-import {ApiService} from '../../../../core/services/api.service';
+import { ApiService } from '../../../../core/services/api.service';
+import { Email } from '../../../../shared/models/email';
 
 @Component({
   selector: 'app-compose',
@@ -15,8 +15,8 @@ import {ApiService} from '../../../../core/services/api.service';
 })
 export class Compose implements OnInit {
   isVisible = false;
-
   email: Email | undefined;
+
   receiverEmails: string = '';
 
   constructor(private composeService: ComposeService, private apiService: ApiService) {}
@@ -29,15 +29,11 @@ export class Compose implements OnInit {
     this.composeService.currentDraft$.subscribe(draft => {
       if (draft) {
         this.email = draft;
-        this.receiverEmails = this.email.receivers.map(r => r.email).join(', ');
+        this.receiverEmails = draft.receivers ? draft.receivers.join(', ') : '';
       } else {
         this.email = {
           id: '',
-          sender: {
-            id: '',
-            name: '',
-            email: ''
-          } as User,
+          sender: '',
           attachments: [],
           receivers: [],
           subject: '',
@@ -63,6 +59,7 @@ export class Compose implements OnInit {
     const files: FileList = event.target.files;
     if (files) {
       for (let i = 0; i < files.length; i++) {
+        if (!this.email!.attachments) this.email!.attachments = [];
         this.email?.attachments?.push(files[i]);
       }
     }
@@ -72,28 +69,75 @@ export class Compose implements OnInit {
     this.email?.attachments?.splice(index, 1);
   }
 
+  private prepareFormData(email: Email): FormData {
+    const formData = new FormData();
+
+    formData.append('receivers', JSON.stringify(email.receivers));
+    formData.append('id', email.id || '');
+    formData.append('subject', email.subject || '');
+    formData.append('body', email.body || '');
+    formData.append('priority', (email.priority || 3).toString());
+    formData.append('folder', email.folder || 'Drafts');
+
+    if (email.attachments && email.attachments.length > 0) {
+      for (const file of email.attachments) {
+        formData.append('attachments', file);
+      }
+    }
+
+    return formData;
+  }
+
+  private updateReceiversArray() {
+    if (!this.email) return;
+    this.email.receivers = this.receiverEmails
+      .split(',')
+      .map(e => e.trim())
+      .filter(e => e !== '');
+  }
+
   sendEmail() {
     console.log('Sending:', this.email);
-    if(!this.email) {
+
+    if(!this.email) return;
+
+    this.updateReceiversArray();
+
+    // 2. Validate
+    if(this.email.receivers.length === 0) {
+      alert('Please add at least one receiver email address.');
       return;
     }
-    this.apiService.post('/sendEmail',this.email).subscribe({
+
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('Authorization', token);
+
+    const payload = this.prepareFormData(this.email);
+
+    this.apiService.post('/send/sendEmail', payload, { headers }).subscribe({
       next: (response) => {
         console.log('Email sent successfully:', response);
+        this.composeService.notifyRefresh();
         this.close();
       },
       error: (error) => {
         console.error('Error sending email:', error);
       }
-    })
+    });
   }
 
   saveDraft() {
     console.log('Saving Draft:', this.email);
-    if(!this.email) {
-      return;
-    }
-    this.apiService.post('/saveDraft' ,this.email).subscribe({
+    if(!this.email) return;
+
+    this.updateReceiversArray();
+
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('Authorization', token);
+
+    const payload = this.prepareFormData(this.email);
+
+    this.apiService.post('/draft/saveDraft', payload, { headers }).subscribe({
       next: (response) => {
         console.log('Draft saved successfully:', response);
         this.composeService.notifyRefresh();
@@ -102,6 +146,6 @@ export class Compose implements OnInit {
       error: (error) => {
         console.error('Error saving Draft:', error);
       }
-    })
+    });
   }
 }
