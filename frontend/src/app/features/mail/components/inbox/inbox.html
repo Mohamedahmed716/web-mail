@@ -1,1 +1,83 @@
-<p>inbox works!</p>
+<div class="inbox-container">
+  
+  <div class="inbox-header">
+    <div class="title-group">
+      <input type="checkbox" class="master-checkbox">
+      <h2>Inbox</h2>
+      
+      @if (emails.length > 0) {
+        <span class="badge-count">{{ emails.length }}</span>
+      }
+    </div>
+
+    <div class="actions-group">
+      <div class="dropdown">
+        <span>Date</span>
+        <i class="icon-arrow-down"></i>
+      </div>
+      <button class="icon-btn" (click)="loadEmails()">↻</button>
+      <button class="icon-btn">🗑️</button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state">
+      Loading emails...
+    </div>
+  } 
+  @else if (errorMessage) {
+    <div class="error-state">
+      {{ errorMessage }}
+    </div>
+  } 
+  @else {
+    <div class="email-list">
+      
+      @for (email of emails; track email) {
+        
+        <div class="email-item">
+          
+          <div class="email-select">
+            <input type="checkbox">
+          </div>
+
+          <div class="email-content">
+            
+            <div class="email-top-row">
+              <span class="sender-name">{{ email.sender }}</span>
+              
+              <!-- <span class="priority-badge" 
+                    [ngClass]="'badge-' + (email.priority || 'low')>
+                {{ email.priority }}
+              </span> -->
+              
+              <span class="email-time">10:30 AM</span>
+            </div>
+
+            <div class="email-subject">
+              {{ email.subject }}
+            </div>
+
+            <div class="email-snippet">
+              {{ email.body }}
+            </div>
+
+          </div>
+        </div>
+
+      } @empty {
+        <div class="empty-state">
+          No emails found.
+        </div>
+      }
+
+    </div>
+  }
+
+  <div class="pagination">
+    <button (click)="changePage(-1)" [disabled]="currentPage === 1">Prev</button>
+    <span>Page {{ currentPage }}</span>
+    <button (click)="changePage(1)">Next</button>
+  </div>
+
+</div>
