@@ -1,24 +1,28 @@
 <div class="inbox-container">
   
-  <div class="inbox-header">
-    <div class="title-group">
-      <input type="checkbox" class="master-checkbox">
-      <h2>Inbox</h2>
-      
-      @if (emails.length > 0) {
-        <span class="badge-count">{{ emails.length }}</span>
-      }
+  <div class="toolbar">
+    <div class="left-tools">
+      <h2 class="page-title">Inbox <span class="count-badge">{{ emails.length }}</span></h2>
     </div>
-
-    <div class="actions-group">
-      <div class="dropdown">
-        <span>Date</span>
-        <i class="icon-arrow-down"></i>
-      </div>
-      <button class="icon-btn" (click)="loadEmails()">↻</button>
-      <button class="icon-btn">🗑️</button>
+    <div class="right-tools">
+      <button class="icon-btn"><i class="fa-solid fa-arrow-down-wide-short"></i> Date</button>
+      <button class="icon-btn"><i class="fa-solid fa-filter"></i></button>
+      <button class="icon-btn"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
   </div>
+
+  <div class="action-bar">
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="selectAll">
+      <label for="selectAll">Select all</label>
+    </div>
+    <div class="actions">
+      <button class="text-btn">Mark Read</button>
+      <button class="text-btn">Move</button>
+      <button class="text-btn danger">Delete</button>
+    </div>
+  </div>
+
 
   @if (isLoading) {
     <div class="loading-state">
@@ -46,12 +50,10 @@
             <div class="email-top-row">
               <span class="sender-name">{{ email.sender }}</span>
               
-              <!-- <span class="priority-badge" 
-                    [ngClass]="'badge-' + (email.priority || 'low')>
-                {{ email.priority }}
-              </span> -->
-              
-              <span class="email-time">10:30 AM</span>
+             <span class="email-priority">
+                
+             </span>
+              <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
             </div>
 
             <div class="email-subject">

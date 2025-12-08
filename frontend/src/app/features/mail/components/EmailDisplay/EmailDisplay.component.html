@@ -1,0 +1,18 @@
+<div class="page-container">
+  <div class="email-display">
+    <div class="email-subject">
+      <h2>{{mail?.subject}}</h2>
+      <h3>{{mail?.priority}}</h3>
+    </div>
+    <div class="email-meta">
+      <span class="email-sender">From: {{mail?.sender}}</span>
+      <span class="email-receivers">To: 
+       @if(type==="inbox"||type==="priority") {
+         {{mail?.receivers[0]}}
+       } @else {
+         {{mail?.sender}}
+       }
+      </span>
+      <span class="email-timestamp">Date: {{mail?.timestamp | date:'short'}}</span>
+  </div>
+</div>

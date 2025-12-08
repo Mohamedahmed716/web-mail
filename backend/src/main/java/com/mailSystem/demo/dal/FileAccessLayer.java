@@ -1,6 +1,7 @@
 package com.mailSystem.demo.dal;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.model.User;
 import com.mailSystem.demo.utils.Constants;
 import org.springframework.stereotype.Component;
@@ -46,28 +47,44 @@ public class FileAccessLayer {
         }
     }
 
-    public List<com.mailSystem.demo.model.Mail> loadMails(String email, String folderName) {
+    public List<Mail> loadMails(String email, String folderName) {
         File folder = new File(Constants.DATA_DIR + "/" + email + "/" + folderName);
-        List<com.mailSystem.demo.model.Mail> mails = new ArrayList<>();
+        List<Mail> mails = new ArrayList<>();
+
+        // --- جمل طباعة للتجربة (Debug) ---
+        System.out.println("DEBUG: Looking in folder: " + folder.getAbsolutePath());
+        System.out.println("DEBUG: Does folder exist? " + folder.exists());
+        // -------------------------------
 
         if (folder.exists() && folder.isDirectory()) {
             File[] files = folder.listFiles();
+
+            // --- جملة طباعة ---
+            System.out.println("DEBUG: Found " + (files != null ? files.length : 0) + " files.");
+            // ------------------
+
             if (files != null) {
                 for (File file : files) {
+                    // --- جملة طباعة ---
+                    System.out.println("DEBUG: Checking file: " + file.getName());
+                    // ------------------
+
                     if (file.getName().endsWith(".json")) {
                         try {
-                            com.mailSystem.demo.model.Mail mail = JsonMapper.getInstance().readValue(file, com.mailSystem.demo.model.Mail.class);
+                            Mail mail = JsonMapper.getInstance().readValue(file, Mail.class);
                             mails.add(mail);
+                            System.out.println("DEBUG: Loaded mail successfully!");
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            e.printStackTrace(); // لو فيه مشكلة في الـ JSON نفسه هتظهر هنا
                         }
+                    } else {
+                        System.out.println("DEBUG: Skipped (Not JSON)");
                     }
                 }
             }
         }
         return mails;
     }
-
     public void saveUser(User user) {
         // Load existing
         List<User> users = loadAllUsers();
