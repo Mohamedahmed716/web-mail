@@ -53,7 +53,6 @@ public class FileAccessLayer {
         File folder = new File(Constants.DATA_DIR + "/" + email + "/" + folderName);
         List<Mail> mails = new ArrayList<>();
 
-        // --- جمل طباعة للتجربة (Debug) ---
         System.out.println("DEBUG: Looking in folder: " + folder.getAbsolutePath());
         System.out.println("DEBUG: Does folder exist? " + folder.exists());
         // -------------------------------
@@ -61,13 +60,11 @@ public class FileAccessLayer {
         if (folder.exists() && folder.isDirectory()) {
             File[] files = folder.listFiles();
 
-            // --- جملة طباعة ---
             System.out.println("DEBUG: Found " + (files != null ? files.length : 0) + " files.");
             // ------------------
 
             if (files != null) {
                 for (File file : files) {
-                    // --- جملة طباعة ---
                     System.out.println("DEBUG: Checking file: " + file.getName());
                     // ------------------
 
@@ -77,7 +74,7 @@ public class FileAccessLayer {
                             mails.add(mail);
                             System.out.println("DEBUG: Loaded mail successfully!");
                         } catch (IOException e) {
-                            e.printStackTrace(); // لو فيه مشكلة في الـ JSON نفسه هتظهر هنا
+                            e.printStackTrace();
                         }
                     } else {
                         System.out.println("DEBUG: Skipped (Not JSON)");
