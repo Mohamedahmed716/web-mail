@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ComposeService } from '../../../../services/compose.service';
+import {Email} from '../../../../shared/models/email';
+import {User} from '../../../../shared/models/user';
+import {ApiService} from '../../../../core/services/api.service';
 
 @Component({
   selector: 'app-compose',
@@ -13,16 +16,10 @@ import { ComposeService } from '../../../../services/compose.service';
 export class Compose implements OnInit {
   isVisible = false;
 
-  // these will be replaced with a proper model later
-  attachments: File[] = [];
-  email: any = {
-    to: '',
-    subject: '',
-    body: '',
-    priority: 'medium'
-  };
+  email: Email | undefined;
+  receiverEmails: string = '';
 
-  constructor(private composeService: ComposeService) {}
+  constructor(private composeService: ComposeService, private apiService: ApiService) {}
 
   ngOnInit() {
     this.composeService.isOpen$.subscribe(open => {
@@ -31,11 +28,25 @@ export class Compose implements OnInit {
 
     this.composeService.currentDraft$.subscribe(draft => {
       if (draft) {
-        this.email = { ...draft };
-
+        this.email = draft;
+        this.receiverEmails = this.email.receivers.map(r => r.email).join(', ');
       } else {
-        this.email = { to: '', subject: '', body: '', priority: 'medium' };
-        this.attachments = [];
+        this.email = {
+          id: '',
+          sender: {
+            id: '',
+            name: '',
+            email: ''
+          } as User,
+          attachments: [],
+          receivers: [],
+          subject: '',
+          body: '',
+          timestamp: new Date(),
+          priority: 3,
+          folder: 'Drafts'
+        };
+        this.receiverEmails = '';
       }
     });
   }
@@ -52,24 +63,45 @@ export class Compose implements OnInit {
     const files: FileList = event.target.files;
     if (files) {
       for (let i = 0; i < files.length; i++) {
-        this.attachments.push(files[i]);
+        this.email?.attachments?.push(files[i]);
       }
     }
   }
 
   removeAttachment(index: number) {
-    this.attachments.splice(index, 1);
+    this.email?.attachments?.splice(index, 1);
   }
 
   sendEmail() {
-    console.log('Sending:', this.email, 'Attachments:', this.attachments);
-    // api call would go here
-    this.close();
+    console.log('Sending:', this.email);
+    if(!this.email) {
+      return;
+    }
+    this.apiService.post('/sendEmail',this.email).subscribe({
+      next: (response) => {
+        console.log('Email sent successfully:', response);
+        this.close();
+      },
+      error: (error) => {
+        console.error('Error sending email:', error);
+      }
+    })
   }
 
   saveDraft() {
     console.log('Saving Draft:', this.email);
-    // api call would go here
-    this.close();
+    if(!this.email) {
+      return;
+    }
+    this.apiService.post('/saveDraft' ,this.email).subscribe({
+      next: (response) => {
+        console.log('Draft saved successfully:', response);
+        this.composeService.notifyRefresh();
+        this.close();
+      },
+      error: (error) => {
+        console.error('Error saving Draft:', error);
+      }
+    })
   }
 }
