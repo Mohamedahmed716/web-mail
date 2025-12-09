@@ -109,7 +109,8 @@ export class Compose implements OnInit {
       return;
     }
 
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('auth-token') || '';
+    console.log('Sending Token:', token);
     const headers = new HttpHeaders().set('Authorization', token);
 
     const payload = this.prepareFormData(this.email);
@@ -121,7 +122,13 @@ export class Compose implements OnInit {
         this.close();
       },
       error: (error) => {
-        console.error('Error sending email:', error);
+        if (error.status === 200) {
+          console.log('Draft saved successfully (Text response)');
+          this.composeService.notifyRefresh();
+          this.close();
+        } else {
+          console.error('Real Error saving Draft:', error);
+        }
       }
     });
   }
@@ -132,7 +139,8 @@ export class Compose implements OnInit {
 
     this.updateReceiversArray();
 
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('auth-token') || '';
+    console.log('Sending Token:', token);
     const headers = new HttpHeaders().set('Authorization', token);
 
     const payload = this.prepareFormData(this.email);
@@ -144,7 +152,13 @@ export class Compose implements OnInit {
         this.close();
       },
       error: (error) => {
-        console.error('Error saving Draft:', error);
+        if (error.status === 200) {
+          console.log('Draft saved successfully (Text response)');
+          this.composeService.notifyRefresh();
+          this.close();
+        } else {
+          console.error('Real Error saving Draft:', error);
+        }
       }
     });
   }

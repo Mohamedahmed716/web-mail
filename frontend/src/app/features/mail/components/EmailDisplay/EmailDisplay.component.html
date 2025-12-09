@@ -2,7 +2,7 @@
 
   @if (mail) {
     <div class="email-content">
-      
+
       <div class="email-header">
         <div class="header-main">
           <h2 class="subject">{{ mail.subject }}</h2>
@@ -40,20 +40,20 @@
 
           <div class="attachments-grid">
             @for (file of mail.attachments; track $index) {
-              
-              @if (getFileType(file) === 'image') {
+
+              @if (getFileType(file.name) === 'image') {
                 <div class="attachment-card image-type">
-                  <img [src]="getAttachmentUrl(file)" alt="attachment" class="preview-img">
-                  
+                  <img [src]="getAttachmentUrl(file.name)" alt="attachment" class="preview-img">
+
                   <div class="overlay-actions">
-                    <a [href]="getAttachmentUrl(file)" target="_blank" class="action-link">👁️ View</a>
-                    <a [href]="getAttachmentUrl(file)" download class="action-link">⬇️ Save</a>
+                    <a [href]="getAttachmentUrl(file.name)" target="_blank" class="action-link">👁️ View</a>
+                    <a [href]="getAttachmentUrl(file.name)" download class="action-link">⬇️ Save</a>
                   </div>
-                  <span class="file-name">{{ getFileName(file) }}</span>
+                  <span class="file-name">{{ getFileName(file.name) }}</span>
                 </div>
               }
 
-              @if (getFileType(file) === 'link') {
+              @if (getFileType(file.name) === 'link') {
                 <div class="attachment-card link-type">
                   <div class="file-icon">🔗</div>
                   <div class="file-details">
@@ -63,12 +63,12 @@
                 </div>
               }
 
-              @if (getFileType(file) === 'file') {
+              @if (getFileType(file.name) === 'file') {
                 <div class="attachment-card file-type">
                   <div class="file-icon">📄</div>
                   <div class="file-details">
-                    <span class="file-name">{{ getFileName(file) }}</span>
-                    <a [href]="getAttachmentUrl(file)" download class="download-link">Download ⬇️</a>
+                    <span class="file-name">{{ getFileName(file.name) }}</span>
+                    <a [href]="getAttachmentUrl(file.name)" download class="download-link">Download ⬇️</a>
                   </div>
                 </div>
               }
@@ -84,8 +84,8 @@
       </div>
 
     </div>
-  } 
-  
+  }
+
   @else {
     <div class="empty-state">
       <div class="empty-icon">📩</div>

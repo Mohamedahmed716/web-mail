@@ -1,1 +1,74 @@
-<p>sent works!</p>
+<div class="page-container">
+
+  <div class="toolbar">
+    <div class="left-tools">
+      <h2 class="page-title">Sent <span class="count-badge">{{ sentEmails.length }}</span></h2>
+    </div>
+    <div class="right-tools">
+      <button class="icon-btn"><i class="fa-solid fa-arrow-down-wide-short"></i> Date</button>
+      <button class="icon-btn"><i class="fa-solid fa-filter"></i></button>
+      <button class="icon-btn"><i class="fa-solid fa-rotate-right" (click)="loadSentMails()"></i></button>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="selectAll">
+      <label for="selectAll">Select all</label>
+    </div>
+    <div class="actions">
+      <button class="text-btn">Mark Read</button>
+      <button class="text-btn">Move</button>
+      <button class="text-btn danger">Delete</button>
+    </div>
+  </div>
+
+  <div class="email-list">
+    <div class="email-item" *ngFor="let email of sentEmails" (click)="openEmail(email)">
+
+      <div class="item-checkbox" (click)="stopProp($event)">
+        <input type="checkbox">
+      </div>
+
+      <div class="item-content">
+        <div class="item-header">
+          <span class="sender-name">To: {{ getReceiversList(email.receivers) }}</span>
+
+          <div class="meta-badges">
+            <i *ngIf="email.attachments && email.attachments.length > 0" class="fa-solid fa-paperclip clip-icon"></i>
+
+            <span class="priority-badge" [ngClass]="getPriorityLabel(email.priority).toLowerCase()">
+              {{ getPriorityLabel(email.priority) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="item-subject">
+          {{ email.subject }}
+        </div>
+
+        <div class="item-body">
+          {{ email.body }}
+        </div>
+      </div>
+
+      <div class="item-date">
+        {{ email.timestamp | date:'shortTime' }}
+      </div>
+
+    </div>
+
+    <div *ngIf="!isLoading && sentEmails.length === 0" class="empty-state">
+      No sent emails found.
+    </div>
+  </div>
+
+  <div class="pagination">
+    <span>1-{{ sentEmails.length }} of {{ sentEmails.length }}</span>
+    <div class="page-arrows">
+      <button disabled><i class="fa-solid fa-chevron-left"></i></button>
+      <button><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+</div>
