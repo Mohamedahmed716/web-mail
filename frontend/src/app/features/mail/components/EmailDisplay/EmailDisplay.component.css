@@ -186,8 +186,8 @@
 .display-container::-webkit-scrollbar-thumb:hover {
   background: #374151;
 }
-/
-* Close Button */
+
+/* Close Button */
 .close-btn {
   position: absolute;
   top: 16px;

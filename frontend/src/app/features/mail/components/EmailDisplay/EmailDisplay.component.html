@@ -1,96 +1,103 @@
 <div class="display-container">
 
   @if (mail) {
-    <div class="email-content">
-      
-      <div class="email-header">
-        <div class="header-main">
-          <h2 class="subject">{{ mail.subject }}</h2>
-          <div class="actions">
-            <button class="icon-btn" title="Print">🖨️</button>
-            <button class="icon-btn" title="Mark Important">⭐</button>
-            <button class="icon-btn" title="Delete">🗑️</button>
-          </div>
-        </div>
+  <div class="email-content">
 
-        <div class="sender-meta">
-          <div class="avatar">
-            {{ (mail.sender|| mail.sender || '?').charAt(0).toUpperCase() }}
-          </div>
-          <div class="meta-info">
-            <span class="sender-name">
-              {{ mail.sender || mail.sender }}
-            </span>
-            <span class="timestamp">
-              {{ mail.timestamp | date:'medium' }}
-            </span>
-          </div>
+    <div class="email-header">
+      <div class="header-main">
+        <h2 class="subject">{{ mail.subject }}</h2>
+        <div class="actions">
+          <button class="icon-btn" title="Print">🖨️</button>
+          <button class="icon-btn" title="Mark Important">⭐</button>
+          <button class="icon-btn" title="Delete">🗑️</button>
         </div>
       </div>
 
-      <div class="email-body">
-        <p>{{ mail.body }}</p>
-      </div>
-
-      @if (mail.attachments && mail.attachments.length > 0) {
-        <div class="attachments-section">
-          <h3>
-            📎 Attachments ({{ mail.attachments.length }})
-          </h3>
-
-          <div class="attachments-grid">
-            @for (file of mail.attachments; track $index) {
-              
-              @if (getFileType(file) === 'image') {
-                <div class="attachment-card image-type">
-                  <img [src]="getAttachmentUrl(file)" alt="attachment" class="preview-img">
-                  
-                  <div class="overlay-actions">
-                    <a [href]="getAttachmentUrl(file)" target="_blank" class="action-link">👁️ View</a>
-                    <a [href]="getAttachmentUrl(file)" download class="action-link">⬇️ Save</a>
-                  </div>
-                  <span class="file-name">{{ getFileName(file) }}</span>
-                </div>
-              }
-
-              @if (getFileType(file) === 'link') {
-                <div class="attachment-card link-type">
-                  <div class="file-icon">🔗</div>
-                  <div class="file-details">
-                    <span class="file-name">{{ file }}</span>
-                    <a [href]="file" target="_blank" class="download-link">Open Link ↗️</a>
-                  </div>
-                </div>
-              }
-
-              @if (getFileType(file) === 'file') {
-                <div class="attachment-card file-type">
-                  <div class="file-icon">📄</div>
-                  <div class="file-details">
-                    <span class="file-name">{{ getFileName(file) }}</span>
-                    <a [href]="getAttachmentUrl(file)" download class="download-link">Download ⬇️</a>
-                  </div>
-                </div>
-              }
-
+      <div class="sender-meta">
+        <div class="avatar">
+          {{ (mail.sender|| mail.sender || '?').charAt(0).toUpperCase() }}
+        </div>
+        <div class="meta-info">
+          <span class="sender-name">
+            {{ mail.sender || mail.sender }}
+          </span>
+          <span class="email-receivers">To:
+            @if(type==="inbox"||type==="priority") {
+            me
+            } @else {
+            {{mail.receivers.join(', ')}}
             }
+          </span>
+          <span class="timestamp">
+            {{ mail.timestamp | date:'medium' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-body">
+      <p>{{ mail.body }}</p>
+    </div>
+
+    @if (mail.attachments && mail.attachments.length > 0) {
+    <div class="attachments-section">
+      <h3>
+        📎 Attachments ({{ mail.attachments.length }})
+      </h3>
+
+      <div class="attachments-grid">
+        @for (file of mail.attachments; track $index) {
+
+        @if (getFileType(file) === 'image') {
+        <div class="attachment-card image-type">
+          <img [src]="getAttachmentUrl(file)" alt="attachment" class="preview-img">
+
+          <div class="overlay-actions">
+            <a [href]="getAttachmentUrl(file)" target="_blank" class="action-link">👁️ View</a>
+            <a [href]="getAttachmentUrl(file)" download class="action-link">⬇️ Save</a>
+          </div>
+          <span class="file-name">{{ getFileName(file) }}</span>
+        </div>
+        }
+
+        @if (getFileType(file) === 'link') {
+        <div class="attachment-card link-type">
+          <div class="file-icon">🔗</div>
+          <div class="file-details">
+            <span class="file-name">{{ file }}</span>
+            <a [href]="file" target="_blank" class="download-link">Open Link ↗️</a>
           </div>
         </div>
-      }
+        }
 
-      <div class="reply-actions">
-        <button class="btn-primary">↩️ Reply</button>
-        <button class="btn-secondary">↪️ Forward</button>
+        @if (getFileType(file) === 'file') {
+        <div class="attachment-card file-type">
+          <div class="file-icon">📄</div>
+          <div class="file-details">
+            <span class="file-name">{{ getFileName(file) }}</span>
+            <a [href]="getAttachmentUrl(file)" download class="download-link">Download ⬇️</a>
+          </div>
+        </div>
+        }
+
+        }
       </div>
+    </div>
+    }
 
+    <div class="reply-actions">
+      <button class="btn-primary">↩️ Reply</button>
+      <button class="btn-secondary">↪️ Forward</button>
     </div>
-  } 
-  
+
+  </div>
+  }
+
   @else {
-    <div class="empty-state">
-      <div class="empty-icon">📩</div>
-      <p>Select an email to read</p>
-    </div>
+  <div class="empty-state">
+    <div class="empty-icon">📩</div>
+    <p>Select an email to read</p>
+  </div>
   }
 
 </div>
