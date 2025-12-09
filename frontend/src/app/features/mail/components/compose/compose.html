@@ -40,9 +40,14 @@
             </label>
           </div>
 
-          <div class="file-list" *ngIf="email.attachments && email.attachments.length > 0">
+          <div class="file-list" *ngIf="email?.attachments && email.attachments.length > 0">
             <div class="file-chip" *ngFor="let file of email.attachments; let i = index">
-              <span>{{ file.name }}</span>
+              <span class="file-name clickable" [title]="file.name" (click)="openFile(file, $event)">
+                {{ file.name }}
+              </span>
+              <span class="file-size" style="font-size: 0.7em; opacity: 0.7; margin-left: 5px;">
+                ({{ (file.size / 1024) | number:'1.0-1' }} KB)
+              </span>
               <span class="remove-file" (click)="removeAttachment(i)">×</span>
             </div>
           </div>

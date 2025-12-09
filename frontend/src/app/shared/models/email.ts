@@ -7,5 +7,6 @@ export interface Email {
   timestamp: Date;
   priority: number;      // 1-5 (5 = highest)
   attachments: File[];
+  attachmentNames?: string[];
   folder: string;
 }

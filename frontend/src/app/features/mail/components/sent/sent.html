@@ -45,7 +45,10 @@
         <div class="main-info">
           <div class="item-subject">
             {{ email.subject }}
-            <i *ngIf="email.attachments && email.attachments.length > 0" class="fa-solid fa-paperclip" style="font-size: 0.8rem; color: #6b7280;"></i>
+            <i *ngIf="(email.attachments?.length || 0) > 0 || (email.attachmentNames?.length || 0) > 0"
+               class="fa-solid fa-paperclip clip-icon"
+               style="font-size: 0.8rem; color: #6b7280;">
+            </i>
           </div>
           <div class="item-body">{{ email.body }}</div>
         </div>
