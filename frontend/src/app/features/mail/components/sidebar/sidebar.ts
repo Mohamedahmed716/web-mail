@@ -19,7 +19,7 @@ export class Sidebar {
 
   menuItems = [
     { label: 'Inbox', icon: 'fa-inbox', route: '/mail/inbox' },
-    { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority'}, // Added priority based on requirements
+    { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority-inbox'}, // Added priority based on requirements
     { label: 'Sent', icon: 'fa-paper-plane', route: '/mail/sent' },
     { label: 'Drafts', icon: 'fa-file', route: '/mail/drafts' },
     { label: 'Trash', icon: 'fa-trash', route: '/mail/trash'},

@@ -1,6 +1,7 @@
 package com.mailSystem.demo.service;
 
 import com.mailSystem.demo.dal.FileAccessLayer;
+import com.mailSystem.demo.dto.InboxResponse;
 import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.sort.ISortStrategy;
 import com.mailSystem.demo.service.sort.SortByDate;
@@ -18,17 +19,23 @@ public class InboxService {
     @Autowired
     private FileAccessLayer fileAccessLayer;
 
-    public List<Mail> getInboxEmails(String email,int page , int size ,String sortType){
-        List<Mail> allMails=fileAccessLayer.loadMails(email,"inbox");
+    public InboxResponse getInboxEmails(String email, int page, int size, String sortType) {
+
+        List<Mail> allMails = fileAccessLayer.loadMails(email, "Inbox");
+
         ISortStrategy sortStrategy;
-        if("priority".equalsIgnoreCase(sortType)){
-            sortStrategy=new SortByPriority();
-        }
-        else {
-            sortStrategy=new SortByDate();
+        if ("PRIORITY".equalsIgnoreCase(sortType)) {
+            sortStrategy = new SortByPriority();
+        } else {
+            sortStrategy = new SortByDate();
         }
         sortStrategy.sort(allMails);
-        return Pagination.slice(allMails, page, size);
+
+        int total = allMails.size();
+
+        List<Mail> pagedList = Pagination.slice(allMails, page, size);
+
+        return new InboxResponse(pagedList, total);
     }
 
 }
