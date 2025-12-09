@@ -31,14 +31,14 @@ export class Drafts implements OnInit {
   loadDrafts() {
     this.isLoading = true;
 
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('auth-token') || '';
     const headers = new HttpHeaders().set('Authorization', token);
     // const params : HttpParams = {
     //   page: page.toString(),
     //   size: size.toString(),
     //   sort: sort,
     // };
-    this.apiService.get('draft/loadDrafts', { headers }).subscribe({
+    this.apiService.get('/draft/loadDrafts', { headers }).subscribe({
       next: (data: Email[]) => {
         this.drafts = data;
         this.isLoading = false;
