@@ -1,6 +1,35 @@
-html,
-body {
-  height: 100%;
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+:root {
+  /* ألوان الخلفيات (Dark Theme) */
+  --bg-app: #0f1014;         /* الخلفية الأساسية الغامقة */
+  --bg-surface: #1e1e24;     /* خلفية القوائم والكروت */
+  --bg-hover: #272730;       /* لون الهوفر */
+  --bg-active: rgba(108, 92, 231, 0.1); /* لون العنصر المختار */
+  
+  /* ألوان النصوص */
+  --text-primary: #ffffff;
+  --text-secondary: #8b8b99;
+  --text-muted: #585866;
+
+  /* الألوان الأساسية (Accent) */
+  --primary: #6c5ce7;        /* البنفسجي المودرن */
+  --primary-hover: #5b4cc4;
+  --border-color: #2d2d3a;   /* لون الخطوط الفاصلة */
+
+  /* ألوان الأولويات (Badges) */
+  --urgent-color: #ff6b6b;
+  --high-color: #feca57;
+  --normal-color: #54a0ff;
+  --low-color: #1dd1a1;
+}
+
+/* تظبيط شكل السكرول بار عشان يبقى dark */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-app); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #666; }
+
+body { 
+    background-color: var(--bg-app); 
+    color: var(--text-primary); 
+    font-family: 'Segoe UI', sans-serif; 
 }

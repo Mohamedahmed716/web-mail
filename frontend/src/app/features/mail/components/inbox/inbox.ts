@@ -2,10 +2,11 @@ import { Component,OnInit } from '@angular/core';
 import { InboxService } from '../../../../services/inbox.service';
 import { Email } from '../../../../shared/models/email';
 import { CommonModule } from '@angular/common';
+import { EmailDisplayComponent } from "../EmailDisplay/EmailDisplay.component";
 
 @Component({
   selector: 'app-inbox',
-  imports: [CommonModule],
+  imports: [CommonModule, EmailDisplayComponent],
   templateUrl: './inbox.html',
   styleUrl: './inbox.css',
 
@@ -17,6 +18,7 @@ export class Inbox implements OnInit  {
   pageSize: number = 10;
   isLoading: boolean = false;
   errorMessage: string = '';
+  selectedEmail: Email | null = null;
 
 
   constructor(private inboxService: InboxService) { }
@@ -54,5 +56,8 @@ export class Inbox implements OnInit  {
   changePage(step: number): void {
     this.currentPage += step;
     this.loadEmails();
+  }
+  selectEmail(email: Email): void {
+    this.selectedEmail = email;
   }
 }

@@ -1,12 +1,12 @@
 /* Sidebar Container */
 .sidebar-container {
-  width: 260px; /* Fixed width for sidebar */
+  width: 240px; /* Fixed width for sidebar */
   height: 100vh;
   background-color: #0b0e11; /* Dark background from image */
   color: #9ca3af; /* Light gray text */
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 16px;
   box-sizing: border-box; /* Ensures padding doesn't affect width */
   border-right: 1px solid #1f2937;
 }
@@ -15,14 +15,15 @@
 .user-profile {
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  padding: 8px 0;
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  margin-right: 12px;
+  margin-right: 10px;
   object-fit: cover;
 }
 
@@ -34,7 +35,7 @@
 .user-name {
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .user-email {
@@ -45,30 +46,32 @@
 /* 2. Compose Button */
 .compose-btn {
   width: 100%;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
   border: none;
   /* Gradient from image (Blue to Purple) */
-  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-  transition: opacity 0.2s;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s;
 }
 
 .compose-btn:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
 }
 
 .plus-icon {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
@@ -87,24 +90,25 @@ li {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
   text-decoration: none;
   color: #9ca3af; /* Default gray text */
   transition: background-color 0.2s, color 0.2s;
   cursor: pointer;
+  font-size: 0.875rem;
 }
 
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .icon {
-  width: 20px;
+  width: 18px;
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 /* Hover State */
@@ -122,10 +126,12 @@ li {
 /* Badge Styling */
 .badge {
   background-color: #1f2937; /* Dark gray badge bg */
-  color: #e5e7eb;
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 12px;
+  color: #9ca3af;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
 }
 
 .active-link .badge {
