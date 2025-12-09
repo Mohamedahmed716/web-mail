@@ -11,7 +11,7 @@ export class InboxService {
 
   constructor(private httpclient: HttpClient) {}
   getInboxEmails(page: number, size: number, sort: string) {
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('auth-token') || '';
 
     const headers = new HttpHeaders().set('Authorization', token);
     const params = {
