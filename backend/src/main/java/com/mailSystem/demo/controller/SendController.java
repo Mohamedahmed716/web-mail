@@ -2,6 +2,7 @@ package com.mailSystem.demo.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.SendService;
 import com.mailSystem.demo.utils.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +65,21 @@ public class SendController {
             // Catches parsing errors (e.g., bad JSON format for receivers)
             return ResponseEntity.badRequest().body("Invalid Request: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/loadSent")
+    public ResponseEntity<?> loadSent(
+            @RequestHeader(value = "Authorization", required = false) String token
+    ) {
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+        String senderEmail = UserContext.getUser(token);
+        if (senderEmail == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found for this token");
+        }
+
+        List<Mail> sent = sendService.loadSent(senderEmail);
+        return ResponseEntity.ok(sent);
     }
 }

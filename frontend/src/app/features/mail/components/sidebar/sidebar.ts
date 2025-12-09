@@ -18,12 +18,12 @@ export class Sidebar {
   }
 
   menuItems = [
-    { label: 'Inbox', icon: 'fa-inbox', route: '/mail/inbox', badge: 12 },
-    { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority', badge: 3 }, // Added priority based on requirements
-    { label: 'Sent', icon: 'fa-paper-plane', route: '/mail/sent', badge: 0 },
-    { label: 'Drafts', icon: 'fa-file', route: '/mail/drafts', badge: 2 },
-    { label: 'Trash', icon: 'fa-trash', route: '/mail/trash', badge: 5 },
-    { label: 'Contacts', icon: 'fa-envelope', route: '/mail/contacts', badge: 0 },
+    { label: 'Inbox', icon: 'fa-inbox', route: '/mail/inbox' },
+    { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority'}, // Added priority based on requirements
+    { label: 'Sent', icon: 'fa-paper-plane', route: '/mail/sent' },
+    { label: 'Drafts', icon: 'fa-file', route: '/mail/drafts' },
+    { label: 'Trash', icon: 'fa-trash', route: '/mail/trash'},
+    { label: 'Contacts', icon: 'fa-envelope', route: '/mail/contacts'},
   ];
 
   currentUser = {

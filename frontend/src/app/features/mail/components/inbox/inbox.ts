@@ -19,6 +19,7 @@ export class Inbox implements OnInit  {
   isLoading: boolean = false;
   errorMessage: string = '';
   selectedEmail: Email | null = null;
+  totalPages: number = Math.ceil(this.emails.length / this.pageSize);
 
 
   constructor(private inboxService: InboxService) { }

@@ -31,14 +31,14 @@ export class Drafts implements OnInit {
   loadDrafts() {
     this.isLoading = true;
 
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('auth-token') || '';
     const headers = new HttpHeaders().set('Authorization', token);
     // const params : HttpParams = {
     //   page: page.toString(),
     //   size: size.toString(),
     //   sort: sort,
     // };
-    this.apiService.get('draft/loadDrafts', { headers }).subscribe({
+    this.apiService.get('/draft/loadDrafts', { headers }).subscribe({
       next: (data: Email[]) => {
         this.drafts = data;
         this.isLoading = false;
@@ -56,6 +56,15 @@ export class Drafts implements OnInit {
 
   stopProp(event: Event) {
     event.stopPropagation();
+  }
+
+  getReceiversList(receivers: any[]): string {
+    // Handle both String[] (new backend) and User[] (old model)
+    if (!receivers || receivers.length === 0) return '(No Receivers)';
+    if (typeof receivers[0] === 'string') {
+      return receivers.join(', ');
+    }
+    return receivers.map((r: any) => r.email || r).join(', ');
   }
 
   getPriorityLabel(priority: number | undefined): string {

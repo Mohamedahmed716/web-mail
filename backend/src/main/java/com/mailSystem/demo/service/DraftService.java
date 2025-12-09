@@ -20,7 +20,12 @@ public class DraftService {
     private FileAccessLayer fileAccessLayer;
 
     public void saveDraft(String sender, List<String> receivers, String subject, String body, int priority, List<MultipartFile> attachments, String id) throws IOException {
-
+        if(receivers.isEmpty() && subject.isEmpty() && body.isEmpty() && attachments == null) {
+            if(id != null) {
+                fileAccessLayer.deleteMail(sender, Constants.DRAFTS, id);
+            }
+            return;
+        }
         // 1. Save physical attachments to disk
         // (We save them even for drafts so they are there when you open the draft later)
         List<String> attachmentNames = new ArrayList<>();
@@ -41,7 +46,7 @@ public class DraftService {
         mail.setSubject(subject);
         mail.setBody(body);
         mail.setPriority(priority);
-        mail.setAttachments(attachmentNames);
+        mail.setAttachmentNames(attachmentNames);
         mail.setTimestamp(new Date());
 
         // CRITICAL: Set folder to DRAFTS. FAL will only save locally.

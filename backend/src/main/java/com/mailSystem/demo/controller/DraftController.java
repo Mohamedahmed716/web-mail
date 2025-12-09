@@ -30,7 +30,7 @@ public class DraftController {
             @RequestParam("body") String body,
             @RequestParam("id") String id,
             @RequestParam(value = "priority", defaultValue = "3") int priority,
-            @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments
+            @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments
     ) {
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");

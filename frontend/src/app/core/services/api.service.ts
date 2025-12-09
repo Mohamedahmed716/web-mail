@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Email } from "../../shared/models/email";
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +20,9 @@ export class ApiService {
   }
 
   // Generic POST request
-  post(path: string, body: Object = {}, options: { headers?: HttpHeaders, params?: HttpParams } = {}): Observable<any> {
-    return this.http.post(`${this.baseUrl}${path}`, body, options);
+  post<T>(path: string, body: Object = {}, options: any = {}): Observable<T> {
+    // Remove <T> after .post and add 'as Observable<T>' at the end
+    return this.http.post(`${this.baseUrl}${path}`, body, options) as Observable<T>;
   }
 
   // Generic PUT request
@@ -31,5 +33,20 @@ export class ApiService {
   // Generic DELETE request
   delete(path: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}${path}`);
+  }
+
+  downloadFileObject(fileName: string, ownerEmail: string): Observable<File> {
+    const params = new HttpParams().set('file', fileName).set('email', ownerEmail);
+
+    return this.http.get(`${this.baseUrl}/attachments/download`, {
+      params,
+      responseType: 'blob' // Get raw binary data
+    }).pipe(
+      // Transform the Blob into a File object
+      map((blob: Blob) => {
+        // Create a JS File object from the Blob
+        return new File([blob], fileName, { type: blob.type });
+      })
+    );
   }
 }
