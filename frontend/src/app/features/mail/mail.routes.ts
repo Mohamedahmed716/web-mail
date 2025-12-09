@@ -5,6 +5,7 @@ import { Drafts } from './components/drafts/drafts';
 import {Sent} from './components/sent/sent';
 import {Trash} from './components/trash/trash';
 import {ContactsComponent} from './components/contacts/ContactsComponent.component';
+import { PriorityInboxComponent } from './components/PriorityInbox/PriorityInbox.component';
 
 export const MAIL_ROUTES: Routes = [
   {
@@ -13,6 +14,7 @@ export const MAIL_ROUTES: Routes = [
     children: [
       { path: '', redirectTo: 'inbox', pathMatch: 'full' },
       { path: 'inbox', component: Inbox },
+      { path: 'priority-inbox', component: PriorityInboxComponent },
       { path: 'drafts', component: Drafts },
       { path: 'sent', component: Sent },
       { path: 'trash', component: Trash },

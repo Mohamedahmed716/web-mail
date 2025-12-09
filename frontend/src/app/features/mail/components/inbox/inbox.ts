@@ -19,7 +19,7 @@ export class Inbox implements OnInit  {
   isLoading: boolean = false;
   errorMessage: string = '';
   selectedEmail: Email | null = null;
-  totalPages: number = Math.ceil(this.emails.length / this.pageSize);
+  totalEmails: number=0;
 
 
   constructor(private inboxService: InboxService) { }
@@ -31,34 +31,42 @@ export class Inbox implements OnInit  {
     this.loadEmails();
     
   }
-  loadEmails(): void {
+ loadEmails(): void {
     this.isLoading = true;
-    this.errorMessage = '';
+    this.selectedEmail = null;
 
     this.inboxService.getInboxEmails(this.currentPage, this.pageSize, 'DATE')
       .subscribe({
-        next: (data: any[]) => { 
-          this.emails = data;
+        next: (response: any) => {
+          
+          this.emails = response.data;         
+          this.totalEmails = response.totalRecords; 
+
           this.isLoading = false;
-          console.log('Emails loaded:', this.emails); // debugging
         },
         error: (err) => {
-          console.error('Error fetching emails:', err);
+          console.error(err);
+          this.errorMessage = 'Failed to load emails';
           this.isLoading = false;
-          if (err.status === 401) {
-            this.errorMessage = 'Session expired. Please login again.';
-          } else {
-            this.errorMessage = 'Failed to load emails from server.';
-          }
         }
       });
   }
 
   changePage(step: number): void {
-    this.currentPage += step;
-    this.loadEmails();
+    const maxPages = Math.ceil(this.totalEmails / this.pageSize);
+    const nextPage = this.currentPage + step;
+
+    if (nextPage >= 1 && nextPage <= maxPages) {
+      this.currentPage = nextPage;
+      this.loadEmails();
+    }
   }
   selectEmail(email: Email): void {
     this.selectedEmail = email;
   }
+// دالة بتتحسب لحظياً كل ما ننادي عليها
+get totalPages(): number {
+  if (this.totalEmails === 0) return 1; // عشان لو مفيش إيميلات يبقى عندنا صفحة 1 فاضية
+  return Math.ceil(this.totalEmails / this.pageSize);
+}
 }
