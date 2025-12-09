@@ -11,6 +11,14 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
+function noAtSignValidator(control: AbstractControl): ValidationErrors | null {
+  const username = control.value as string;
+  if (username && username.includes('@')) {
+    return { noAtSign: true };
+  }
+  return null;
+}
+
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -25,16 +33,17 @@ export class SignupComponent implements OnInit {
   isLoading: boolean = false;
   showPassword: boolean = false;
 
-  // Password Strength State
   strengthLabel: string = '';
   strengthClass: string = '';
+
+  readonly DOMAIN_SUFFIX = '@wegmail.com';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.signupForm = this.fb.group(
       {
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
-        email: ['', Validators.required],
+        email: ['', [Validators.required, noAtSignValidator]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
         terms: [false, Validators.requiredTrue],
@@ -93,9 +102,11 @@ export class SignupComponent implements OnInit {
     this.isLoading = true;
 
     const val = this.signupForm.value;
+    const fullEmail = val.email + this.DOMAIN_SUFFIX;
+
     const userPayload = {
       name: `${val.firstName} ${val.lastName}`,
-      email: val.email,
+      email: fullEmail,
       password: val.password,
     };
 

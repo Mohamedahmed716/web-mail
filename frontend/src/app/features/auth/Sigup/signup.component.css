@@ -401,3 +401,51 @@ label {
     padding: 0;
   }
 }
+
+.email-field-wrapper {
+  display: flex;
+  padding: 0 !important;
+}
+
+.email-field-wrapper:focus-within {
+  outline: none;
+  border-color: #5865f2;
+  box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.15);
+}
+
+.email-field-wrapper.error-border {
+  border-color: #ef4444;
+  background-color: #2a1215;
+}
+
+.email-field-wrapper.error-border:focus-within {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.username-input-part {
+  flex-grow: 1;
+  border: none !important;
+  background-color: transparent !important;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #ffffff;
+  border-radius: 0;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+
+  outline: none;
+}
+
+.domain-suffix {
+  background-color: #1a1a1c;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: #9ca3af;
+  cursor: default;
+  border-left: 1px solid #27272a;
+  border-radius: 0;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
