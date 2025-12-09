@@ -46,7 +46,7 @@ public class DraftService {
         mail.setSubject(subject);
         mail.setBody(body);
         mail.setPriority(priority);
-        mail.setAttachments(attachmentNames);
+        mail.setAttachmentNames(attachmentNames);
         mail.setTimestamp(new Date());
 
         // CRITICAL: Set folder to DRAFTS. FAL will only save locally.

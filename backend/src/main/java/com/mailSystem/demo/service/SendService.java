@@ -43,7 +43,7 @@ public class SendService {
         mail.setSubject(subject);
         mail.setBody(body);
         mail.setPriority(priority);
-        mail.setAttachments(attachmentNames);
+        mail.setAttachmentNames(attachmentNames);
         mail.setTimestamp(new Date());
 
         // CRITICAL: Set folder to SENT. FAL will see this and distribute copies to receivers.

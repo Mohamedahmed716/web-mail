@@ -203,3 +203,16 @@ button {
 .remove-file:hover {
   color: #ef4444; /* Red on hover */
 }
+
+.clickable {
+  cursor: pointer;
+  color: #60a5fa; /* Light Blue */
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+.clickable:hover {
+  color: #93c5fd; /* Lighter Blue on hover */
+  text-decoration: underline;
+}

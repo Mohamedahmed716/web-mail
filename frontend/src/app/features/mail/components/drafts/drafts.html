@@ -50,7 +50,10 @@
           <div class="item-subject">
             <span *ngIf="!draft.subject" style="font-style: italic;">(No Subject)</span>
             {{ draft.subject }}
-            <i *ngIf="draft.attachments && draft.attachments.length > 0" class="fa-solid fa-paperclip" style="font-size: 0.8rem; color: #6b7280;"></i>
+            <i *ngIf="(draft.attachments?.length || 0) > 0 || (draft.attachmentNames?.length || 0) > 0"
+               class="fa-solid fa-paperclip clip-icon"
+               style="font-size: 0.8rem; color: #6b7280;">
+            </i>
           </div>
           <div class="item-body">{{ draft.body }}</div>
         </div>
