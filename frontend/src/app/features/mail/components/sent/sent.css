@@ -265,3 +265,116 @@ input[type="checkbox"] {
   gap: 16px;
   font-size: 0.85rem;
 }
+
+.detail-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 24px;
+  border-bottom: 1px solid #1f2937;
+}
+
+.back-btn {
+  background-color: transparent;
+  border: 1px solid #374151;
+  color: #e5e7eb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #1f2937;
+  border-color: #4f46e5;
+  color: #fff;
+}
+
+/* Ensure the injected component takes available space */
+app-EmailDisplay {
+  flex-grow: 1;
+  overflow: hidden; /* Let the component handle scrolling */
+  display: flex;
+  flex-direction: column;
+}
+
+.split-layout {
+  display: flex;
+  flex-direction: row; /* Force side-by-side */
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* --- Pane 1: The List --- */
+.list-pane {
+  flex-grow: 1; /* By default, take full width */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-right: 1px solid transparent;
+  transition: all 0.2s ease-in-out; /* Smooth slide effect */
+  min-width: 0; /* Prevents flexbox overflow issues */
+}
+
+/* State: When an email is open */
+.list-pane.shrunk {
+  flex-grow: 0; /* Stop growing */
+  width: 400px; /* Fixed sidebar width */
+  min-width: 400px;
+  border-right: 1px solid #1f2937;
+}
+
+/* --- Pane 2: The Detail --- */
+.detail-pane {
+  flex-grow: 1; /* Take all remaining space */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Item Styling Tweaks for Split View --- */
+.active-item {
+  background-color: #1e1b4b !important; /* Highlight selected row (Dark Blue) */
+  border-left: 3px solid #4f46e5;
+}
+
+/* --- Detail Toolbar --- */
+.detail-toolbar {
+  height: 60px; /* Match main toolbar height */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid #1f2937;
+}
+
+.dt-left { display: flex; align-items: center; gap: 16px; overflow: hidden; }
+.dt-subject {
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dt-right { display: flex; gap: 8px; }
+
+/* --- Fix for your EmailDisplay Component --- */
+app-EmailDisplay {
+  flex: 1;
+  overflow-y: auto; /* Allow scrolling inside the email content */
+  padding: 20px;
+}
