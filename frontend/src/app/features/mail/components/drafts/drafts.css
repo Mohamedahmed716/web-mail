@@ -1,55 +1,108 @@
-/* Container */
+/* --- 1. Main Container --- */
+:host {
+  display: block;
+  height: 100%;
+  background-color: #0b0e11; /* Deep dark bg */
+}
+
 .page-container {
   height: 100%;
   display: flex;
   flex-direction: column;
-  color: #9ca3af; /* Light gray text */
-  background-color: #111418; /* Match sidebar bg if needed, or transparent */
-  padding: 20px 20px 0 20px;
+  padding: 0;
+  color: #9ca3af;
 }
 
-/* --- 1. Toolbar --- */
+/* --- 2. Top Header (Title + Search + Pagination) --- */
 .toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px 20px 10px;
+  padding: 15px 24px;
+  background-color: #0b0e11;
+  border-bottom: 1px solid #1f2937;
+}
+
+.left-tools {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1; /* Allows search to expand */
 }
 
 .page-title {
   color: #fff;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-width: 80px;
 }
 
-.count-badge {
+/* Search Bar Design */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-wrapper i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.search-input {
+  width: 100%;
   background-color: #1f2937;
-  font-size: 0.8rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  color: #9ca3af;
+  border: 1px solid transparent;
+  padding: 10px 10px 10px 36px; /* Space for icon */
+  border-radius: 8px;
+  color: #fff;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  border-color: #4f46e5;
+  background-color: #111827;
+}
+
+/* Right Side Tools */
+.right-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .icon-btn {
   background: transparent;
-  border: 1px solid #1f2937;
+  border: 1px solid #374151;
   color: #9ca3af;
-  padding: 6px 12px;
-  border-radius: 6px;
-  margin-left: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
-.icon-btn:hover { background-color: #1f2937; color: #fff; }
+.icon-btn:hover {
+  background-color: #1f2937;
+  color: #fff;
+  border-color: #4b5563;
+}
 
-/* --- 2. Action Bar --- */
+/* --- 3. Action Bar (Select All / Bulk Actions) --- */
 .action-bar {
   display: flex;
   justify-content: space-between;
-  padding: 0 16px 16px 16px;
+  align-items: center;
+  padding: 10px 24px;
+  background-color: #111418; /* Slightly lighter than main bg */
   border-bottom: 1px solid #1f2937;
   font-size: 0.9rem;
 }
@@ -57,147 +110,160 @@
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #9ca3af;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* Custom Checkbox Look */
+input[type="checkbox"] {
+  accent-color: #4f46e5;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
 }
 
 .text-btn {
   background: none;
   border: none;
   color: #9ca3af;
-  margin-left: 16px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: color 0.2s;
 }
 
 .text-btn:hover { color: #fff; }
 .text-btn.danger:hover { color: #ef4444; }
 
-/* --- 3. Email List Item --- */
+/* --- 4. Email List --- */
 .email-list {
   flex-grow: 1;
   overflow-y: auto;
+  background-color: #0b0e11;
 }
 
 .email-item {
   display: flex;
-  padding: 16px;
+  padding: 16px 24px;
   border-bottom: 1px solid #1f2937;
   cursor: pointer;
-  transition: background-color 0.2s;
-  align-items: flex-start;
+  align-items: center; /* Vertically center everything */
+  transition: background 0.15s;
 }
 
 .email-item:hover {
-  background-color: #111418; /* Very subtle highlight */
+  background-color: #13161c;
+  box-shadow: inset 2px 0 0 #4f46e5; /* Left purple accent line on hover */
 }
 
-.item-checkbox {
-  padding-top: 2px;
-  margin-right: 16px;
-}
+/* List Layout */
+.item-checkbox { margin-right: 16px; display: flex; align-items: center;}
 
 .item-content {
   flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: 200px 1fr 100px; /* Sender | Subject+Body | Meta */
+  gap: 16px;
+  align-items: center;
 }
 
-/* Row 1: Sender & Badges */
-.item-header {
+/* Column 1: Sender/Receiver */
+.sender-info {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .sender-name {
-  color: #fff;
+  color: #e5e7eb;
   font-weight: 600;
   font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.clip-icon {
-  font-size: 0.8rem;
+.sub-text {
+  font-size: 0.75rem;
   color: #6b7280;
 }
 
-/* Priority Badges - Matching the image colors */
-.priority-badge {
-  font-size: 0.7rem;
-  padding: 1px 8px;
-  border-radius: 10px;
-  text-transform: capitalize;
-  border: 1px solid;
+/* Column 2: Subject & Body */
+.main-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.priority-badge.high {
-  color: #d97706; /* Orange Text */
-  border-color: #d97706;
-  background-color: rgba(217, 119, 6, 0.1);
-}
-
-.priority-badge.medium {
-  color: #3b82f6; /* Blue Text */
-  border-color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.1);
-}
-
-.priority-badge.low {
-  color: #9ca3af; /* Gray Text */
-  border-color: #6b7280;
-  background-color: rgba(107, 114, 128, 0.1);
-}
-
-/* Row 2: Subject */
 .item-subject {
-  color: #e5e7eb;
+  color: #d1d5db;
   font-size: 0.9rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Row 3: Body Preview */
 .item-body {
   color: #6b7280;
   font-size: 0.85rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 600px;
 }
 
-/* Right Column: Date */
+/* Column 3: Date & Badges */
+.meta-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
 .item-date {
   font-size: 0.8rem;
-  color: #6b7280;
-  white-space: nowrap;
-  margin-left: 12px;
-  padding-top: 4px;
+  color: #9ca3af;
 }
 
-/* --- 4. Pagination Footer --- */
-.pagination {
-  padding: 16px;
+/* Badges */
+.priority-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.priority-badge.critical { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+.priority-badge.high { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+.priority-badge.medium { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+.priority-badge.low { background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3); }
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+  color: #4b5563;
+  gap: 10px;
+}
+.empty-state i { font-size: 3rem; opacity: 0.5; }
+
+/* Pagination Footer */
+.pagination-footer {
+  padding: 10px 24px;
+  border-top: 1px solid #1f2937;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  border-top: 1px solid #1f2937;
   font-size: 0.85rem;
-}
-
-.page-arrows button {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  padding: 4px 8px;
-}
-
-.page-arrows button:disabled {
-  color: #4b5563;
-  cursor: default;
-}
-.page-arrows button:hover:not(:disabled) {
-  color: #fff;
 }

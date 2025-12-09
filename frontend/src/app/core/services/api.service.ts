@@ -19,8 +19,9 @@ export class ApiService {
   }
 
   // Generic POST request
-  post<T>(path: string, body: Object = {}, options: { headers?: HttpHeaders, params?: HttpParams } = {}): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}${path}`, body, options);
+  post<T>(path: string, body: Object = {}, options: any = {}): Observable<T> {
+    // Remove <T> after .post and add 'as Observable<T>' at the end
+    return this.http.post(`${this.baseUrl}${path}`, body, options) as Observable<T>;
   }
 
   // Generic PUT request

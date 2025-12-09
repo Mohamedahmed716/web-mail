@@ -5,6 +5,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { ComposeService } from '../../../../services/compose.service';
 import { ApiService } from '../../../../core/services/api.service';
 import { Email } from '../../../../shared/models/email';
+import { ToastService } from '../../../../core/services/toast-service';
 
 @Component({
   selector: 'app-compose',
@@ -19,7 +20,7 @@ export class Compose implements OnInit {
 
   receiverEmails: string = '';
 
-  constructor(private composeService: ComposeService, private apiService: ApiService) {}
+  constructor(private composeService: ComposeService, private apiService: ApiService, private toastService: ToastService) {}
 
   ngOnInit() {
     this.composeService.isOpen$.subscribe(open => {
@@ -104,8 +105,8 @@ export class Compose implements OnInit {
     this.updateReceiversArray();
 
     // 2. Validate
-    if(this.email.receivers.length === 0) {
-      alert('Please add at least one receiver email address.');
+    if (this.email.receivers.length === 0) {
+      this.toastService.showError('Please add at least one receiver.');
       return;
     }
 
@@ -115,50 +116,46 @@ export class Compose implements OnInit {
 
     const payload = this.prepareFormData(this.email);
 
-    this.apiService.post('/send/sendEmail', payload, { headers }).subscribe({
+    this.apiService.post('/send/sendEmail', payload, { headers, responseType: 'text'}).subscribe({
       next: (response) => {
-        console.log('Email sent successfully:', response);
+        // 2. Success Feedback
+        this.toastService.showSuccess('Email sent successfully!');
         this.composeService.notifyRefresh();
         this.close();
       },
       error: (error) => {
-        if (error.status === 200) {
-          console.log('Draft saved successfully (Text response)');
-          this.composeService.notifyRefresh();
-          this.close();
-        } else {
-          console.error('Real Error saving Draft:', error);
-        }
+        console.error(error);
+        // 3. Backend Error Feedback
+        // Extract the message from the backend response
+        const errorMsg = error.error || 'Failed to send email. Please try again.';
+        this.toastService.showError(errorMsg);
       }
     });
   }
 
   saveDraft() {
-    console.log('Saving Draft:', this.email);
-    if(!this.email) return;
-
     this.updateReceiversArray();
 
+    if(!this.email) return;
+
     const token = localStorage.getItem('auth-token') || '';
-    console.log('Sending Token:', token);
     const headers = new HttpHeaders().set('Authorization', token);
 
     const payload = this.prepareFormData(this.email);
 
-    this.apiService.post('/draft/saveDraft', payload, { headers }).subscribe({
+    this.apiService.post('/draft/saveDraft', payload, { headers, responseType: 'text' }).subscribe({
       next: (response) => {
-        console.log('Draft saved successfully:', response);
+        // 2. Success Feedback
+        this.toastService.showSuccess('Draft saved successfully!');
         this.composeService.notifyRefresh();
         this.close();
       },
       error: (error) => {
-        if (error.status === 200) {
-          console.log('Draft saved successfully (Text response)');
-          this.composeService.notifyRefresh();
-          this.close();
-        } else {
-          console.error('Real Error saving Draft:', error);
-        }
+        console.error(error);
+        // 3. Backend Error Feedback
+        // Extract the message from the backend response
+        const errorMsg = error.error || 'Failed to save draft. Please try again.';
+        this.toastService.showError(errorMsg);
       }
     });
   }

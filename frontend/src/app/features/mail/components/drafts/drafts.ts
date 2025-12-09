@@ -58,6 +58,15 @@ export class Drafts implements OnInit {
     event.stopPropagation();
   }
 
+  getReceiversList(receivers: any[]): string {
+    // Handle both String[] (new backend) and User[] (old model)
+    if (!receivers || receivers.length === 0) return '(No Receivers)';
+    if (typeof receivers[0] === 'string') {
+      return receivers.join(', ');
+    }
+    return receivers.map((r: any) => r.email || r).join(', ');
+  }
+
   getPriorityLabel(priority: number | undefined): string {
     if(!priority) {
       return 'medium';
