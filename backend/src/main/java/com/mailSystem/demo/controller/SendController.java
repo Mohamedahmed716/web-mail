@@ -2,6 +2,8 @@ package com.mailSystem.demo.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mailSystem.demo.dto.EmailFilterDTO;
+import com.mailSystem.demo.dto.InboxResponse;
 import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.SendService;
 import com.mailSystem.demo.utils.UserContext;
@@ -67,6 +69,34 @@ public class SendController {
         }
     }
 
+    /**
+     * Get sent emails with pagination and sorting
+     */
+    @GetMapping
+    public ResponseEntity<?> getSentEmails(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "DATE") String sort) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        InboxResponse response = sendService.loadSent(email, page, size, sort);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Load sent emails (original endpoint - maintains backward compatibility)
+     */
     @GetMapping("/loadSent")
     public ResponseEntity<?> loadSent(
             @RequestHeader(value = "Authorization", required = false) String token
@@ -81,5 +111,65 @@ public class SendController {
 
         List<Mail> sent = sendService.loadSent(senderEmail);
         return ResponseEntity.ok(sent);
+    }
+
+    /**
+     * Search sent emails with simple query
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> searchSentEmails(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam String query,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        try {
+            InboxResponse response = sendService.searchSent(email, query, page, size);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error searching emails: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Filter sent emails with multiple criteria
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<?> filterSentEmails(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestBody EmailFilterDTO filters,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        try {
+            InboxResponse response = sendService.filterSent(email, filters, page, size);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error filtering emails: " + e.getMessage());
+        }
     }
 }
