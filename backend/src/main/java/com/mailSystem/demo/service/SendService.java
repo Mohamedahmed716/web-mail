@@ -101,19 +101,14 @@ public class SendService {
     }
 
     /**
-     * Search sent emails
+     * Search sent emails using Search Design Pattern
      */
     public InboxResponse searchSent(String email, String query, int page, int size) {
         // Get all sent emails
         Set<Mail> allMails = getUserSentEmails(email);
 
-        // Create filter for search
-        EmailFilterDTO filter = EmailFilterDTO.builder()
-                .searchQuery(query)
-                .build();
-
-        // Apply search
-        Set<Mail> filteredMails = searchService.filterEmails(allMails, filter);
+        // Apply global search using Search Design Pattern
+        Set<Mail> filteredMails = searchService.searchEmails(allMails, query);
 
         // Convert to list and sort by date
         List<Mail> mailList = new ArrayList<>(filteredMails);
@@ -128,13 +123,13 @@ public class SendService {
     }
 
     /**
-     * Filter sent emails with multiple criteria
+     * Filter sent emails using Filter Design Pattern
      */
     public InboxResponse filterSent(String email, EmailFilterDTO filters, int page, int size) {
         // Get all sent emails
         Set<Mail> allMails = getUserSentEmails(email);
 
-        // Apply all filters
+        // Apply filters using Filter Design Pattern
         Set<Mail> filteredMails = searchService.filterEmails(allMails, filters);
 
         // Convert to list and sort by date

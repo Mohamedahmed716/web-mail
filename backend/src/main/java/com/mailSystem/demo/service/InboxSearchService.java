@@ -2,6 +2,9 @@ package com.mailSystem.demo.service;
 
 import com.mailSystem.demo.dto.EmailFilterDTO;
 import com.mailSystem.demo.model.Mail;
+import com.mailSystem.demo.service.filter.EmailFilterManager;
+import com.mailSystem.demo.service.search.EmailSearchManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,8 +16,14 @@ import java.util.stream.Collectors;
 @Service
 public class InboxSearchService {
 
+    @Autowired
+    private EmailFilterManager filterManager;
+
+    @Autowired
+    private EmailSearchManager searchManager;
+
     /**
-     * Apply multiple filter criteria to a set of emails
+     * Apply multiple filter criteria to a set of emails using Filter Design Pattern
      */
     public Set<Mail> filterEmails(Set<Mail> emails, EmailFilterDTO filters) {
         if (emails == null || emails.isEmpty()) {
@@ -23,38 +32,41 @@ public class InboxSearchService {
 
         Set<Mail> result = emails;
 
-        // Apply each filter sequentially
-        if (filters.getFrom() != null && !filters.getFrom().isEmpty()) {
-            result = filterBySender(result, filters.getFrom());
-        }
+        // Use Filter Design Pattern for advanced filtering
+        result = filterManager.applyFilters(result, filters);
 
-        if (filters.getTo() != null && !filters.getTo().isEmpty()) {
-            result = filterByReceiver(result, filters.getTo());
-        }
-
-        if (filters.getSubject() != null && !filters.getSubject().isEmpty()) {
-            result = filterBySubject(result, filters.getSubject());
-        }
-
-        if (filters.getHasWords() != null && !filters.getHasWords().isEmpty()) {
-            result = filterByHasWords(result, filters.getHasWords());
-        }
-
-        if (filters.getDoesntHave() != null && !filters.getDoesntHave().isEmpty()) {
-            result = filterByDoesntHave(result, filters.getDoesntHave());
-        }
-
-        if (filters.getDateWithin() != null && !filters.getDateWithin().isEmpty()) {
-            result = filterByDate(result, filters.getDateWithin());
-        }
-
-        // Simple search query (searches in sender, subject, and body)
+        // Apply global search if search query is provided
         if (filters.getSearchQuery() != null && !filters.getSearchQuery().isEmpty()) {
-            result = filterBySearchQuery(result, filters.getSearchQuery());
+            result = searchManager.globalSearch(result, filters.getSearchQuery());
         }
 
         return result;
     }
+
+    /**
+     * Perform global search across all email fields using Search Design Pattern
+     */
+    public Set<Mail> searchEmails(Set<Mail> emails, String query) {
+        if (emails == null || emails.isEmpty() || query == null || query.trim().isEmpty()) {
+            return emails;
+        }
+
+        return searchManager.globalSearch(emails, query);
+    }
+
+    /**
+     * Perform search using specific strategy
+     */
+    public Set<Mail> searchEmails(Set<Mail> emails, String query, String searchStrategy) {
+        if (emails == null || emails.isEmpty() || query == null || query.trim().isEmpty()) {
+            return emails;
+        }
+
+        return searchManager.search(emails, query, searchStrategy);
+    }
+
+    // ========== LEGACY METHODS FOR BACKWARD COMPATIBILITY ==========
+    // These methods are kept for existing code that might still use them
 
     private Set<Mail> filterBySender(Set<Mail> emails, String sender) {
         String senderLower = sender.toLowerCase();

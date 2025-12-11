@@ -11,13 +11,10 @@ import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
-public class InboxService {
+public class TrashService {
 
     @Autowired
     private FileAccessLayer fileAccessLayer;
@@ -26,10 +23,10 @@ public class InboxService {
     private InboxSearchService searchService;
 
     /**
-     * Get inbox emails with pagination and sorting (original method)
+     * Get trash emails with pagination and sorting
      */
-    public InboxResponse getInboxEmails(String email, int page, int size, String sortType) {
-        List<Mail> allMails = fileAccessLayer.loadMails(email, "Inbox");
+    public InboxResponse getTrashEmails(String email, int page, int size, String sortType) {
+        List<Mail> allMails = fileAccessLayer.loadMails(email, "Trash");
 
         ISortStrategy sortStrategy;
         if ("PRIORITY".equalsIgnoreCase(sortType)) {
@@ -46,19 +43,19 @@ public class InboxService {
     }
 
     /**
-     * Get all inbox emails as Set (for filtering)
+     * Get all trash emails as Set (for filtering)
      */
-    public Set<Mail> getUserInboxEmails(String email) {
-        List<Mail> allMails = fileAccessLayer.loadMails(email, "Inbox");
+    public Set<Mail> getUserTrashEmails(String email) {
+        List<Mail> allMails = fileAccessLayer.loadMails(email, "Trash");
         return new HashSet<>(allMails);
     }
 
     /**
-     * Search inbox emails using Search Design Pattern
+     * Search trash emails using Search Design Pattern
      */
-    public InboxResponse searchInbox(String email, String query, int page, int size) {
-        // Get all inbox emails
-        Set<Mail> allMails = getUserInboxEmails(email);
+    public InboxResponse searchTrash(String email, String query, int page, int size) {
+        // Get all trash emails
+        Set<Mail> allMails = getUserTrashEmails(email);
 
         // Apply global search using Search Design Pattern
         Set<Mail> filteredMails = searchService.searchEmails(allMails, query);
@@ -76,11 +73,11 @@ public class InboxService {
     }
 
     /**
-     * Filter inbox emails using Filter Design Pattern
+     * Filter trash emails using Filter Design Pattern
      */
-    public InboxResponse filterInbox(String email, EmailFilterDTO filters, int page, int size) {
-        // Get all inbox emails
-        Set<Mail> allMails = getUserInboxEmails(email);
+    public InboxResponse filterTrash(String email, EmailFilterDTO filters, int page, int size) {
+        // Get all trash emails
+        Set<Mail> allMails = getUserTrashEmails(email);
 
         // Apply filters using Filter Design Pattern
         Set<Mail> filteredMails = searchService.filterEmails(allMails, filters);

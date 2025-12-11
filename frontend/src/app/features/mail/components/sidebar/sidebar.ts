@@ -19,11 +19,12 @@ export class Sidebar {
 
   menuItems = [
     { label: 'Inbox', icon: 'fa-inbox', route: '/mail/inbox' },
-    { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority-inbox'}, // Added priority based on requirements
+    { label: 'Priority Inbox', icon: 'fa-star', route: '/mail/priority-inbox'},
     { label: 'Sent', icon: 'fa-paper-plane', route: '/mail/sent' },
     { label: 'Drafts', icon: 'fa-file', route: '/mail/drafts' },
+
     { label: 'Trash', icon: 'fa-trash', route: '/mail/trash'},
-    { label: 'Contacts', icon: 'fa-envelope', route: '/mail/contacts'},
+    { label: 'Contacts', icon: 'fa-address-book', route: '/mail/contacts'},
   ];
 
   currentUser = {
