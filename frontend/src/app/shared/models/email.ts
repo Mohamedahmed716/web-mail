@@ -8,7 +8,7 @@ export interface Email {
   body: string;
   timestamp: Date;
   priority: number;      // 1-5(5 = Urgent)
-  attachments: string[];
+  attachments: File[];
   folder: string;
   attachmentNames?: string[];
 }

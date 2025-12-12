@@ -146,18 +146,26 @@ public class FileAccessLayer {
 
     // Helper for distribution
     private void distributeToReceivers(Mail mail) throws IOException {
-        // Temporarily set folder to Inbox so receivers see it correctly
         String originalFolder = mail.getFolder();
+        String sender = mail.getSender(); 
+
         mail.setFolder(Constants.INBOX);
 
         for (String receiver : mail.getReceivers()) {
             File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
-            if (receiverFolder.exists()) {
-                File receiverFile = new File(receiverFolder, mail.getId() + ".json");
-                JsonMapper.getInstance().writeValue(receiverFile, mail);
+
+
+            if (!receiverFolder.exists()) {
+                receiverFolder.mkdirs();
             }
+
+            File receiverFile = new File(receiverFolder, mail.getId() + ".json");
+            JsonMapper.getInstance().writeValue(receiverFile, mail);
+
+
+            copyAttachments(sender, receiver, mail.getAttachmentNames());
         }
-        // Restore folder so the sender object isn't mutated unexpectedly
+
         mail.setFolder(originalFolder);
     }
 
@@ -184,6 +192,36 @@ public class FileAccessLayer {
         }
     }
 
+    //copy attachments from sender to receiver
+    private void copyAttachments(String senderEmail, String receiverEmail, List<String> attachmentNames) {
+        if (attachmentNames == null || attachmentNames.isEmpty()) return;
+
+        File senderAttachDir = new File(Constants.DATA_DIR + "/" + senderEmail + "/Attachments");
+        File receiverAttachDir = new File(Constants.DATA_DIR + "/" + receiverEmail + "/Attachments");
+
+        if (!receiverAttachDir.exists()) {
+            receiverAttachDir.mkdirs();
+        }
+
+        for (String fileName : attachmentNames) {
+            if (fileName.startsWith("http") || fileName.startsWith("https")) continue;
+
+            File sourceFile = new File(senderAttachDir, fileName);
+            File destFile = new File(receiverAttachDir, fileName);
+
+            if (sourceFile.exists()) {
+                try {
+                    java.nio.file.Files.copy(
+                            sourceFile.toPath(),
+                            destFile.toPath(),
+                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     public void saveMailToFolder(String userEmail, String folderName, Mail mail) {
         try {
             File folder = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName);

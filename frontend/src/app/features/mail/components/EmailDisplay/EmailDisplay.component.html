@@ -39,14 +39,14 @@
       <p>{{ mail.body }}</p>
     </div>
 
-    @if (mail.attachments && mail.attachments.length > 0) {
+    @if (mail.attachmentNames && mail.attachmentNames.length > 0) {
     <div class="attachments-section">
       <h3>
-        📎 Attachments ({{ mail.attachments.length }})
+        📎 Attachments ({{ mail.attachmentNames.length}})
       </h3>
 
       <div class="attachments-grid">
-        @for (file of mail.attachments; track $index) {
+        @for (file of mail.attachmentNames; track $index) {
 
         @if (getFileType(file) === 'image') {
         <div class="attachment-card image-type">
