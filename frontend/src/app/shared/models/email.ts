@@ -1,3 +1,5 @@
+import {User} from './user';
+
 export interface Email {
   id : string;
   sender: string;
@@ -5,8 +7,8 @@ export interface Email {
   subject: string;
   body: string;
   timestamp: Date;
-  priority: number;      // 1-5 (5 = highest)
-  attachments: File[];
-  attachmentNames?: string[];
+  priority: number;      // 1-5(5 = Urgent)
+  attachments: string[];
   folder: string;
+  attachmentNames?: string[];
 }

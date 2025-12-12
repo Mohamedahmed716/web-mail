@@ -64,9 +64,8 @@ export class Inbox implements OnInit  {
   selectEmail(email: Email): void {
     this.selectedEmail = email;
   }
-// دالة بتتحسب لحظياً كل ما ننادي عليها
 get totalPages(): number {
-  if (this.totalEmails === 0) return 1; // عشان لو مفيش إيميلات يبقى عندنا صفحة 1 فاضية
+  if (this.totalEmails === 0) return 1;
   return Math.ceil(this.totalEmails / this.pageSize);
 }
 }

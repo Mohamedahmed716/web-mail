@@ -17,28 +17,23 @@ public class InboxController {
 
     @GetMapping
     public ResponseEntity<?> getEmails(
-            // 1. رجعنا نعتمد على التوكن بس (زي الكود القديم بتاعك بالظبط)
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "DATE") String sort
     ) {
 
-        // 2. التحقق من التوكن (زي ما كان)
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: Invalid or missing token");
         }
 
-        // 3. بنجيب الإيميل من التوكن (عشان منطلبوش من الفرونت)
         String email = UserContext.getUser(token);
 
         if (email == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found for this token");
         }
 
-        // 4. التغيير الوحيد هنا:
-        // السرفيس دلوقتي بترجع (InboxResponse) مش (List)
-        // فاستخدمنا var عشان ياخد أي حاجة ترجع من السرفيس ويعديها للفرونت
+
         var response = inboxService.getInboxEmails(email, page, size, sort);
 
         return ResponseEntity.ok(response);
