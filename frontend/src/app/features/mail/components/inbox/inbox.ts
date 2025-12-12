@@ -3,7 +3,7 @@ import { InboxService } from '../../../../services/inbox.service';
 import { Email } from '../../../../shared/models/email';
 import { CommonModule } from '@angular/common';
 import { EmailDisplayComponent } from "../EmailDisplay/EmailDisplay.component";
-
+import { TrashService } from '../../../../services/trash.service';
 @Component({
   selector: 'app-inbox',
   imports: [CommonModule, EmailDisplayComponent],
@@ -12,7 +12,7 @@ import { EmailDisplayComponent } from "../EmailDisplay/EmailDisplay.component";
 
 })
 export class Inbox implements OnInit  {
-
+  selectedEmailIds: string[] = [];
   emails: Email[] = [];
   currentPage: number = 1;
   pageSize: number = 10;
@@ -22,7 +22,9 @@ export class Inbox implements OnInit  {
   totalEmails: number=0;
 
 
-  constructor(private inboxService: InboxService) { }
+  constructor(private inboxService: InboxService,
+        private trashService: TrashService,
+  ) { }
 
 
 
@@ -69,4 +71,35 @@ get totalPages(): number {
   if (this.totalEmails === 0) return 1; // عشان لو مفيش إيميلات يبقى عندنا صفحة 1 فاضية
   return Math.ceil(this.totalEmails / this.pageSize);
 }
+toggleSelectEmail(emailId: string, event: Event) {
+  event.stopPropagation();
+
+  if (this.selectedEmailIds.includes(emailId)) {
+    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
+  } else {
+    this.selectedEmailIds.push(emailId);
+  }
+}
+
+deleteSelected() {
+  if (this.selectedEmailIds.length === 0) return;
+
+  const folder = "inbox";
+
+  this.selectedEmailIds.forEach(id => {
+    this.trashService.moveToTrash(id, folder).subscribe(() => {
+      this.loadEmails();
+    });
+  });
+
+  this.selectedEmailIds = [];
+}
+toggleSelectAll(event: any) {
+  if (event.target.checked) {
+    this.selectedEmailIds = this.emails.map(e => e.id);
+  } else {
+    this.selectedEmailIds = [];
+  }
+}
+
 }

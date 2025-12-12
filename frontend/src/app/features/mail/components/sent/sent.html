@@ -1,40 +1,60 @@
 <div class="page-container split-layout">
 
+  <!-- ======================= LIST PANE ======================== -->
   <div class="list-pane" [class.shrunk]="selectedEmail">
 
+    <!-- Toolbar -->
     <div class="toolbar">
       <div class="left-tools">
         <h2 class="page-title">Sent</h2>
+
         <div class="search-wrapper" *ngIf="!selectedEmail">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" class="search-input" placeholder="Search...">
         </div>
       </div>
+
       <div class="right-tools">
         <button class="icon-btn" title="Filter"><i class="fa-solid fa-filter"></i></button>
         <button class="icon-btn" (click)="loadSentMails()"><i class="fa-solid fa-rotate-right"></i></button>
       </div>
     </div>
 
-    <div class="action-bar">
+    <!-- ACTION BAR -->
+    <div class="action-bar" *ngIf="!selectedEmail">
       <div class="checkbox-wrapper">
-        <input type="checkbox" id="selectAllSent">
-        <label for="selectAllSent" *ngIf="!selectedEmail">Select All</label>
+        <input type="checkbox" id="selectAllSent" (change)="toggleSelectAll($event)">
+        <label for="selectAllSent">Select All</label>
       </div>
-      <div class="actions" *ngIf="!selectedEmail">
-        <button class="text-btn danger"><i class="fa-regular fa-trash-can"></i></button>
+
+      <div class="actions">
+        <button class="text-btn danger" (click)="deleteSelected()">
+          <i class="fa-regular fa-trash-can"></i> Delete
+        </button>
       </div>
     </div>
 
+    <!-- EMAIL LIST -->
     <div class="email-list">
-      <div class="email-item"
-           *ngFor="let email of sentEmails"
-           (click)="openEmail(email)"
-           [class.active-item]="selectedEmail?.id === email.id"> <div class="item-checkbox" (click)="stopProp($event)">
-        <input type="checkbox">
-      </div>
+      <div
+        class="email-item"
+        *ngFor="let email of sentEmails"
+        (click)="openEmail(email)"
+        [class.active-item]="selectedEmail?.id === email.id"
+      >
 
+        <!-- Checkbox -->
+        <div class="item-checkbox" (click)="stopProp($event)">
+          <input
+            type="checkbox"
+            [checked]="selectedEmailIds.includes(email.id)"
+            (change)="toggleSelectEmail(email.id, $event)"
+          >
+        </div>
+
+        <!-- Email Content -->
         <div class="item-content">
+
           <div class="sender-info">
             <span class="sender-name">To: {{ getReceiversList(email.receivers) }}</span>
           </div>
@@ -44,30 +64,37 @@
               {{ email.subject }}
               <i *ngIf="email.attachmentNames?.length" class="fa-solid fa-paperclip clip-icon"></i>
             </div>
-            <div class="item-body" *ngIf="!selectedEmail">{{ email.body }}</div>
+
+            <div class="item-body" *ngIf="!selectedEmail">
+              {{ email.body }}
+            </div>
           </div>
 
           <div class="meta-info">
             <span class="item-date">{{ email.timestamp | date:'MMM d' }}</span>
 
             <span class="priority-badge" [ngClass]="getPriorityLabel(email.priority).toLowerCase()">
-      {{ getPriorityLabel(email.priority) }}
-    </span>
+              {{ getPriorityLabel(email.priority) }}
+            </span>
           </div>
 
         </div>
       </div>
     </div>
 
-    <div class="pagination-footer">
-      <span *ngIf="!selectedEmail">1-{{ sentEmails.length }}</span>
+    <!-- Pagination -->
+    <div class="pagination-footer" *ngIf="!selectedEmail">
+      <span>1-{{ sentEmails.length }}</span>
+
       <div class="right-tools" style="gap: 5px;">
         <button class="icon-btn" disabled><</button>
         <button class="icon-btn">></button>
       </div>
     </div>
+
   </div>
 
+  <!-- ======================= DETAIL PANE ======================== -->
   <div class="detail-pane" *ngIf="selectedEmail">
 
     <div class="detail-toolbar">
@@ -77,9 +104,12 @@
         </button>
         <span class="dt-subject">{{ selectedEmail.subject }}</span>
       </div>
+
       <div class="dt-right">
         <button class="icon-btn"><i class="fa-solid fa-print"></i></button>
-        <button class="icon-btn"><i class="fa-regular fa-trash-can"></i></button>
+        <button class="icon-btn danger" (click)="deleteSelected()">
+          <i class="fa-regular fa-trash-can"></i>
+        </button>
       </div>
     </div>
 

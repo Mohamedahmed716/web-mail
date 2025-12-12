@@ -1,86 +1,101 @@
 <div class="page-container">
 
-  <div class="toolbar">
-    <div class="left-tools">
-      <h2 class="page-title">Drafts</h2>
+    <div class="toolbar">
+        <div class="left-tools">
+            <h2 class="page-title">Drafts</h2>
 
-      <div class="search-wrapper">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" class="search-input" placeholder="Search drafts...">
-      </div>
-    </div>
-
-    <div class="right-tools">
-      <button class="icon-btn" title="Filter">
-        <i class="fa-solid fa-filter"></i>
-      </button>
-      <button class="icon-btn" title="Refresh" (click)="loadDrafts()">
-        <i class="fa-solid fa-rotate-right"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="action-bar">
-    <div class="checkbox-wrapper">
-      <input type="checkbox" id="selectAllDrafts">
-      <label for="selectAllDrafts">Select All</label>
-    </div>
-
-    <div class="actions">
-      <button class="text-btn danger"><i class="fa-regular fa-trash-can"></i> Delete</button>
-    </div>
-  </div>
-
-  <div class="email-list">
-
-    <div class="email-item" *ngFor="let draft of drafts" (click)="openDraft(draft)">
-
-      <div class="item-checkbox" (click)="stopProp($event)">
-        <input type="checkbox">
-      </div>
-
-      <div class="item-content">
-
-        <div class="sender-info">
-          <span class="sender-name">{{ getReceiversList(draft.receivers) || '(No Recipients)' }}</span>
-          <span class="sub-text">Draft</span>
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search drafts...">
+            </div>
         </div>
 
-        <div class="main-info">
-          <div class="item-subject">
-            <span *ngIf="!draft.subject" style="font-style: italic;">(No Subject)</span>
-            {{ draft.subject }}
-            <i *ngIf="(draft.attachments?.length || 0) > 0 || (draft.attachmentNames?.length || 0) > 0"
-               class="fa-solid fa-paperclip clip-icon"
-               style="font-size: 0.8rem; color: #6b7280;">
-            </i>
-          </div>
-          <div class="item-body">{{ draft.body }}</div>
+        <div class="right-tools">
+            <button class="icon-btn" title="Filter">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+            <button class="icon-btn" title="Refresh" (click)="loadDrafts()">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <div class="checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              id="selectAllDrafts"
+              (change)="toggleSelectAll($event)"
+              [checked]="selectedEmailIds.length > 0 && selectedEmailIds.length === drafts.length">
+            <label for="selectAllDrafts">Select All</label>
         </div>
 
-        <div class="meta-info">
-          <span class="item-date">{{ draft.timestamp | date:'MMM d hh:mm' }}</span>
-          <span class="priority-badge" [ngClass]="getPriorityLabel(draft.priority).toLowerCase()">
-            {{ getPriorityLabel(draft.priority) }}
-          </span>
+        <div class="actions">
+            <button 
+              class="text-btn danger" 
+              (click)="deleteSelected()"
+              [disabled]="selectedEmailIds.length === 0">
+              <i class="fa-regular fa-trash-can"></i> Delete ({{ selectedEmailIds.length }})
+            </button>
+        </div>
+    </div>
+
+    <div class="email-list">
+
+        <div 
+          class="email-item" 
+          *ngFor="let draft of drafts" 
+          (click)="openDraft(draft)">
+
+            <div class="item-checkbox" (click)="stopProp($event)">
+                <input 
+                  type="checkbox"
+                  [checked]="selectedEmailIds.includes(draft.id)"
+                  (change)="toggleSelectEmail(draft.id, $event)">
+            </div>
+
+            <div class="item-content">
+
+                <div class="sender-info">
+                    <span class="sender-name">{{ getReceiversList(draft.receivers) || '(No Recipients)' }}</span>
+                    <span class="sub-text">Draft</span>
+                </div>
+
+                <div class="main-info">
+                    <div class="item-subject">
+                        <span *ngIf="!draft.subject" style="font-style: italic;">(No Subject)</span>
+                        {{ draft.subject }}
+                        <i *ngIf="(draft.attachments?.length || 0) > 0 || (draft.attachmentNames?.length || 0) > 0"
+                               class="fa-solid fa-paperclip clip-icon"
+                               style="font-size: 0.8rem; color: #6b7280;">
+                        </i>
+                    </div>
+                    <div class="item-body">{{ draft.body }}</div>
+                </div>
+
+                <div class="meta-info">
+                    <span class="item-date">{{ draft.timestamp | date:'MMM d hh:mm' }}</span>
+                    <span class="priority-badge" [ngClass]="getPriorityLabel(draft.priority).toLowerCase()">
+                        {{ getPriorityLabel(draft.priority) }}
+                    </span>
+                </div>
+
+            </div>
         </div>
 
-      </div>
+        <div *ngIf="!isLoading && drafts.length === 0" class="empty-state">
+            <i class="fa-regular fa-file"></i>
+            <p>You don't have any drafts.</p>
+        </div>
+
     </div>
 
-    <div *ngIf="!isLoading && drafts.length === 0" class="empty-state">
-      <i class="fa-regular fa-file"></i>
-      <p>You don't have any drafts.</p>
+    <div class="pagination-footer">
+        <span>1-{{ drafts.length }} of {{ drafts.length }}</span>
+        <div class="right-tools" style="gap: 5px;">
+            <button class="icon-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="icon-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
     </div>
-
-  </div>
-
-  <div class="pagination-footer">
-    <span>1-{{ drafts.length }} of {{ drafts.length }}</span>
-    <div class="right-tools" style="gap: 5px;">
-      <button class="icon-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
-      <button class="icon-btn"><i class="fa-solid fa-chevron-right"></i></button>
-    </div>
-  </div>
 
 </div>

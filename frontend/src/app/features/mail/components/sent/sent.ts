@@ -6,6 +6,7 @@ import { Email } from '../../../../shared/models/email';
 import { User } from '../../../../shared/models/user';
 import {HttpHeaders} from '@angular/common/http';
 import {EmailDisplayComponent} from '../EmailDisplay/EmailDisplay.component';
+import { TrashService } from '../../../../services/trash.service';
 
 @Component({
   selector: 'app-sent',
@@ -17,6 +18,7 @@ import {EmailDisplayComponent} from '../EmailDisplay/EmailDisplay.component';
 export class Sent implements OnInit {
 
   sentEmails: Email[] = [];
+  selectedEmailIds: string[] = [];
   isLoading = true;
 
   // 3. Track the selected email (null = List View, Object = Detail View)
@@ -25,7 +27,8 @@ export class Sent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private composeService: ComposeService
+    private composeService: ComposeService,
+    private trashService: TrashService,
   ) {}
 
   ngOnInit() {
@@ -92,4 +95,38 @@ export class Sent implements OnInit {
       default: return 'medium';
     }
   }
+  toggleSelectEmail(emailId: string, event: Event) {
+  event.stopPropagation();
+
+  if (this.selectedEmailIds.includes(emailId)) {
+    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
+  } else {
+    this.selectedEmailIds.push(emailId);
+  }
+}
+
+deleteSelected() {
+  if (this.selectedEmailIds.length === 0) return;
+
+  const folder = "Sent";
+
+  this.selectedEmailIds.forEach(id => {
+    this.trashService.moveToTrash(id, folder).subscribe(() => {
+      this.loadSentMails();
+    });
+  });
+
+  this.selectedEmailIds = [];
+}
+toggleSelectAll(event: any) {
+  if (event.target.checked) {
+    this.selectedEmailIds = this.sentEmails.map(e => e.id);
+  } else {
+    this.selectedEmailIds = [];
+  }
+}
+
+
+
+
 }

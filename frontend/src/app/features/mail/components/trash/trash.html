@@ -1,1 +1,50 @@
-<p>trash works!</p>
+<div class="trash-container">
+
+  <div class="header-tools">
+    <h2>Trash ({{ emails.length }} items)</h2>
+    
+    <div class="action-bar" *ngIf="selectedEmailIds.length > 0">
+      <span>{{ selectedEmailIds.length }} selected</span>
+      
+      <button class="text-btn" (click)="bulkRestoreSelected()">
+        <i class="fa-solid fa-undo"></i> Restore
+      </button>
+
+      <button class="text-btn danger" (click)="bulkDeleteForeverSelected()">
+        <i class="fa-solid fa-eraser"></i> Delete Forever
+      </button>
+    </div>
+
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="selectAllTrash" (change)="toggleSelectAll($event)">
+      <label for="selectAllTrash">Select All</label>
+    </div>
+  </div>
+
+
+  <div *ngFor="let email of emails" class="email-item">
+    
+    <div class="email-select" (click)="$event.stopPropagation()">
+      <input 
+        type="checkbox"
+        [checked]="selectedEmailIds.includes(email.id)"
+        (change)="toggleSelectEmail(email.id, $event)">
+    </div>
+
+    <div (click)="selected = email" class="email-content">
+      <b>{{ email.subject }}</b> - {{ email.sender }}
+    </div>
+
+    <div class="individual-actions" *ngIf="selectedEmailIds.length === 0">
+      <button (click)="restore(email)">Restore</button>
+      <button class="danger" (click)="deleteForever(email)">Delete Forever</button>
+    </div>
+  </div>
+
+  <app-EmailDisplay
+    *ngIf="selected"
+    [mail]="selected"
+    (close)="selected = null">
+  </app-EmailDisplay>
+
+</div>

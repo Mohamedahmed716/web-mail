@@ -5,6 +5,7 @@ import { Email } from '../../../../shared/models/email';
 import { User } from '../../../../shared/models/user';
 import { ApiService } from '../../../../core/services/api.service';
 import {HttpHeaders, HttpParams} from '@angular/common/http';
+import { TrashService } from '../../../../services/trash.service';
 
 @Component({
   selector: 'app-drafts',
@@ -15,9 +16,12 @@ import {HttpHeaders, HttpParams} from '@angular/common/http';
 })
 export class Drafts implements OnInit {
 
+  selectedEmailIds: string[] = [];
   drafts: Email[] = [];
   isLoading = true;
-  constructor(private composeService: ComposeService, private apiService: ApiService) {}
+  constructor(private composeService: ComposeService, private apiService: ApiService,
+    private trashService: TrashService,
+  ) {}
 
 
   ngOnInit() {
@@ -81,4 +85,34 @@ export class Drafts implements OnInit {
       default: return 'medium';
     }
   }
+    toggleSelectEmail(emailId: string, event: Event) {
+  event.stopPropagation();
+
+  if (this.selectedEmailIds.includes(emailId)) {
+    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
+  } else {
+    this.selectedEmailIds.push(emailId);
+  }
+}
+
+deleteSelected() {
+  if (this.selectedEmailIds.length === 0) return;
+
+  const folder = "drafts";
+
+  this.selectedEmailIds.forEach(id => {
+    this.trashService.moveToTrash(id, folder).subscribe(() => {
+      this.loadDrafts();
+    });
+  });
+
+  this.selectedEmailIds = [];
+}
+toggleSelectAll(event: any) {
+  if (event.target.checked) {
+    this.selectedEmailIds = this.drafts.map(e => e.id);
+  } else {
+    this.selectedEmailIds = [];
+  }
+}
 }

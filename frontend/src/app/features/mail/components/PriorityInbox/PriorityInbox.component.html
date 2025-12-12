@@ -1,33 +1,44 @@
 <div class="inbox-container">
   
-  <!-- Left: Email List -->
   <div class="inbox-list-section">
     <div class="toolbar">
       <div class="left-tools">
-        <h2 class="page-title">PriorityInbox <span class="count-badge">{{ emails.length }}</span></h2>
+        <h2 class="page-title">Priority Inbox <span class="count-badge">{{ emails.length }}</span></h2>
       </div>
       <div class="right-tools">
         <button class="icon-btn"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
         <button class="icon-btn"><i class="fa-solid fa-filter"></i></button>
-        <button class="icon-btn"><i class="fa-solid fa-rotate-right"></i></button>
+        <button class="icon-btn" (click)="loadEmails()"><i class="fa-solid fa-rotate-right"></i></button>
       </div>
     </div>
 
     <div class="action-bar">
       <div class="checkbox-wrapper">
-        <input type="checkbox" id="selectAll">
+        <input 
+          type="checkbox" 
+          id="selectAll"
+          (change)="toggleSelectAll($event)"
+          [checked]="selectedEmailIds.length > 0 && selectedEmailIds.length === emails.length">
         <label for="selectAll">Select all</label>
       </div>
+      
       <div class="actions">
-        <button class="text-btn">Mark Read</button>
-        <button class="text-btn">Move</button>
-        <button class="text-btn danger">Delete</button>
+        <button class="text-btn" [disabled]="selectedEmailIds.length === 0">Mark Read</button>
+        
+        <button class="text-btn" [disabled]="selectedEmailIds.length === 0">Move</button>
+        
+        <button 
+          class="text-btn danger" 
+          (click)="deleteSelected()"
+          [disabled]="selectedEmailIds.length === 0">
+          Delete ({{ selectedEmailIds.length }})
+        </button>
       </div>
     </div>
 
     @if (isLoading) {
       <div class="loading-state">
-        Loading emails...
+        Loading priority emails...
       </div>
     } 
     @else if (errorMessage) {
@@ -40,12 +51,17 @@
       
       @for (email of emails; track email) {
         
-        <div class="email-item"
-        (click)="selectEmail(email)" [class.active]="selectedEmail===email">
+        <div 
+          class="email-item"
+          (click)="selectEmail(email)" 
+          [class.active]="selectedEmail===email">
 
           
           <div class="email-select" (click)="$event.stopPropagation()">
-            <input type="checkbox">
+            <input 
+              type="checkbox"
+              [checked]="selectedEmailIds.includes(email.id)"
+              (change)="toggleSelectEmail(email.id, $event)">
           </div>
 
           <div class="email-content">
@@ -56,7 +72,7 @@
              <span class="email-priority">
                 @switch (email.priority) {
                   @case (4) {
-                    <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
+                    <i class="fa-solid fa-exclamation-circle urgent-priority" title="Critical Priority"></i>
                   }
                   @case (3) {
                     <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
@@ -89,7 +105,7 @@
 
       } @empty {
         <div class="empty-state">
-          No emails found.
+          No important emails found.
         </div>
       }
 
@@ -100,14 +116,13 @@
       <button (click)="changePage(-1)" [disabled]="currentPage === 1">
         <i class="fa-solid fa-chevron-left"></i> Prev
       </button>
-      <span>{{ currentPage }} of  {{totalPages}}</span>
+      <span>{{ currentPage }} of  {{totalPages}}</span>
       <button (click)="changePage(1)">
         Next <i class="fa-solid fa-chevron-right"></i>
       </button>
     </div>
   </div>
 
-  <!-- Right: Email Display -->
   @if (selectedEmail) {
     <div class="email-display-pane">
       <app-EmailDisplay [mail]="selectedEmail" [type]="'inbox'"></app-EmailDisplay>

@@ -3,7 +3,7 @@ import { InboxService } from '../../../../services/inbox.service';
 import { Email } from '../../../../shared/models/email';
 import { EmailDisplayComponent } from "../EmailDisplay/EmailDisplay.component";
 import { CommonModule } from '@angular/common';
-
+import { TrashService } from '../../../../services/trash.service';
 @Component({
   selector: 'app-PriorityInbox',
   templateUrl: './PriorityInbox.component.html',
@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PriorityInboxComponent implements OnInit {
   emails: Email[] = [];
+  selectedEmailIds: string[] = [];
   currentPage: number = 1;
   pageSize: number = 10;
   isLoading: boolean = false;
@@ -19,7 +20,9 @@ export class PriorityInboxComponent implements OnInit {
   selectedEmail: Email | null = null;
   totalEmails: number = 0;
 
-  constructor(private inboxService: InboxService) {}
+  constructor(private inboxService: InboxService,
+    private trashService: TrashService,
+  ) {}
 
   ngOnInit(): void {
     this.loadEmails();
@@ -59,4 +62,36 @@ export class PriorityInboxComponent implements OnInit {
     if (this.totalEmails === 0) return 1;
     return Math.ceil(this.totalEmails / this.pageSize);
   }
+  toggleSelectEmail(emailId: string, event: Event) {
+  event.stopPropagation();
+
+  if (this.selectedEmailIds.includes(emailId)) {
+    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
+  } else {
+    this.selectedEmailIds.push(emailId);
+  }
 }
+
+deleteSelected() {
+  if (this.selectedEmailIds.length === 0) return;
+
+  const folder = "inbox";
+
+  this.selectedEmailIds.forEach(id => {
+    this.trashService.moveToTrash(id, folder).subscribe(() => {
+      this.loadEmails();
+    });
+  });
+
+  this.selectedEmailIds = [];
+}
+toggleSelectAll(event: any) {
+  if (event.target.checked) {
+    this.selectedEmailIds = this.emails.map(e => e.id);
+  } else {
+    this.selectedEmailIds = [];
+  }
+}
+
+}
+
