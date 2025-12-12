@@ -72,6 +72,21 @@ public class ContactController {
     }
 
     @GetMapping("/search")
+    public ResponseEntity<List<ContactDTO>> searchContacts(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String query,
+            @RequestParam(defaultValue = "default") String searchType) {
+
+        if (!UserContext.isValid(token)) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String userEmail = UserContext.getUser(token);
+        List<ContactDTO> results = contactService.searchContacts(userEmail, query, searchType);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/search/name")
     public ResponseEntity<List<ContactDTO>> searchByName(
             @RequestHeader("Authorization") String token,
             @RequestParam String name) {
@@ -82,6 +97,20 @@ public class ContactController {
 
         String userEmail = UserContext.getUser(token);
         List<ContactDTO> results = contactService.searchContactByName(userEmail, name);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/search/email")
+    public ResponseEntity<List<ContactDTO>> searchByEmail(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String email) {
+
+        if (!UserContext.isValid(token)) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String userEmail = UserContext.getUser(token);
+        List<ContactDTO> results = contactService.searchContactByEmail(userEmail, email);
         return ResponseEntity.ok(results);
     }
 

@@ -80,4 +80,12 @@ public class ContactFileAccess {
                         c.getName().toLowerCase().contains(searchTerm.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
+    public List<Contact> searchByEmail(String userEmail, String searchTerm) {
+        return loadUserContacts(userEmail).stream()
+                .filter(c -> c.getEmails() != null &&
+                        c.getEmails().stream().anyMatch(email -> 
+                            email.toLowerCase().contains(searchTerm.toLowerCase())))
+                .collect(Collectors.toList());
+    }
 }
