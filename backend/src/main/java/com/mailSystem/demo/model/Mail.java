@@ -22,4 +22,6 @@ public class Mail {
     private Integer priority;      // 1-5 (5 = highest)
     private List<String> attachmentNames;
     private String folder;         // Inbox, Sent, Trash, etc.
+    private Date trashEntryDate;
+    private String originalFolder;
 }
