@@ -173,4 +173,28 @@ public class FileAccessLayer {
 
         file.transferTo(dest);
     }
+    public Mail getMailById(String userEmail, String folderName, String mailId) {
+        File file = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName + "/" + mailId + ".json");
+        if (!file.exists()) return null;
+
+        try {
+            return JsonMapper.getInstance().readValue(file, Mail.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void saveMailToFolder(String userEmail, String folderName, Mail mail) {
+        try {
+            File folder = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName);
+            if (!folder.exists()) folder.mkdirs();
+
+            File file = new File(folder, mail.getId() + ".json");
+            JsonMapper.getInstance().writeValue(file, mail);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

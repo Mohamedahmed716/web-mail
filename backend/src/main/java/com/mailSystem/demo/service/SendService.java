@@ -1,23 +1,29 @@
 package com.mailSystem.demo.service;
 
 import com.mailSystem.demo.dal.FileAccessLayer;
+import com.mailSystem.demo.dto.EmailFilterDTO;
+import com.mailSystem.demo.dto.InboxResponse;
 import com.mailSystem.demo.model.Mail;
+import com.mailSystem.demo.service.sort.ISortStrategy;
+import com.mailSystem.demo.service.sort.SortByDate;
+import com.mailSystem.demo.service.sort.SortByPriority;
 import com.mailSystem.demo.utils.Constants;
+import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SendService {
 
     @Autowired
     private FileAccessLayer fileAccessLayer;
+
+    @Autowired
+    private InboxSearchService searchService;
 
     public void sendEmail(String sender, List<String> receivers, String subject, String body, int priority, List<MultipartFile> attachments, String id) throws IOException {
 
@@ -59,7 +65,82 @@ public class SendService {
         }
     }
 
+    /**
+     * Load sent emails with pagination and sorting (original method)
+     */
+    public InboxResponse loadSent(String userEmail, int page, int size, String sortType) {
+        List<Mail> allMails = fileAccessLayer.loadMails(userEmail, Constants.SENT);
+
+        ISortStrategy sortStrategy;
+        if ("PRIORITY".equalsIgnoreCase(sortType)) {
+            sortStrategy = new SortByPriority();
+        } else {
+            sortStrategy = new SortByDate();
+        }
+        sortStrategy.sort(allMails);
+
+        int total = allMails.size();
+        List<Mail> pagedList = Pagination.slice(allMails, page, size);
+
+        return new InboxResponse(pagedList, total);
+    }
+
+    /**
+     * Load sent emails (for backward compatibility)
+     */
     public List<Mail> loadSent(String userEmail) {
         return fileAccessLayer.loadMails(userEmail, Constants.SENT);
+    }
+
+    /**
+     * Get all sent emails as Set (for filtering)
+     */
+    public Set<Mail> getUserSentEmails(String email) {
+        List<Mail> allMails = fileAccessLayer.loadMails(email, Constants.SENT);
+        return new HashSet<>(allMails);
+    }
+
+    /**
+     * Search sent emails using Search Design Pattern
+     */
+    public InboxResponse searchSent(String email, String query, int page, int size) {
+        // Get all sent emails
+        Set<Mail> allMails = getUserSentEmails(email);
+
+        // Apply global search using Search Design Pattern
+        Set<Mail> filteredMails = searchService.searchEmails(allMails, query);
+
+        // Convert to list and sort by date
+        List<Mail> mailList = new ArrayList<>(filteredMails);
+        ISortStrategy sortStrategy = new SortByDate();
+        sortStrategy.sort(mailList);
+
+        // Paginate
+        int total = mailList.size();
+        List<Mail> pagedList = Pagination.slice(mailList, page, size);
+
+        return new InboxResponse(pagedList, total);
+    }
+
+    /**
+     * Filter sent emails using Filter Design Pattern
+     */
+    public InboxResponse filterSent(String email, EmailFilterDTO filters, int page, int size) {
+        // Get all sent emails
+        Set<Mail> allMails = getUserSentEmails(email);
+
+        // Apply filters using Filter Design Pattern
+        Set<Mail> filteredMails = searchService.filterEmails(allMails, filters);
+
+        // Convert to list and sort by date
+        List<Mail> mailList = new ArrayList<>(filteredMails);
+        ISortStrategy sortStrategy = new SortByDate();
+        sortStrategy.sort(mailList);
+
+        // Paginate
+        int total = mailList.size();
+        List<Mail> pagedList = Pagination.slice(mailList, page, size);
+
+        return new InboxResponse(pagedList, total);
     }
 }

@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class InboxService {
-  private baseUrl = 'http://localhost:8080/api/inbox';
+export class SentService {
+  private baseUrl = 'http://localhost:8080/api/send';
 
   constructor(private http: HttpClient) { }
 
@@ -16,9 +16,9 @@ export class InboxService {
   }
 
   /**
-   * Get inbox emails with pagination
+   * Get sent emails with pagination (new endpoint)
    */
-  getInboxEmails(page: number, pageSize: number, sortBy: string): Observable<any> {
+  getSentEmails(page: number, pageSize: number, sortBy: string): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString())
@@ -31,9 +31,18 @@ export class InboxService {
   }
 
   /**
-   * Simple search in inbox
+   * Load sent emails (backward compatibility)
    */
-  searchInbox(query: string, page: number = 1, pageSize: number = 10): Observable<any> {
+  loadSent(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/loadSent`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  /**
+   * Simple search in sent emails
+   */
+  searchSent(query: string, page: number = 1, pageSize: number = 10): Observable<any> {
     const params = new HttpParams()
       .set('query', query)
       .set('page', page.toString())
@@ -48,7 +57,7 @@ export class InboxService {
   /**
    * Advanced filter with multiple criteria
    */
-  filterInbox(filters: any, page: number = 1, pageSize: number = 10): Observable<any> {
+  filterSent(filters: any, page: number = 1, pageSize: number = 10): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());

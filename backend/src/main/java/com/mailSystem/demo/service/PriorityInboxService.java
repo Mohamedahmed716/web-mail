@@ -11,13 +11,11 @@ import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class InboxService {
+public class PriorityInboxService {
 
     @Autowired
     private FileAccessLayer fileAccessLayer;
@@ -26,17 +24,14 @@ public class InboxService {
     private InboxSearchService searchService;
 
     /**
-     * Get inbox emails with pagination and sorting (original method)
+     * Get priority inbox emails with pagination and sorting
+     * Priority inbox shows the same emails as inbox but sorted by priority
      */
-    public InboxResponse getInboxEmails(String email, int page, int size, String sortType) {
+    public InboxResponse getPriorityInboxEmails(String email, int page, int size, String sortType) {
         List<Mail> allMails = fileAccessLayer.loadMails(email, "Inbox");
 
-        ISortStrategy sortStrategy;
-        if ("PRIORITY".equalsIgnoreCase(sortType)) {
-            sortStrategy = new SortByPriority();
-        } else {
-            sortStrategy = new SortByDate();
-        }
+        // Always sort by priority for priority inbox, regardless of sortType parameter
+        ISortStrategy sortStrategy = new SortByPriority();
         sortStrategy.sort(allMails);
 
         int total = allMails.size();
@@ -46,26 +41,27 @@ public class InboxService {
     }
 
     /**
-     * Get all inbox emails as Set (for filtering)
+     * Get all priority inbox emails as Set (for filtering)
+     * Same emails as inbox, just for priority-focused view
      */
-    public Set<Mail> getUserInboxEmails(String email) {
+    public Set<Mail> getUserPriorityInboxEmails(String email) {
         List<Mail> allMails = fileAccessLayer.loadMails(email, "Inbox");
         return new HashSet<>(allMails);
     }
 
     /**
-     * Search inbox emails using Search Design Pattern
+     * Search priority inbox emails using Search Design Pattern
      */
-    public InboxResponse searchInbox(String email, String query, int page, int size) {
-        // Get all inbox emails
-        Set<Mail> allMails = getUserInboxEmails(email);
+    public InboxResponse searchPriorityInbox(String email, String query, int page, int size) {
+        // Get all priority inbox emails
+        Set<Mail> allMails = getUserPriorityInboxEmails(email);
 
         // Apply global search using Search Design Pattern
         Set<Mail> filteredMails = searchService.searchEmails(allMails, query);
 
-        // Convert to list and sort by date
+        // Convert to list and sort by priority
         List<Mail> mailList = new ArrayList<>(filteredMails);
-        ISortStrategy sortStrategy = new SortByDate();
+        ISortStrategy sortStrategy = new SortByPriority();
         sortStrategy.sort(mailList);
 
         // Paginate
@@ -76,18 +72,18 @@ public class InboxService {
     }
 
     /**
-     * Filter inbox emails using Filter Design Pattern
+     * Filter priority inbox emails using Filter Design Pattern
      */
-    public InboxResponse filterInbox(String email, EmailFilterDTO filters, int page, int size) {
-        // Get all inbox emails
-        Set<Mail> allMails = getUserInboxEmails(email);
+    public InboxResponse filterPriorityInbox(String email, EmailFilterDTO filters, int page, int size) {
+        // Get all priority inbox emails
+        Set<Mail> allMails = getUserPriorityInboxEmails(email);
 
         // Apply filters using Filter Design Pattern
         Set<Mail> filteredMails = searchService.filterEmails(allMails, filters);
 
-        // Convert to list and sort by date
+        // Convert to list and sort by priority
         List<Mail> mailList = new ArrayList<>(filteredMails);
-        ISortStrategy sortStrategy = new SortByDate();
+        ISortStrategy sortStrategy = new SortByPriority();
         sortStrategy.sort(mailList);
 
         // Paginate

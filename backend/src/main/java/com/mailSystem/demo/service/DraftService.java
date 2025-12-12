@@ -1,23 +1,29 @@
 package com.mailSystem.demo.service;
 
 import com.mailSystem.demo.dal.FileAccessLayer;
+import com.mailSystem.demo.dto.EmailFilterDTO;
+import com.mailSystem.demo.dto.InboxResponse;
 import com.mailSystem.demo.model.Mail;
+import com.mailSystem.demo.service.sort.ISortStrategy;
+import com.mailSystem.demo.service.sort.SortByDate;
+import com.mailSystem.demo.service.sort.SortByPriority;
 import com.mailSystem.demo.utils.Constants;
+import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class DraftService {
 
     @Autowired
     private FileAccessLayer fileAccessLayer;
+
+    @Autowired
+    private InboxSearchService searchService;
 
     public void saveDraft(String sender, List<String> receivers, String subject, String body, int priority, List<MultipartFile> attachments, String id) throws IOException {
         if(receivers.isEmpty() && subject.isEmpty() && body.isEmpty() && attachments == null) {
@@ -58,6 +64,78 @@ public class DraftService {
 
     public boolean deleteDraft(String userEmail, String id) {
         return fileAccessLayer.deleteMail(userEmail, Constants.DRAFTS, id);
+    }
+
+    /**
+     * Get draft emails with pagination and sorting (new method)
+     */
+    public InboxResponse getDraftEmails(String email, int page, int size, String sortType) {
+        List<Mail> allMails = fileAccessLayer.loadMails(email, Constants.DRAFTS);
+
+        ISortStrategy sortStrategy;
+        if ("PRIORITY".equalsIgnoreCase(sortType)) {
+            sortStrategy = new SortByPriority();
+        } else {
+            sortStrategy = new SortByDate();
+        }
+        sortStrategy.sort(allMails);
+
+        int total = allMails.size();
+        List<Mail> pagedList = Pagination.slice(allMails, page, size);
+
+        return new InboxResponse(pagedList, total);
+    }
+
+    /**
+     * Get all draft emails as Set (for filtering)
+     */
+    public Set<Mail> getUserDraftEmails(String email) {
+        List<Mail> allMails = fileAccessLayer.loadMails(email, Constants.DRAFTS);
+        return new HashSet<>(allMails);
+    }
+
+    /**
+     * Search draft emails using Search Design Pattern
+     */
+    public InboxResponse searchDrafts(String email, String query, int page, int size) {
+        // Get all draft emails
+        Set<Mail> allMails = getUserDraftEmails(email);
+
+        // Apply global search using Search Design Pattern
+        Set<Mail> filteredMails = searchService.searchEmails(allMails, query);
+
+        // Convert to list and sort by date
+        List<Mail> mailList = new ArrayList<>(filteredMails);
+        ISortStrategy sortStrategy = new SortByDate();
+        sortStrategy.sort(mailList);
+
+        // Paginate
+        int total = mailList.size();
+        List<Mail> pagedList = Pagination.slice(mailList, page, size);
+
+        return new InboxResponse(pagedList, total);
+    }
+
+    /**
+     * Filter draft emails using Filter Design Pattern
+     */
+    public InboxResponse filterDrafts(String email, EmailFilterDTO filters, int page, int size) {
+        // Get all draft emails
+        Set<Mail> allMails = getUserDraftEmails(email);
+
+        // Apply filters using Filter Design Pattern
+        Set<Mail> filteredMails = searchService.filterEmails(allMails, filters);
+
+        // Convert to list and sort by date
+        List<Mail> mailList = new ArrayList<>(filteredMails);
+        ISortStrategy sortStrategy = new SortByDate();
+        sortStrategy.sort(mailList);
+
+        // Paginate
+        int total = mailList.size();
+        List<Mail> pagedList = Pagination.slice(mailList, page, size);
+
+        return new InboxResponse(pagedList, total);
     }
 
     public List<Mail> loadDrafts(String userEmail) {

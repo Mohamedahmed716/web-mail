@@ -1,117 +1,185 @@
 <div class="inbox-container">
-  
-  <!-- Left: Email List -->
-  <div class="inbox-list-section">
-    <div class="toolbar">
-      <div class="left-tools">
-        <h2 class="page-title">Inbox <span class="count-badge">{{ emails.length }}</span></h2>
-      </div>
-      <div class="right-tools">
-        <button class="icon-btn"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
-        <button class="icon-btn"><i class="fa-solid fa-filter"></i></button>
-        <button class="icon-btn"><i class="fa-solid fa-rotate-right"></i></button>
-      </div>
-    </div>
 
-    <div class="action-bar">
-      <div class="checkbox-wrapper">
-        <input type="checkbox" id="selectAll">
-        <label for="selectAll">Select all</label>
-      </div>
-      <div class="actions">
-        <button class="text-btn">Mark Read</button>
-        <button class="text-btn">Move</button>
-        <button class="text-btn danger">Delete</button>
-      </div>
-    </div>
+    <div class="inbox-list-section" [class.shrunk]="selectedEmail">
 
-    @if (isLoading) {
-      <div class="loading-state">
-        Loading emails...
-      </div>
-    } 
-    @else if (errorMessage) {
-      <div class="error-state">
-        {{ errorMessage }}
-      </div>
-    } 
-    @else {
-      <div class="email-list">
-      
-      @for (email of emails; track email) {
-        
-        <div class="email-item"
-        (click)="selectEmail(email)" [class.active]="selectedEmail===email">
+        <div class="toolbar">
+            <div class="left-tools">
+                <h2 class="page-title" *ngIf="selectedEmail || !searchQuery">
+                    Inbox <span class="count-badge">{{ emails.length }}</span>
+                </h2>
+                <div class="search-wrapper" *ngIf="!selectedEmail">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Search inbox..."
+                        [(ngModel)]="searchQuery"
+                        (keyup.enter)="onSearch()">
+                    <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
 
-          
-          <div class="email-select" (click)="$event.stopPropagation()">
-            <input type="checkbox">
-          </div>
+            <div class="right-tools">
+                <button class="icon-btn" title="Sort"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
+                <button class="icon-btn" title="Filter" (click)="openFilterModal()">
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+                <button class="icon-btn" title="Refresh" (click)="loadEmails()">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
 
-          <div class="email-content">
+        <div class="action-bar">
+            <div class="checkbox-wrapper">
+                <input 
+                    type="checkbox" 
+                    id="selectAll"
+                    (change)="toggleSelectAll($event)"
+                    [checked]="selectedEmailIds.length > 0 && selectedEmailIds.length === emails.length">
+                <label for="selectAll">Select all</label>
+            </div>
             
-            <div class="email-top-row">
-              <span class="sender-name">{{ email.sender }}</span>
-              
-             <span class="email-priority">
-                @switch (email.priority) {
-                  @case (4) {
-                    <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
-                  }
-                  @case (3) {
-                    <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
-                  }
-                  @case (2) {
-                    <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
-                  }
-                  @case (1) {
-                    <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
-                  }
-                  @default {
-                    <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
-                  }
-                }
+            <div class="actions">
+                <button class="text-btn" [disabled]="selectedEmailIds.length === 0">Mark Read</button>
                 
-             </span>
-              <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
+                <!-- <div class="move-dropdown-wrapper" 
+                     *ngIf="selectedEmailIds.length > 0">
+                    <button class="text-btn move-btn" (click)="toggleMoveDropdown()">
+                        Move to <i class="fa-solid fa-caret-down"></i>
+                    </button>
+                    
+                    <div class="move-dropdown-menu" *ngIf="showMoveDropdown">
+                        <div class="dropdown-title">Move {{selectedEmailIds.length}} items to:</div>
+                        
+                        @for (folder of availableFolders; track folder) {
+                            @if (folder !== 'Trash' && folder !== 'Inbox') {
+                                <button class="dropdown-item" (click)="bulkMoveEmails(folder)">
+                                    <i class="fa-solid fa-folder"></i> {{ folder }}
+                                </button>
+                            }
+                        }
+                    </div>
+                </div> -->
+                <button 
+                    class="text-btn danger" 
+                    (click)="deleteSelected()"
+                    [disabled]="selectedEmailIds.length === 0">
+                    Delete ({{ selectedEmailIds.length }})
+                </button>
             </div>
-
-            <div class="email-subject">
-              {{ email.subject }}
-            </div>
-
-            <div class="email-snippet">
-              {{ email.body }}
-            </div>
-
-          </div>
         </div>
 
-      } @empty {
-        <div class="empty-state">
-          No emails found.
-        </div>
-      }
+        @if (isLoading) {
+            <div class="loading-state">
+                <i class="fa-solid fa-spinner fa-spin"></i> Loading emails...
+            </div>
+        }
+        @else if (errorMessage) {
+            <div class="error-state">
+                <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+            </div>
+        }
+        @else {
+            <div class="email-list">
 
-      </div>
+                @for (email of emails; track email.id) {
+
+                    <div class="email-item"
+                        (click)="selectEmail(email)"
+                        [class.active]="selectedEmail?.id === email.id">
+
+                        <div class="email-select" (click)="stopProp($event)">
+                            <input 
+                                type="checkbox"
+                                [checked]="selectedEmailIds.includes(email.id)"
+                                (change)="toggleSelectEmail(email.id, $event)">
+                        </div>
+
+                        <div class="email-content">
+                            <div class="email-top-row">
+                                <span class="sender-name">{{ email.sender }}</span>
+
+                                <span class="email-priority">
+                                @switch (email.priority) {
+                                      @case (4) {
+                                        <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
+                                      }
+                                      @case (3) {
+                                        <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
+                                      }
+                                      @case (2) {
+                                        <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
+                                      }
+                                      @case (1) {
+                                        <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
+                                      }
+                                      @default {
+                                        <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
+                                      }
+                                    }
+                                </span>
+
+                                <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
+                            </div>
+
+                            <div class="email-subject">
+                                {{ email.subject }}
+                                <i *ngIf="email.attachments?.length" class="fa-solid fa-paperclip clip-icon"></i>
+                            </div>
+
+                            <div class="email-snippet">
+                                {{ email.body }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                } @empty {
+                    <div class="empty-state">
+                        <i class="fa-regular fa-envelope empty-icon"></i>
+                        <p>No emails found.</p>
+                    </div>
+                }
+
+            </div>
+        }
+
+        <div class="pagination">
+            <button (click)="changePage(-1)" [disabled]="currentPage === 1">
+                <i class="fa-solid fa-chevron-left"></i> Prev
+            </button>
+            <span>{{ currentPage }} of {{ totalPages }}</span>
+            <button (click)="changePage(1)" [disabled]="currentPage >= totalPages">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    @if (selectedEmail) {
+        <div class="email-display-pane">
+            <div class="detail-toolbar">
+                <div class="dt-left">
+                    <button class="icon-btn close-view-btn" (click)="selectedEmail = null" title="Close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <span class="dt-subject">{{ selectedEmail.subject }}</span>
+                </div>
+                <div class="dt-right">
+                    <button class="icon-btn" title="Print"><i class="fa-solid fa-print"></i></button>
+                    <button class="icon-btn" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+            </div>
+
+            <app-EmailDisplay [mail]="selectedEmail" [type]="'inbox'"></app-EmailDisplay>
+        </div>
     }
 
-    <div class="pagination">
-      <button (click)="changePage(-1)" [disabled]="currentPage === 1">
-        <i class="fa-solid fa-chevron-left"></i> Prev
-      </button>
-      <span>{{ currentPage }} of  {{totalPages}}</span>
-      <button (click)="changePage(1)">
-        Next <i class="fa-solid fa-chevron-right"></i>
-      </button>
-    </div>
-  </div>
+</div>
 
-  <!-- Right: Email Display -->
-  @if (selectedEmail) {
-    <div class="email-display-pane">
-      <app-EmailDisplay [mail]="selectedEmail" [type]="'inbox'"></app-EmailDisplay>
-    </div>
-  }
-
+<div class="filter-modal-overlay" *ngIf="showFilterModal" (click)="closeFilterModal()">
+    <div class="filter-modal" (click)="stopProp($event)">
+        </div>
 </div>
