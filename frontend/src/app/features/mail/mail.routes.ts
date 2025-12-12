@@ -7,6 +7,7 @@ import {Trash} from './components/trash/trash';
 import {ContactsComponent} from './components/contacts/ContactsComponent.component';
 import { PriorityInboxComponent } from './components/PriorityInbox/PriorityInbox.component';
 
+
 export const MAIL_ROUTES: Routes = [
   {
     path: '',
@@ -18,6 +19,7 @@ export const MAIL_ROUTES: Routes = [
       { path: 'drafts', component: Drafts },
       { path: 'sent', component: Sent },
       { path: 'trash', component: Trash },
+
       { path: 'contacts', component: ContactsComponent },
       { path: '**', redirectTo: 'inbox', pathMatch: 'full' },
     ]

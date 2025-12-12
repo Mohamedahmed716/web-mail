@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class InboxService {
-  private baseUrl = 'http://localhost:8080/api/inbox';
+export class PriorityInboxService {
+  private baseUrl = 'http://localhost:8080/api/priority-inbox';
 
   constructor(private http: HttpClient) { }
 
@@ -16,9 +16,9 @@ export class InboxService {
   }
 
   /**
-   * Get inbox emails with pagination
+   * Get priority inbox emails with pagination
    */
-  getInboxEmails(page: number, pageSize: number, sortBy: string): Observable<any> {
+  getPriorityInboxEmails(page: number, pageSize: number, sortBy: string): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString())
@@ -31,9 +31,9 @@ export class InboxService {
   }
 
   /**
-   * Simple search in inbox
+   * Simple search in priority inbox
    */
-  searchInbox(query: string, page: number = 1, pageSize: number = 10): Observable<any> {
+  searchPriorityInbox(query: string, page: number = 1, pageSize: number = 10): Observable<any> {
     const params = new HttpParams()
       .set('query', query)
       .set('page', page.toString())
@@ -48,7 +48,7 @@ export class InboxService {
   /**
    * Advanced filter with multiple criteria
    */
-  filterInbox(filters: any, page: number = 1, pageSize: number = 10): Observable<any> {
+  filterPriorityInbox(filters: any, page: number = 1, pageSize: number = 10): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());

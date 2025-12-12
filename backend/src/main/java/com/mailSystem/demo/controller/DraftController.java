@@ -2,6 +2,8 @@ package com.mailSystem.demo.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mailSystem.demo.dto.EmailFilterDTO;
+import com.mailSystem.demo.dto.InboxResponse;
 import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.DraftService;
 import com.mailSystem.demo.utils.UserContext;
@@ -53,6 +55,91 @@ public class DraftController {
         } catch (Exception e) {
             // Catches parsing errors (e.g., bad JSON format for receivers)
             return ResponseEntity.badRequest().body("Invalid Request: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get draft emails with pagination (new endpoint)
+     */
+    @GetMapping
+    public ResponseEntity<?> getDrafts(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "DATE") String sort) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        InboxResponse response = draftService.getDraftEmails(email, page, size, sort);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Search draft emails with simple query
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> searchDrafts(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam String query,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        try {
+            InboxResponse response = draftService.searchDrafts(email, query, page, size);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error searching drafts: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Filter draft emails with multiple criteria
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<?> filterDrafts(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestBody EmailFilterDTO filters,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        try {
+            InboxResponse response = draftService.filterDrafts(email, filters, page, size);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error filtering drafts: " + e.getMessage());
         }
     }
 

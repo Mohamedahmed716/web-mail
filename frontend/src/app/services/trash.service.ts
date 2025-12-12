@@ -1,16 +1,65 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Email } from '../shared/models/email';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class TrashService {
-
   private base = 'http://localhost:8080/api/trash';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  private auth() {
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('auth-token') || '';
+    return new HttpHeaders().set('Authorization', token);
+  }
+
+  /**
+   * Get trash emails with pagination
+   */
+  getTrashEmails(page: number, pageSize: number, sortBy: string): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', pageSize.toString())
+      .set('sort', sortBy);
+
+    return this.http.get(`${this.base}`, {
+      headers: this.getHeaders(),
+      params: params
+    });
+  }
+
+  /**
+   * Simple search in trash
+   */
+  searchTrash(query: string, page: number = 1, pageSize: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('page', page.toString())
+      .set('size', pageSize.toString());
+
+    return this.http.get(`${this.base}/search`, {
+      headers: this.getHeaders(),
+      params: params
+    });
+  }
+
+  /**
+   * Advanced filter with multiple criteria
+   */
+  filterTrash(filters: any, page: number = 1, pageSize: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', pageSize.toString());
+
+    return this.http.post(`${this.base}/filter`, filters, {
+      headers: this.getHeaders(),
+      params: params
+    });
+  }
+    private auth() {
     const token = localStorage.getItem('auth-token') || '';
     return { headers: new HttpHeaders().set('Authorization', token) };
   }
@@ -50,3 +99,4 @@ export class TrashService {
     });
   }
 }
+

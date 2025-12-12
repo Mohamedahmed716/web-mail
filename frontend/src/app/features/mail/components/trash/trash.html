@@ -1,50 +1,181 @@
 <div class="trash-container">
 
-  <div class="header-tools">
-    <h2>Trash ({{ emails.length }} items)</h2>
-    
-    <div class="action-bar" *ngIf="selectedEmailIds.length > 0">
-      <span>{{ selectedEmailIds.length }} selected</span>
-      
-      <button class="text-btn" (click)="bulkRestoreSelected()">
-        <i class="fa-solid fa-undo"></i> Restore
-      </button>
+    <div class="trash-list-section" [class.shrunk]="selectedEmail">
 
-      <button class="text-btn danger" (click)="bulkDeleteForeverSelected()">
-        <i class="fa-solid fa-eraser"></i> Delete Forever
-      </button>
+        <div class="toolbar">
+            <div class="left-tools">
+                <h2 class="page-title" *ngIf="selectedEmail || !searchQuery">
+                    Trash <span class="count-badge">{{ emails.length }}</span>
+                </h2>
+
+                <div class="search-wrapper" *ngIf="!selectedEmail">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Search trash..."
+                        [(ngModel)]="searchQuery"
+                        (keyup.enter)="onSearch()">
+                    <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="right-tools">
+                <button class="icon-btn" title="Sort"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
+                <button class="icon-btn" title="Filter" (click)="openFilterModal()">
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+                <button class="icon-btn" title="Refresh" (click)="loadTrash()">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <div class="checkbox-wrapper">
+                <input 
+                    type="checkbox" 
+                    id="selectAll"
+                    (change)="toggleSelectAll($event)"
+                    [checked]="selectedEmailIds.length > 0 && selectedEmailIds.length === emails.length">
+                <label for="selectAll">Select all</label>
+            </div>
+            
+            <div class="actions">
+                <button 
+                    class="text-btn" 
+                    (click)="bulkRestoreSelected()"
+                    [disabled]="selectedEmailIds.length === 0">
+                    Restore ({{ selectedEmailIds.length }})
+                </button>
+                
+                <button 
+                    class="text-btn danger" 
+                    (click)="bulkDeleteForeverSelected()"
+                    [disabled]="selectedEmailIds.length === 0">
+                    Delete Forever ({{ selectedEmailIds.length }})
+                </button>
+            </div>
+        </div>
+
+        @if (isLoading) {
+            <div class="loading-state">
+                <i class="fa-solid fa-spinner fa-spin"></i> Loading trash...
+            </div>
+        }
+        @else if (errorMessage) {
+            <div class="error-state">
+                <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+            </div>
+        }
+        @else {
+            <div class="email-list">
+
+                @for (email of emails; track email.id) {
+
+                    <div class="email-item"
+                        (click)="selectEmail(email)"
+                        [class.active]="selectedEmail?.id === email.id">
+
+                        <div class="email-select" (click)="stopProp($event)">
+                            <input 
+                                type="checkbox"
+                                [checked]="selectedEmailIds.includes(email.id)"
+                                (change)="toggleSelectEmail(email.id, $event)">
+                        </div>
+
+                        <div class="email-content">
+
+                            <div class="email-top-row">
+                                <span class="sender-name">{{ email.sender }}</span>
+
+                                <span class="email-priority">
+                                @switch (email.priority) {
+                                      @case (5) {
+                                        <i class="fa-solid fa-circle-exclamation critical-priority" title="Critical Priority"></i>
+                                      }
+                                      @case (4) {
+                                        <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
+                                      }
+                                      @case (3) {
+                                        <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
+                                      }
+                                      @case (2) {
+                                        <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
+                                      }
+                                      @case (1) {
+                                        <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
+                                      }
+                                      @default {
+                                        <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
+                                      }
+                                    }
+                                </span>
+
+                                <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
+                            </div>
+
+                            <div class="email-subject">
+                                {{ email.subject }}
+                                <i *ngIf="email.attachments?.length" class="fa-solid fa-paperclip clip-icon"></i>
+                            </div>
+
+                            <div class="email-snippet">
+                                {{ email.body }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                } @empty {
+                    <div class="empty-state">
+                        <i class="fa-regular fa-trash-can empty-icon"></i>
+                        <p>Trash is empty.</p>
+                    </div>
+                }
+
+            </div>
+        }
+
+        <div class="pagination">
+            <button (click)="changePage(-1)" [disabled]="currentPage === 1">
+                <i class="fa-solid fa-chevron-left"></i> Prev
+            </button>
+            <span>{{ currentPage }} of {{ totalPages }}</span>
+            <button (click)="changePage(1)" [disabled]="currentPage >= totalPages">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 
-    <div class="checkbox-wrapper">
-      <input type="checkbox" id="selectAllTrash" (change)="toggleSelectAll($event)">
-      <label for="selectAllTrash">Select All</label>
-    </div>
-  </div>
+    @if (selectedEmail) {
+        <div class="email-display-pane">
+            <div class="detail-toolbar">
+                <div class="dt-left">
+                    <button class="icon-btn close-view-btn" (click)="selectedEmail = null" title="Close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <span class="dt-subject">{{ selectedEmail.subject }}</span>
+                </div>
+                <div class="dt-right">
+                    <button class="icon-btn" title="Restore" (click)="restore(selectedEmail)">
+                        <i class="fa-solid fa-undo"></i>
+                    </button>
+                    <button class="icon-btn" title="Delete Forever" (click)="deleteForever(selectedEmail)">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
 
+            <app-EmailDisplay [mail]="selectedEmail" [type]="'trash'"></app-EmailDisplay>
+        </div>
+    }
 
-  <div *ngFor="let email of emails" class="email-item">
-    
-    <div class="email-select" (click)="$event.stopPropagation()">
-      <input 
-        type="checkbox"
-        [checked]="selectedEmailIds.includes(email.id)"
-        (change)="toggleSelectEmail(email.id, $event)">
-    </div>
+</div>
 
-    <div (click)="selected = email" class="email-content">
-      <b>{{ email.subject }}</b> - {{ email.sender }}
-    </div>
-
-    <div class="individual-actions" *ngIf="selectedEmailIds.length === 0">
-      <button (click)="restore(email)">Restore</button>
-      <button class="danger" (click)="deleteForever(email)">Delete Forever</button>
-    </div>
-  </div>
-
-  <app-EmailDisplay
-    *ngIf="selected"
-    [mail]="selected"
-    (close)="selected = null">
-  </app-EmailDisplay>
-
+<div class="filter-modal-overlay" *ngIf="showFilterModal" (click)="closeFilterModal()">
+    <div class="filter-modal" (click)="stopProp($event)">
+        </div>
 </div>
