@@ -1,12 +1,18 @@
-.drafts-container {
+/* =======================================================
+   USERFOLDERSVIEW.CSS (Mailbox View Component Styles)
+   Theme: Dark, Two-Pane Layout
+   ======================================================= */
+
+.sent-container {
   height: 100%;
   display: flex;
-  color: #9ca3af;
-  background-color: #0f1115;
+  color: #9ca3af; /* Light gray text for primary content */
+  background-color: #0f1115; /* Very dark background */
   overflow: hidden;
 }
 
-.drafts-list-section {
+/* --- List Section (Email List on the Left) --- */
+.sent-list-section {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -16,16 +22,17 @@
   transition: flex 0.3s ease;
 }
 
-/* When email is selected, compress the list */
-.drafts-list-section.shrunk {
+/* When email is selected, compress the list to make room for the detail pane */
+.sent-list-section.shrunk {
   flex: 0 0 420px;
   max-width: 600px;
   border-right: 1px solid #1f2937;
 }
 
+/* --- Detail Pane (Email Content on the Right) --- */
 .email-display-pane {
   flex: 1;
-  background-color: #0b0e11;
+  background-color: #0b0e11; /* Slightly darker than list background */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -143,178 +150,76 @@
   color: #fff;
 }
 
-/* --- 3. Action Bar (Select All / Bulk Actions) --- */
-.action-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 24px;
-  background-color: #111418; /* Slightly lighter than main bg */
-  border-bottom: 1px solid #1f2937;
-  font-size: 0.9rem;
-}
-
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-/* Custom Checkbox Look */
-input[type="checkbox"] {
-  accent-color: #4f46e5;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.actions {
-  display: flex;
-  gap: 16px;
-}
-
-.text-btn {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 0.85rem;
-  transition: color 0.2s;
-}
-
-.text-btn:hover { color: #fff; }
-.text-btn.danger:hover { color: #ef4444; }
-
-/* --- 4. Email List --- */
-.email-list {
-  flex-grow: 1;
-  overflow-y: auto;
-
-}
-
-.email-item {
-  display: flex;
-  padding: 16px 24px;
-  border-bottom: 1px solid #1f2937;
-  cursor: pointer;
-  align-items: center; /* Vertically center everything */
-  transition: background 0.15s;
-}
-
-.email-item:hover {
-  background-color: #13161c;
-  box-shadow: inset 2px 0 0 #4f46e5; /* Left purple accent line on hover */
-}
-
-/* List Layout */
-.item-checkbox { margin-right: 16px; display: flex; align-items: center;}
-
-.item-content {
-  flex-grow: 1;
-  display: grid;
-  grid-template-columns: 200px 1fr 100px; /* Sender | Subject+Body | Meta */
-  gap: 16px;
-  align-items: center;
-}
-
-/* Column 1: Sender/Receiver */
-.sender-info {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.sender-name {
-  color: #e5e7eb;
-  font-weight: 600;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sub-text {
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-/* Column 2: Subject & Body */
-.main-info {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.item-subject {
-  color: #d1d5db;
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.item-body {
-  color: #6b7280;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Column 3: Date & Badges */
-.meta-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.item-date {
-  font-size: 0.8rem;
-  color: #9ca3af;
-}
-
-/* Badges */
-.priority-badge {
-  font-size: 0.65rem;
-  padding: 2px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.priority-badge.critical { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-.priority-badge.high { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-.priority-badge.medium { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
-.priority-badge.low { background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3); }
-
-/* Empty State */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 60%;
-  color: #4b5563;
-  gap: 10px;
-}
-.empty-state i { font-size: 3rem; opacity: 0.5; }
-
-/* Pagination Footer */
-.pagination-footer {
-  padding: 10px 24px;
-  border-top: 1px solid #1f2937;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 16px;
-  font-size: 0.85rem;
-}
 /* --- 2. Action Bar --- */
+/* --- Move Action Dropdown (within .actions div) --- */
+
+.move-action-wrapper {
+    /* Ensures the select box behaves like an inline block element */
+    display: inline-block;
+    position: relative;
+    /* Hide default browser select arrow if desired */
+    /* overflow: hidden; */ 
+}
+
+.move-folder-select {
+    /* Style the select box to look like a button */
+    background-color: #1f2937; /* Dark background matching icon buttons */
+    border: 1px solid #1f2937;
+    color: #9ca3af; /* Light gray text */
+    
+    /* Padding to match the height of the delete button/action bar */
+    padding: 4px 10px; 
+    border-radius: 6px;
+    
+    /* Typography */
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    
+    /* Ensure it aligns with other elements in the action bar */
+    line-height: 1.5;
+    
+    /* Animation */
+    transition: all 0.2s;
+    
+    /* Remove default system outline */
+    outline: none;
+    
+    /* Reset background properties for custom look */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.move-folder-select:hover {
+    background-color: #374151; /* Lighter background on hover */
+    color: #fff;
+}
+
+.move-folder-select:focus {
+    border-color: #6366f1; /* Violet focus outline */
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+.move-folder-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #1f2937;
+}
+
+/* Style for the options within the dropdown */
+.move-folder-select option {
+    background-color: #1a1d23;
+    color: #9ca3af;
+    padding: 8px 10px;
+}
+
+/* Style for the disabled 'Move (X)' placeholder option */
+.move-folder-select option:disabled {
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #111827;
+}
 .action-bar {
   display: flex;
   justify-content: space-between;
@@ -350,7 +255,7 @@ input[type="checkbox"] {
 }
 
 .text-btn.danger:hover {
-  color: #ef4444;
+  color: #ef4444; /* Red color for danger actions */
   background-color: rgba(239, 68, 68, 0.1);
 }
 
@@ -376,9 +281,10 @@ input[type="checkbox"] {
 
 .email-item.active {
   background-color: #1a1d23;
-  border-left: 3px solid #6366f1;
+  border-left: 3px solid #6366f1; /* Active indicator color */
 }
 
+/* This ::before selector creates the small vertical bar for active state */
 .email-item.active::before {
   content: '';
   position: absolute;
@@ -483,7 +389,7 @@ input[type="checkbox"] {
 }
 
 .error-state {
-  color: #ef4444;
+  color: #ef4444; /* Red for errors */
 }
 
 /* --- Empty State --- */
@@ -520,11 +426,11 @@ input[type="checkbox"] {
   font-size: 0.9rem;
 }
 
-.critical-priority { color: #dc2626; }
-.urgent-priority { color: #dc2626; }
-.high-priority { color: #fb923c; }
-.medium-priority { color: #60a5fa; }
-.low-priority { color: #9ca3af; }
+/* Priority color coding */
+.critical-priority, .urgent-priority { color: #dc2626; } /* Deep Red */
+.high-priority { color: #fb923c; } /* Orange */
+.medium-priority { color: #60a5fa; } /* Blue */
+.low-priority { color: #9ca3af; } /* Gray */
 .no-priority { color: #4b5563; opacity: 0.5; }
 
 /* --- Detail Toolbar --- */
@@ -720,7 +626,7 @@ input[type="checkbox"] {
 }
 
 .filter-btn.primary {
-  background-color: #4f46e5;
+  background-color: #4f46e5; /* Primary accent color */
   color: #fff;
 }
 
@@ -752,7 +658,7 @@ input[type="checkbox"] {
 
 /* --- Responsive adjustments --- */
 @media (max-width: 1024px) {
-  .drafts-list-section {
+  .sent-list-section {
     flex: 0 0 360px;
   }
 
@@ -762,22 +668,24 @@ input[type="checkbox"] {
 }
 
 @media (max-width: 768px) {
-  .drafts-container {
+  .sent-container {
     flex-direction: column;
   }
 
-  .drafts-list-section {
+  .sent-list-section {
     flex: 1;
     max-width: 100%;
     border-right: none;
     border-bottom: 1px solid #1f2937;
   }
 
-  .drafts-list-section.shrunk {
+  .sent-list-section.shrunk {
+    /* Hides the list view when a single email is selected on small screens */
     display: none;
   }
 
   .email-display-pane {
+    /* Makes the detail view full-screen on small devices */
     position: fixed;
     top: 0;
     left: 0;
@@ -823,70 +731,3 @@ label {
 }
 /* --- Move Action Dropdown (within .actions div) --- */
 
-.move-action-wrapper {
-    /* Ensures the select box behaves like an inline block element */
-    display: inline-block;
-    position: relative;
-    /* Hide default browser select arrow if desired */
-    /* overflow: hidden; */ 
-}
-
-.move-folder-select {
-    /* Style the select box to look like a button */
-    background-color: #1f2937; /* Dark background matching icon buttons */
-    border: 1px solid #1f2937;
-    color: #9ca3af; /* Light gray text */
-    
-    /* Padding to match the height of the delete button/action bar */
-    padding: 4px 10px; 
-    border-radius: 6px;
-    
-    /* Typography */
-    font-weight: 500;
-    font-size: 0.85rem;
-    cursor: pointer;
-    
-    /* Ensure it aligns with other elements in the action bar */
-    line-height: 1.5;
-    
-    /* Animation */
-    transition: all 0.2s;
-    
-    /* Remove default system outline */
-    outline: none;
-    
-    /* Reset background properties for custom look */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-.move-folder-select:hover {
-    background-color: #374151; /* Lighter background on hover */
-    color: #fff;
-}
-
-.move-folder-select:focus {
-    border-color: #6366f1; /* Violet focus outline */
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
-}
-
-.move-folder-select:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: #1f2937;
-}
-
-/* Style for the options within the dropdown */
-.move-folder-select option {
-    background-color: #1a1d23;
-    color: #9ca3af;
-    padding: 8px 10px;
-}
-
-/* Style for the disabled 'Move (X)' placeholder option */
-.move-folder-select option:disabled {
-    font-weight: 600;
-    color: #6b7280;
-    background-color: #111827;
-}

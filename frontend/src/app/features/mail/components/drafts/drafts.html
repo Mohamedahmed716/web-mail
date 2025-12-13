@@ -44,6 +44,25 @@
             </div>
             
             <div class="actions">
+                
+                <div class="move-action-wrapper" >
+                    <select 
+                        id="moveFolderSelect"
+                        class="move-folder-select"
+                        (change)="handleMoveSelectionChange($event)" 
+                        [disabled]="selectedEmailIds.length === 0">
+                        
+                        <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
+                        
+                        @for (folder of folders; track folder) {
+                            @if (folder.toLowerCase() !== "drafts") {
+                                <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
+                            }
+                        }
+                        
+                    </select>
+                </div>
+
                 <button 
                     class="text-btn danger" 
                     (click)="deleteSelected()"
@@ -52,7 +71,6 @@
                 </button>
             </div>
         </div>
-
         @if (isLoading) {
             <div class="loading-state">
                 <i class="fa-solid fa-spinner fa-spin"></i> Loading drafts...

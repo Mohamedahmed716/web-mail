@@ -6,7 +6,7 @@ import { ComposeService } from '../../../../services/compose.service';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css']
 })
@@ -25,6 +25,7 @@ export class Sidebar {
 
     { label: 'Trash', icon: 'fa-trash', route: '/mail/trash'},
     { label: 'Contacts', icon: 'fa-address-book', route: '/mail/contacts'},
+    { label: 'Folders', icon: 'fa-address-book', route: '/mail/folders'},
   ];
 
   currentUser = {

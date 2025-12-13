@@ -16,4 +16,5 @@ public class Constants {
     public static final String CONTACTS_FILE = "contacts.json";
     public static final String FILTERS_FILE = "filters.json";
     public static final String MAILS_FILE = "mails.json";
+    public static final String FOLDERS_FILE = "folders.json";
 }

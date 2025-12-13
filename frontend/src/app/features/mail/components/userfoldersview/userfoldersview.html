@@ -5,7 +5,7 @@
         <div class="toolbar">
             <div class="left-tools">
                 <h2 class="page-title" *ngIf="selectedEmail || !searchQuery">
-                    Sent <span class="count-badge">{{ emails.length }}</span>
+                    {{ currentFolderName }} <span class="count-badge">{{ emails.length }}</span>
                 </h2>
 
                 <div class="search-wrapper" *ngIf="!selectedEmail">
@@ -13,7 +13,7 @@
                     <input
                         type="text"
                         class="search-input"
-                        placeholder="Search sent..."
+                        placeholder="Search {{ currentFolderName | lowercase }}..."
                         [(ngModel)]="searchQuery"
                         (keyup.enter)="onSearch()">
                     <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
@@ -27,7 +27,7 @@
                 <button class="icon-btn" title="Filter" (click)="openFilterModal()">
                     <i class="fa-solid fa-filter"></i>
                 </button>
-                <button class="icon-btn" title="Refresh" (click)="loadEmails()">
+                <button class="icon-btn" title="Refresh" (click)="loadEmailsForFolder(currentFolderName.toLowerCase())">
                     <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
@@ -55,7 +55,7 @@
                         <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
                         
                         @for (folder of folders; track folder) {
-                            @if (folder.toLowerCase() !== "sent") {
+                            @if (folder.toLowerCase() !== currentFolderName.toLowerCase()) {
                                 <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
                             }
                         }
@@ -106,25 +106,25 @@
 
                                 <span class="email-priority">
                                 @switch (email.priority) {
-                                      @case (5) {
+                                    @case (5) {
                                         <i class="fa-solid fa-circle-exclamation critical-priority" title="Critical Priority"></i>
-                                      }
-                                      @case (4) {
-                                        <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
-                                      }
-                                      @case (3) {
-                                        <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
-                                      }
-                                      @case (2) {
-                                        <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
-                                      }
-                                      @case (1) {
-                                        <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
-                                      }
-                                      @default {
-                                        <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
-                                      }
                                     }
+                                    @case (4) {
+                                        <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
+                                    }
+                                    @case (3) {
+                                        <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
+                                    }
+                                    @case (2) {
+                                        <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
+                                    }
+                                    @case (1) {
+                                        <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
+                                    }
+                                    @default {
+                                        <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
+                                    }
+                                }
                                 </span>
 
                                 <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
@@ -145,7 +145,7 @@
                 } @empty {
                     <div class="empty-state">
                         <i class="fa-regular fa-paper-plane empty-icon"></i>
-                        <p>No sent emails found.</p>
+                        <p>No emails found in {{ currentFolderName }} folder.</p>
                     </div>
                 }
 
@@ -180,8 +180,7 @@
                 </div>
             </div>
 
-            <app-EmailDisplay [mail]="selectedEmail" [type]="'sent'"></app-EmailDisplay>
-        </div>
+            </div>
     }
 
 </div>
@@ -189,7 +188,7 @@
 <div class="filter-modal-overlay" *ngIf="showFilterModal" (click)="closeFilterModal()">
     <div class="filter-modal" (click)="stopProp($event)">
         <div class="filter-header">
-            <h3>Filter Sent Emails</h3>
+            <h3>Filter {{ currentFolderName }} Emails</h3>
             <button class="close-btn" (click)="closeFilterModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>

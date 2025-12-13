@@ -1,0 +1,138 @@
+/* =========================================
+   Sidebar Folder List Styles (To match Mailbox Theme)
+   ========================================= */
+
+/* Use the same colors for consistency */
+:root {
+    --color-background-sidebar: #1a1d23; /* Slightly lighter than mail view background */
+    --color-background-item-hover: #1f2937;
+    --color-text-default: #9ca3af;
+    --color-text-active: #ffffff;
+    --color-accent-violet: #6366f1;
+    --color-border: #1f2937;
+}
+
+/* --- Folder Management Header --- */
+.folder-management {
+    padding: 15px 16px 10px;
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.folder-management h3 {
+    color: var(--color-text-active);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.add-folder-btn {
+    width: 100%;
+    background-color: var(--color-accent-violet);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.add-folder-btn:hover {
+    background-color: #4f46e5; /* Slightly darker violet */
+}
+
+
+/* --- Folder List (ul) --- */
+.folder-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* Allow scrolling */
+    flex-grow: 1;
+}
+
+.folder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2px 0;
+}
+
+.folder-link {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    text-decoration: none;
+    color: var(--color-text-default);
+    padding: 10px 16px;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.folder-link:hover {
+    background-color: var(--color-background-item-hover);
+    color: var(--color-text-active);
+}
+
+/* Styling for the active/selected folder */
+.folder-link.active {
+    background-color: var(--color-background-item-hover);
+    color: var(--color-accent-violet);
+    font-weight: 600;
+}
+
+/* Folder Icons */
+.folder-link i {
+    font-size: 1rem;
+    margin-right: 12px;
+    /* System folders get a slightly different color */
+    color: #4b5563; 
+}
+
+.folder-link.active i {
+    color: var(--color-accent-violet);
+}
+
+/* --- CRUD Actions (Pen/Trash Icons) --- */
+.folder-actions {
+    display: none; /* Hidden by default */
+    gap: 4px;
+    padding-right: 10px;
+}
+
+.folder-item:hover .folder-actions {
+    display: flex; /* Show actions on hover */
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-text-default);
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.action-btn:hover {
+    background-color: var(--color-background-item-hover);
+    color: var(--color-text-active);
+}
+
+.action-btn.delete:hover {
+    color: #ef4444; /* Red for delete */
+}
+
+/* --- Modal Styles (Matching the Filter Modal) --- */
+/* The modal styles from the main component CSS should apply, but ensure 
+   the .modal-overlay, .modal-content, and button styles are globally
+   accessible or duplicated here if necessary for the folder CRUD modal. */
+
+.modal-overlay { /* ... (etc. - ensure this section is in the CSS file that handles the modal) ... */ }

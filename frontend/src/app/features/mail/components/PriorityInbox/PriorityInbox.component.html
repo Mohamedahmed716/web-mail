@@ -44,10 +44,26 @@
             </div>
             
             <div class="actions">
-                <button class="text-btn" [disabled]="selectedEmailIds.length === 0">Mark Read</button>
                 
-                <button class="text-btn" [disabled]="selectedEmailIds.length === 0">Move</button>
-                
+                <div class="move-action-wrapper" >
+                    <select 
+                        id="moveFolderSelect"
+                        class="move-folder-select"
+                        (change)="handleMoveSelectionChange($event)" 
+                        [disabled]="selectedEmailIds.length === 0">
+                        
+                        <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
+                        
+                        @for (folder of folders; track folder) {
+                            @if (folder.toLowerCase() !== "inbox") {
+                                <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
+                            }
+                        }
+                        <option value="trash">Move to Trash</option>
+                        
+                    </select>
+                </div>
+
                 <button 
                     class="text-btn danger" 
                     (click)="deleteSelected()"

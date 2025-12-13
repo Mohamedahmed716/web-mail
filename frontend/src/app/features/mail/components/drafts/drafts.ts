@@ -9,6 +9,7 @@ import { ApiService } from '../../../../core/services/api.service';
 import {HttpHeaders, HttpParams} from '@angular/common/http';
 import { TrashService } from '../../../../services/trash.service';
 import { EmailDisplayComponent } from "../EmailDisplay/EmailDisplay.component";
+import { FolderService } from '../../../../services/folder';
 
 @Component({
   selector: 'app-drafts',
@@ -18,14 +19,14 @@ import { EmailDisplayComponent } from "../EmailDisplay/EmailDisplay.component";
   styleUrls: ['./drafts.css']
 })
 export class Drafts implements OnInit {
-
+  folders: string[] = [];
   selectedEmailIds: string[] = [];
   drafts: Email[] = [];
   emails: Email[] = [];
   currentPage: number = 1;
   pageSize: number = 10;
   isLoading = true;
-  errorMessage: string = '';
+  errorMessage: string | null = null;
   selectedEmail: Email | null = null;
   totalEmails: number = 0;
 
@@ -47,7 +48,8 @@ export class Drafts implements OnInit {
     private composeService: ComposeService, 
     private apiService: ApiService,
     private draftsService: DraftsService,
-    private trashService: TrashService
+    private trashService: TrashService,
+    private folderService: FolderService ,
   ) {}
 
 
@@ -56,6 +58,16 @@ export class Drafts implements OnInit {
 
     this.composeService.refresh$.subscribe(() => {
       this.loadEmails();
+    });
+    this.loadFolders();
+  }
+  loadFolders(): void {
+    this.folderService.getAllFolders().subscribe({
+      next: (data) => { this.folders = data; },
+      error: (err) => { 
+        console.error('Failed to load folders:', err); 
+        this.errorMessage = 'Could not load folder list.';
+      }
     });
   }
 
@@ -256,4 +268,67 @@ toggleSelectAll(event: any) {
     if (this.totalEmails === 0) return 1;
     return Math.ceil(this.totalEmails / this.pageSize);
   }
+moveSelectedEmails(targetFolder: string): void {
+    if (this.selectedEmailIds.length === 0) return;
+
+    // --- 1. SETUP ---
+    const totalMoves = this.selectedEmailIds.length;
+    let successfulMoves = 0;
+    let failed = false;
+    const sourceFolder = "drafts";
+    const selectedEmailIdToMove = this.selectedEmail?.id;
+    this.selectedEmail = null; 
+    this.errorMessage = null;
+
+    // --- 2. Iterate Over All Selected IDs ---
+    this.selectedEmailIds.forEach(idToMove => {
+        
+        // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
+        this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
+            next: () => {
+                successfulMoves++;
+                
+                // 3. CHECK COMPLETION (Runs on every success)
+                if (successfulMoves === totalMoves) {
+                    // All calls finished successfully
+                    this.loadEmails();
+                }
+            },
+            error: (err) => {
+                // Set flag to stop any subsequent refreshes if a failure occurs
+                if (!failed) {
+                    this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
+                    this.isLoading = false; // Stop loading immediately on first error
+                }
+                failed = true;
+                console.error(`Failed to move email ${idToMove}:`, err);
+                
+                // If the error happens on the very last move, we still need to refresh
+                if (successfulMoves + 1 === totalMoves) {
+                    // Since we already set failed=true, finishOperation will just refresh.
+                    this.loadEmails(); 
+                }
+            }
+        });
+    });
+    
+    // Clear selection immediately for a clean UI state
+    this.selectedEmailIds = []; 
+}
+handleMoveSelectionChange(event: Event): void {
+    
+    // CRITICAL FIX: Cast the event target to HTMLSelectElement
+    const target = event.target as HTMLSelectElement;
+    const targetFolder = target.value; 
+
+    // Reset the select box immediately to allow re-selection
+    target.value = ''; 
+
+    if (targetFolder) {
+        // You can add confirmation here if needed
+        
+        // Call the multi-move logic you developed earlier
+        this.moveSelectedEmails(targetFolder); 
+    }
+}
 }
