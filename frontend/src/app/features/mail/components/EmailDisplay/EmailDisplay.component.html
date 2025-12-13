@@ -6,11 +6,7 @@
     <div class="email-header">
       <div class="header-main">
         <h2 class="subject">{{ mail.subject }}</h2>
-        <div class="actions">
-          <button class="icon-btn" title="Print">🖨️</button>
-          <button class="icon-btn" title="Mark Important">⭐</button>
-          <button class="icon-btn" title="Delete">🗑️</button>
-        </div>
+
       </div>
 
       <div class="sender-meta">
@@ -84,11 +80,15 @@
       </div>
     </div>
     }
-
+    @if (type === 'inbox' || type === 'priority-inbox') {
     <div class="reply-actions">
-      <button class="btn-primary">↩️ Reply</button>
-      <button class="btn-secondary">↪️ Forward</button>
+      <button class="btn-primary" (click)="openReply()">↩️ Reply</button>
     </div>
+    } @else if (type === 'draft') {
+    <div class="reply-actions">
+      <button class="btn-primary" (click)="openDraft()">✏️ Edit Draft</button>
+    </div>
+    }
 
   </div>
   }

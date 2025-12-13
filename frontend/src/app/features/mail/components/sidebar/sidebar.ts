@@ -28,9 +28,5 @@ export class Sidebar {
     { label: 'Folders', icon: 'fa-address-book', route: '/mail/folders'},
   ];
 
-  currentUser = {
-    name: 'John Doe',
-    email: 'john@email.com',
-    avatar: 'https://i.pravatar.cc/150?img=11' // Placeholder image
-  };
+  currentUser = localStorage.getItem('auth-user') ? JSON.parse(localStorage.getItem('auth-user')!) : null;
 }

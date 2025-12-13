@@ -35,36 +35,36 @@
 
         <div class="action-bar">
             <div class="checkbox-wrapper">
-                <input 
-                    type="checkbox" 
+                <input
+                    type="checkbox"
                     id="selectAll"
                     (change)="toggleSelectAll($event)"
                     [checked]="selectedEmailIds.length > 0 && selectedEmailIds.length === emails.length">
                 <label for="selectAll">Select all</label>
             </div>
-            
+
             <div class="actions">
-                
+
                 <div class="move-action-wrapper" >
-                    <select 
+                    <select
                         id="moveFolderSelect"
                         class="move-folder-select"
-                        (change)="handleMoveSelectionChange($event)" 
+                        (change)="handleMoveSelectionChange($event)"
                         [disabled]="selectedEmailIds.length === 0">
-                        
+
                         <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
-                        
+
                         @for (folder of folders; track folder) {
                             @if (folder.toLowerCase() !== "drafts") {
                                 <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
                             }
                         }
-                        
+
                     </select>
                 </div>
 
-                <button 
-                    class="text-btn danger" 
+                <button
+                    class="text-btn danger"
                     (click)="deleteSelected()"
                     [disabled]="selectedEmailIds.length === 0">
                     Delete ({{ selectedEmailIds.length }})
@@ -91,7 +91,7 @@
                         [class.active]="selectedEmail?.id === email.id">
 
                         <div class="email-select" (click)="stopProp($event)">
-                            <input 
+                            <input
                                 type="checkbox"
                                 [checked]="selectedEmailIds.includes(email.id)"
                                 (change)="toggleSelectEmail(email.id, $event)">
@@ -171,14 +171,7 @@
                     </button>
                     <span class="dt-subject">{{ selectedEmail.subject || '(No Subject)' }}</span>
                 </div>
-                <div class="dt-right">
-                    <button class="icon-btn" title="Edit Draft" (click)="openDraft(selectedEmail)">
-                        <i class="fa-solid fa-edit"></i>
-                    </button>
-                    <button class="icon-btn" title="Delete" (click)="deleteSelected()">
-                        <i class="fa-regular fa-trash-can"></i>
-                    </button>
-                </div>
+
             </div>
 
             <app-EmailDisplay [mail]="selectedEmail" [type]="'draft'"></app-EmailDisplay>
