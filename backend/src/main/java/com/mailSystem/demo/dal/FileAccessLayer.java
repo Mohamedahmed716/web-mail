@@ -147,7 +147,7 @@ public class FileAccessLayer {
     // Helper for distribution
     private void distributeToReceivers(Mail mail) throws IOException {
         String originalFolder = mail.getFolder();
-        String sender = mail.getSender(); 
+        String sender = mail.getSender();
 
         mail.setFolder(Constants.INBOX);
 
