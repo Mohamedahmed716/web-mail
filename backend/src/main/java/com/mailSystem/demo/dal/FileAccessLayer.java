@@ -235,4 +235,67 @@ public class FileAccessLayer {
         }
     }
 
+
+    // Helper to get the path to the custom folders metadata file
+    private File getFoldersFile(String userEmail) {
+        String userPath = Constants.DATA_DIR + "/" + userEmail;
+        return new File(userPath, Constants.FOLDERS_FILE);
+    }
+
+    // 1. READ: Load all custom folder names for a user
+    public List<String> loadUserFolders(String userEmail) {
+        File file = getFoldersFile(userEmail);
+        try {
+            if (!file.exists()) {
+                // If file doesn't exist, return an empty list
+                return new ArrayList<>();
+            }
+            // Uses TypeReference for deserializing List<String>
+            return JsonMapper.getInstance().readValue(file, new TypeReference<List<String>>() {});
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load user folders for: " + userEmail, e);
+        }
+    }
+
+    // 2. WRITE: Save the complete list of custom folder names
+    // Used by FolderService after C, R, or D operations
+    public void saveAllUserFolders(String userEmail, List<String> folders) {
+        File file = getFoldersFile(userEmail);
+        try {
+            JsonMapper.getInstance().writeValue(file, folders);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save user folders for: " + userEmail, e);
+        }
+    }
+
+    // 3. CREATE/ADD: Creates the physical directory and updates the metadata file
+    public String addFolder(String userEmail, String folderName) {
+        // 3a. Sanitize folderName (important for file paths!)
+        String sanitizedName = folderName.trim().replaceAll("[^a-zA-Z0-9_-]", "_");
+
+        // 3b. Create the physical directory on disk
+        File folderDir = new File(Constants.DATA_DIR + "/" + userEmail + "/" + sanitizedName);
+
+        if (folderDir.exists()) {
+            // This also handles accidental creation of system folders (e.g., if user tries to create a folder named "Inbox")
+            throw new IllegalArgumentException("Folder already exists: " + folderName);
+        }
+
+        // Ensure the base user directory exists
+        new File(Constants.DATA_DIR + "/" + userEmail).mkdirs();
+
+        if (!folderDir.mkdirs()) {
+            throw new RuntimeException("Failed to create folder directory on disk.");
+        }
+
+        // 3c. Update the metadata file
+        List<String> folders = loadUserFolders(userEmail);
+        if (!folders.contains(sanitizedName)) {
+            folders.add(sanitizedName);
+            saveAllUserFolders(userEmail, folders);
+        }
+
+        return sanitizedName;
+    }
+
 }

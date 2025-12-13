@@ -16,10 +16,14 @@ export class ContactsComponent implements OnInit {
   contacts: Contact[] = [];
   filteredContacts: Contact[] = [];
   searchQuery: string = '';
+  searchType: string = 'default'; // default, name, email
   sortBy = 'name';
 
   showAddModal = false;
   editingContact: Contact | null = null;
+  showConfirmDialog = false;
+  contactToDelete: Contact | null = null;
+  showSuccessToast = false;
 
   formName = '';
   formEmails: string[] = [''];
@@ -58,10 +62,16 @@ export class ContactsComponent implements OnInit {
       return;
     }
 
-    this.contactService.searchContacts(this.searchQuery).subscribe({
+    this.contactService.searchContacts(this.searchQuery, this.searchType).subscribe({
       next: (data) => this.filteredContacts = data,
       error: () => this.error = "Search failed"
     });
+  }
+
+  onSearchTypeChange() {
+    if (this.searchQuery.trim()) {
+      this.onSearch();
+    }
   }
 
   sortContacts() {
@@ -92,6 +102,7 @@ export class ContactsComponent implements OnInit {
 
   closeModal() {
     this.showAddModal = false;
+    this.editingContact = null;
     this.resetForm();
   }
 
@@ -128,6 +139,7 @@ export class ContactsComponent implements OnInit {
         next: () => {
           this.loadContacts();
           this.closeModal();
+          this.showSuccessMessage('Contact updated successfully!');
         },
         error: () => this.error = "Failed to update contact"
       });
@@ -136,6 +148,7 @@ export class ContactsComponent implements OnInit {
         next: () => {
           this.loadContacts();
           this.closeModal();
+          this.showSuccessMessage('Contact added successfully!');
         },
         error: () => this.error = "Failed to add contact"
       });
@@ -143,16 +156,45 @@ export class ContactsComponent implements OnInit {
   }
 
   deleteContact(contact: Contact) {
-    if (!confirm(`Delete ${contact.name}?`)) return;
+    this.contactToDelete = contact;
+    this.showConfirmDialog = true;
+  }
 
-    this.contactService.deleteContact(contact.id!).subscribe({
-      next: () => this.loadContacts(),
-      error: () => this.error = "Failed to delete contact"
+  confirmDelete() {
+    if (!this.contactToDelete) return;
+
+    this.contactService.deleteContact(this.contactToDelete.id!).subscribe({
+      next: () => {
+        this.loadContacts();
+        this.showConfirmDialog = false;
+        this.contactToDelete = null;
+        this.showSuccessMessage('Contact deleted successfully!');
+      },
+      error: () => {
+        this.error = "Failed to delete contact";
+        this.showConfirmDialog = false;
+        this.contactToDelete = null;
+      }
     });
   }
 
-  goToDashboard() {
-    this.router.navigate(['/dashboard']);
+  cancelDelete() {
+    this.showConfirmDialog = false;
+    this.contactToDelete = null;
+  }
+
+  successMessage = '';
+
+  showSuccessMessage(message: string = 'Contact deleted successfully!') {
+    this.successMessage = message;
+    this.showSuccessToast = true;
+    setTimeout(() => {
+      this.showSuccessToast = false;
+    }, 3000);
+  }
+
+  goToInbox() {
+    this.router.navigate(['/mail/inbox']);
   }
 
   trackByContactId(index: number, contact: Contact) {

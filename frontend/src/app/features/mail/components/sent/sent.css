@@ -650,3 +650,70 @@ label {
   cursor: pointer;
   user-select: none;
 }
+.move-action-wrapper {
+    /* Ensures the select box behaves like an inline block element */
+    display: inline-block;
+    position: relative;
+    /* Hide default browser select arrow if desired */
+    /* overflow: hidden; */ 
+}
+
+.move-folder-select {
+    /* Style the select box to look like a button */
+    background-color: #1f2937; /* Dark background matching icon buttons */
+    border: 1px solid #1f2937;
+    color: #9ca3af; /* Light gray text */
+    
+    /* Padding to match the height of the delete button/action bar */
+    padding: 4px 10px; 
+    border-radius: 6px;
+    
+    /* Typography */
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    
+    /* Ensure it aligns with other elements in the action bar */
+    line-height: 1.5;
+    
+    /* Animation */
+    transition: all 0.2s;
+    
+    /* Remove default system outline */
+    outline: none;
+    
+    /* Reset background properties for custom look */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.move-folder-select:hover {
+    background-color: #374151; /* Lighter background on hover */
+    color: #fff;
+}
+
+.move-folder-select:focus {
+    border-color: #6366f1; /* Violet focus outline */
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+.move-folder-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #1f2937;
+}
+
+/* Style for the options within the dropdown */
+.move-folder-select option {
+    background-color: #1a1d23;
+    color: #9ca3af;
+    padding: 8px 10px;
+}
+
+/* Style for the disabled 'Move (X)' placeholder option */
+.move-folder-select option:disabled {
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #111827;
+}

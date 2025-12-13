@@ -9,7 +9,7 @@
           <h1 class="page-title neon-text">Contacts</h1>
           <p class="page-subtitle">Manage your contact list</p>
         </div>
-        <button class="btn-outline" (click)="goToDashboard()">
+        <button class="btn-outline" (click)="goToInbox()">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect width="20" height="16" x="2" y="4" rx="2"/>
             <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
@@ -28,24 +28,32 @@
     <div *ngIf="!loading">
       <!-- Toolbar — Fixed: no overlap, perfect layout -->
       <div class="toolbar">
-        <div class="search-box compact">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
-          </svg>
-          <input
-            type="text"
-            [(ngModel)]="searchQuery"
-            (input)="onSearch()"
-            placeholder="Search..."
-            class="search-input compact hover-glow"
-          />
+        <div class="search-section">
+          <div class="search-box compact">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (input)="onSearch()"
+              placeholder="Search contacts..."
+              class="search-input compact hover-glow"
+            />
+          </div>
+          
+          <select [(ngModel)]="searchType" (change)="onSearchTypeChange()" class="search-type-select compact">
+            <option value="default">Name & Email</option>
+            <option value="name">Name Only</option>
+            <option value="email">Email Only</option>
+          </select>
         </div>
 
         <div class="sort-and-add">
           <select [(ngModel)]="sortBy" (change)="onSortChange()" class="sort-select compact">
-            <option value="name">Name</option>
-            <option value="email">Email</option>
+            <option value="name">Sort by Name</option>
+            <option value="email">Sort by Email</option>
           </select>
 
           <button (click)="openAddModal()" class="btn-primary compact gradient-neon strong-glow">
@@ -100,8 +108,8 @@
     </div>
   </div>
 
-  <!-- Modal (unchanged from last version) -->
-  <div *ngIf="showAddModal || editingContact" class="modal-overlay" (click)="closeModal()">
+  <!-- Add/Edit Modal -->
+  <div *ngIf="showAddModal" class="modal-overlay" (click)="closeModal()">
     <div class="modal glass-panel neon-glow" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h2>{{ editingContact ? 'Edit Contact' : 'Add Contact' }}</h2>
@@ -157,5 +165,33 @@
         <button (click)="closeModal()" class="btn-outline">Cancel</button>
       </div>
     </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div *ngIf="showConfirmDialog" class="confirm-dialog-overlay">
+    <div class="confirm-dialog">
+      <div class="confirm-header">
+        <h3>Delete Contact</h3>
+      </div>
+      <div class="confirm-body">
+        <p>Are you sure you want to delete <strong>{{ contactToDelete?.name }}</strong>?</p>
+        <p>This action cannot be undone.</p>
+      </div>
+      <div class="confirm-footer">
+        <button (click)="cancelDelete()" class="btn-outline">Cancel</button>
+        <button (click)="confirmDelete()" class="btn-primary btn-danger">
+          <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/>
+          </svg>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast -->
+  <div *ngIf="showSuccessToast" class="success-toast">
+    <span class="toast-icon">✓</span>
+    {{ successMessage }}
   </div>
 </div>

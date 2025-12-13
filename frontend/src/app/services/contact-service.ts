@@ -53,10 +53,30 @@ export class ContactService {
     });
   }
 
-  searchContacts(name: string): Observable<Contact[]> {
-    const params = new HttpParams().set('name', name);
+  searchContacts(query: string, searchType: string = 'default'): Observable<Contact[]> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('searchType', searchType);
 
     return this.http.get<Contact[]>(`${this.apiUrl}/search`, {
+      params,
+      headers: this.getHeaders()
+    });
+  }
+
+  searchContactsByName(name: string): Observable<Contact[]> {
+    const params = new HttpParams().set('name', name);
+
+    return this.http.get<Contact[]>(`${this.apiUrl}/search/name`, {
+      params,
+      headers: this.getHeaders()
+    });
+  }
+
+  searchContactsByEmail(email: string): Observable<Contact[]> {
+    const params = new HttpParams().set('email', email);
+
+    return this.http.get<Contact[]>(`${this.apiUrl}/search/email`, {
       params,
       headers: this.getHeaders()
     });

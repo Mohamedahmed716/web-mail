@@ -1,7 +1,6 @@
 <div class="sidebar-container">
 
   <div class="user-profile">
-    <img [src]="currentUser.avatar" alt="User Avatar" class="avatar">
     <div class="user-info">
       <span class="user-name">{{ currentUser.name }}</span>
       <span class="user-email">{{ currentUser.email }}</span>
@@ -23,7 +22,6 @@
       </li>
     </ul>
   </nav>
-
   <div class="logout-section">
     <a routerLink="/signin" class="nav-item logout-link">
       <div class="nav-left">
