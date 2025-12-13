@@ -1,13 +1,14 @@
-package com.mailSystem.demo.service.filter;
-
-import com.mailSystem.demo.dto.EmailFilterDTO;
-import com.mailSystem.demo.model.Mail;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.mailSystem.demo.service.Filter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.mailSystem.demo.dto.EmailFilterDTO;
+import com.mailSystem.demo.model.Mail;
 
 /**
  * Filter Manager - Manages and applies multiple filters using Filter Design Pattern
@@ -21,7 +22,7 @@ public class EmailFilterManager {
     public EmailFilterManager(
             SenderFilter senderFilter,
             ReceiverFilter receiverFilter,
-            SubjectFilter subjectFilter,
+            IEmailFilter subjectFilter,
             ContentFilter contentFilter,
             DateRangeFilter dateRangeFilter) {
         
