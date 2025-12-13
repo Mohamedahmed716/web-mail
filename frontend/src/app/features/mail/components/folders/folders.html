@@ -1,0 +1,83 @@
+<div class="folder-management">
+    <h3>Folders</h3>
+    
+    <button class="add-folder-btn" (click)="openCreateModal()">
+        <i class="fa-solid fa-plus"></i> New Folder
+    </button>
+</div>
+
+<ul class="folder-list">
+    @for (folder of folders; track folder) {
+        <li class="folder-item">
+            <a class="folder-link" 
+               [routerLink]="'/mail/userfoldersview'"
+               [queryParams]="{ f: folder.toLowerCase() }"> 
+                @if (isSystemFolder(folder)) {
+                    <i class="fa-solid fa-inbox" *ngIf="folder === 'Inbox'"></i>
+                    <i class="fa-solid fa-paper-plane" *ngIf="folder === 'Sent'"></i>
+                    <i class="fa-solid fa-file-alt" *ngIf="folder === 'Drafts'"></i>
+                    <i class="fa-solid fa-trash" *ngIf="folder === 'Trash'"></i>
+                } @else {
+                    <i class="fa-solid fa-folder"></i>
+                }
+                
+                {{ folder }}
+            </a>
+            
+            @if (!isSystemFolder(folder)) {
+                <div class="folder-actions">
+                    <button 
+                        class="action-btn rename" 
+                        title="Rename"
+                        (click)="openRenameModal(folder)">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button 
+                        class="action-btn delete" 
+                        title="Delete"
+                        (click)="deleteFolder(folder)">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            }
+        </li>
+    }
+    
+    @if (errorMessage) {
+        <li class="error-message">{{ errorMessage }}</li>
+    }
+</ul>
+
+<div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        
+        <div class="modal-header">
+            <h3>{{ editingFolder ? 'Rename Folder' : 'Create New Folder' }}</h3>
+            <button class="close-btn" (click)="showModal = false">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            
+            <label for="folderName">Folder Name:</label>
+            <input 
+                type="text" 
+                id="folderName"
+                placeholder="e.g., Work Receipts"
+                [(ngModel)]="newFolderName">
+                
+            @if (errorMessage) {
+                <p class="error-text">{{ errorMessage }}</p>
+            }
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn secondary" (click)="showModal = false">Cancel</button>
+            <button class="btn primary" (click)="saveFolder()">
+                {{ editingFolder ? 'Save' : 'Create' }}
+            </button>
+        </div>
+        
+    </div>
+</div>

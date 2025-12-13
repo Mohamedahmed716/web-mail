@@ -43,26 +43,26 @@
             </div>
             
             <div class="actions">
-                <button class="text-btn" [disabled]="selectedEmailIds.length === 0">Mark Read</button>
                 
-                <!-- <div class="move-dropdown-wrapper" 
-                     *ngIf="selectedEmailIds.length > 0">
-                    <button class="text-btn move-btn" (click)="toggleMoveDropdown()">
-                        Move to <i class="fa-solid fa-caret-down"></i>
-                    </button>
-                    
-                    <div class="move-dropdown-menu" *ngIf="showMoveDropdown">
-                        <div class="dropdown-title">Move {{selectedEmailIds.length}} items to:</div>
+                <div class="move-action-wrapper" >
+                    <select 
+                        id="moveFolderSelect"
+                        class="move-folder-select"
+                        (change)="handleMoveSelectionChange($event)" 
+                        [disabled]="selectedEmailIds.length === 0">
                         
-                        @for (folder of availableFolders; track folder) {
-                            @if (folder !== 'Trash' && folder !== 'Inbox') {
-                                <button class="dropdown-item" (click)="bulkMoveEmails(folder)">
-                                    <i class="fa-solid fa-folder"></i> {{ folder }}
-                                </button>
+                        <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
+                        
+                        @for (folder of folders; track folder) {
+                            @if (folder.toLowerCase() !== "inbox") {
+                                <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
                             }
                         }
-                    </div>
-                </div> -->
+                        <option value="trash">Move to Trash</option>
+                        
+                    </select>
+                </div>
+
                 <button 
                     class="text-btn danger" 
                     (click)="deleteSelected()"

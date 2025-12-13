@@ -6,6 +6,8 @@ import {Sent} from './components/sent/sent';
 import {Trash} from './components/trash/trash';
 import {ContactsComponent} from './components/contacts/ContactsComponent.component';
 import { PriorityInboxComponent } from './components/PriorityInbox/PriorityInbox.component';
+import { FolderListComponent } from './components/folders/folders';
+import { UserFoldersView } from './components/userfoldersview/userfoldersview';
 
 
 export const MAIL_ROUTES: Routes = [
@@ -19,6 +21,8 @@ export const MAIL_ROUTES: Routes = [
       { path: 'drafts', component: Drafts },
       { path: 'sent', component: Sent },
       { path: 'trash', component: Trash },
+      { path: 'folders', component: FolderListComponent },
+      { path: 'userfoldersview', component: UserFoldersView },
 
       { path: 'contacts', component: ContactsComponent },
       { path: '**', redirectTo: 'inbox', pathMatch: 'full' },
