@@ -15,7 +15,7 @@
                         class="search-input"
                         placeholder="Search priority inbox..."
                         [(ngModel)]="searchQuery"
-                        (keyup.enter)="onSearch()">
+                        (input)="onSearchInput()">
                     <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
