@@ -5,9 +5,11 @@ public class SortFactory {
 
 
     public static ISortStrategy getStrategy(String sortType) {
+        System.out.println("🏭 FACTORY: Received Type: " + sortType); // شوف هيطبع إيه
         if (sortType == null) {
             return new SortByDate(false);
         }
+
 
         return switch (sortType.toUpperCase()) {
             case "DATE_NEWEST" -> new SortByDate(false);

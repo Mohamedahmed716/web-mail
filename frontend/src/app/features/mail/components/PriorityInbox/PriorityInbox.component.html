@@ -10,12 +10,8 @@
 
                 <div class="search-wrapper" *ngIf="!selectedEmail">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input
-                        type="text"
-                        class="search-input"
-                        placeholder="Search priority inbox..."
-                        [(ngModel)]="searchQuery"
-                        (input)="onSearchInput()">
+                    <input type="text" class="search-input" placeholder="Search priority inbox..."
+                        [(ngModel)]="searchQuery" (input)="onSearchInput()">
                     <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -23,7 +19,38 @@
             </div>
 
             <div class="right-tools">
-                <button class="icon-btn" title="Sort"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
+                 <div class="sort-widget">
+                    <span class="sort-label">Sort by</span>
+
+                    <div class="sort-pill">
+                        <div class="select-container">
+                            <select class="hidden-select" [(ngModel)]="sortAttribute" (change)="onAttributeChange()">
+                                @for (attr of sortAttributes; track $index) {
+                                <option [value]="attr.value">{{ attr.label }}</option>
+                                }
+                            </select>
+                            <div class="select-visual">
+                                <span class="selected-text">
+                                    @for(attr of sortAttributes; track attr) {
+                                    @if(attr.value === sortAttribute) { {{ attr.label }} }
+                                    }
+                                </span>
+                                <i class="fa-solid fa-chevron-down xs-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="pill-separator"></div>
+
+                        <button class="direction-btn" (click)="toggleDirection()"
+                            [title]="isAscending ? 'Oldest first' : 'Newest first'">
+                            @if (isAscending) {
+                            <i class="fa-solid fa-arrow-up-long"></i>
+                            } @else {
+                            <i class="fa-solid fa-arrow-down-long"></i>
+                            }
+                        </button>
+                    </div>
+                </div>
                 <button class="icon-btn" title="Filter" (click)="openFilterModal()">
                     <i class="fa-solid fa-filter"></i>
                 </button>
@@ -35,119 +62,106 @@
 
         <div class="action-bar">
             <div class="checkbox-wrapper">
-                <input
-                    type="checkbox"
-                    id="selectAll"
-                    (change)="toggleSelectAll($event)"
+                <input type="checkbox" id="selectAll" (change)="toggleSelectAll($event)"
                     [checked]="selectedEmailIds.length > 0 && selectedEmailIds.length === emails.length">
                 <label for="selectAll">Select all</label>
             </div>
 
             <div class="actions">
 
-                <div class="move-action-wrapper" >
-                    <select
-                        id="moveFolderSelect"
-                        class="move-folder-select"
-                        (change)="handleMoveSelectionChange($event)"
-                        [disabled]="selectedEmailIds.length === 0">
+                <div class="move-action-wrapper">
+                    <select id="moveFolderSelect" class="move-folder-select"
+                        (change)="handleMoveSelectionChange($event)" [disabled]="selectedEmailIds.length === 0">
 
                         <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
 
                         @for (folder of folders; track folder) {
-                            @if (folder.toLowerCase() !== "inbox") {
-                                <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
-                            }
+                        @if (folder.toLowerCase() !== "inbox") {
+                        <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
+                        }
                         }
                         <option value="trash">Move to Trash</option>
 
                     </select>
                 </div>
 
-                <button
-                    class="text-btn danger"
-                    (click)="deleteSelected()"
-                    [disabled]="selectedEmailIds.length === 0">
+                <button class="text-btn danger" (click)="deleteSelected()" [disabled]="selectedEmailIds.length === 0">
                     Delete ({{ selectedEmailIds.length }})
                 </button>
             </div>
         </div>
 
         @if (isLoading) {
-            <div class="loading-state">
-                <i class="fa-solid fa-spinner fa-spin"></i> Loading priority emails...
-            </div>
+        <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading priority emails...
+        </div>
         }
         @else if (errorMessage) {
-            <div class="error-state">
-                <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
-            </div>
+        <div class="error-state">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+        </div>
         }
         @else {
-            <div class="email-list">
+        <div class="email-list">
 
-                @for (email of emails; track email.id) {
+            @for (email of emails; track email.id) {
 
-                    <div class="email-item"
-                        (click)="selectEmail(email)"
-                        [class.active]="selectedEmail?.id === email.id">
+            <div class="email-item" (click)="selectEmail(email)" [class.active]="selectedEmail?.id === email.id">
 
-                        <div class="email-select" (click)="stopProp($event)">
-                            <input
-                                type="checkbox"
-                                [checked]="selectedEmailIds.includes(email.id)"
-                                (change)="toggleSelectEmail(email.id, $event)">
-                        </div>
+                <div class="email-select" (click)="stopProp($event)">
+                    <input type="checkbox" [checked]="selectedEmailIds.includes(email.id)"
+                        (change)="toggleSelectEmail(email.id, $event)">
+                </div>
 
-                        <div class="email-content">
+                <div class="email-content">
 
-                            <div class="email-top-row">
-                                <span class="sender-name">{{ email.sender }}</span>
+                    <div class="email-top-row">
+                        <span class="sender-name">{{ email.sender }}</span>
 
-                                <span class="email-priority">
-                                @switch (email.priority) {
-                                     
-                                      @case (4) {
-                                        <i class="fa-solid fa-exclamation-circle urgent-priority" title="Critical Priority"></i>
-                                      }
-                                      @case (3) {
-                                        <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
-                                      }
-                                      @case (2) {
-                                        <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
-                                      }
-                                      @case (1) {
-                                        <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
-                                      }
-                                      @default {
-                                        <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
-                                      }
-                                    }
-                                </span>
+                        <span class="email-priority">
+                            @switch (email.priority) {
 
-                                <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
-                            </div>
+                            @case (4) {
+                            <i class="fa-solid fa-exclamation-circle urgent-priority" title="Critical Priority"></i>
+                            }
+                            @case (3) {
+                            <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
+                            }
+                            @case (2) {
+                            <i class="fa-solid fa-info-circle medium-priority" title="Medium Priority"></i>
+                            }
+                            @case (1) {
+                            <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
+                            }
+                            @default {
+                            <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
+                            }
+                            }
+                        </span>
 
-                            <div class="email-subject">
-                                {{ email.subject }}
-                                <i *ngIf="email.attachments?.length" class="fa-solid fa-paperclip clip-icon"></i>
-                            </div>
-
-                            <div class="email-snippet">
-                                {{ email.body }}
-                            </div>
-
-                        </div>
+                        <span class="email-time">{{ email.timestamp | date:'shortTime' }}</span>
                     </div>
 
-                } @empty {
-                    <div class="empty-state">
-                        <i class="fa-solid fa-star empty-icon"></i>
-                        <p>No priority emails found.</p>
+                    <div class="email-subject">
+                        {{ email.subject }}
+                        <i *ngIf="email.attachments?.length" class="fa-solid fa-paperclip clip-icon"></i>
                     </div>
-                }
 
+                    <div class="email-snippet">
+                        {{ email.body }}
+                    </div>
+
+                </div>
             </div>
+
+            } @empty {
+            <div class="empty-state">
+                <i class="fa-solid fa-star empty-icon"></i>
+                <p>No priority emails found.</p>
+            </div>
+            }
+
+        </div>
         }
 
         <div class="pagination">
@@ -162,19 +176,19 @@
     </div>
 
     @if (selectedEmail) {
-        <div class="email-display-pane">
-            <div class="detail-toolbar">
-                <div class="dt-left">
-                    <button class="icon-btn close-view-btn" (click)="selectedEmail = null" title="Close">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                    <span class="dt-subject">{{ selectedEmail.subject }}</span>
-                </div>
-
+    <div class="email-display-pane">
+        <div class="detail-toolbar">
+            <div class="dt-left">
+                <button class="icon-btn close-view-btn" (click)="selectedEmail = null" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <span class="dt-subject">{{ selectedEmail.subject }}</span>
             </div>
 
-            <app-EmailDisplay [mail]="selectedEmail" [type]="'priority-inbox'"></app-EmailDisplay>
         </div>
+
+        <app-EmailDisplay [mail]="selectedEmail" [type]="'priority-inbox'"></app-EmailDisplay>
+    </div>
     }
 
 </div>
@@ -192,46 +206,29 @@
         <div class="filter-body">
             <div class="filter-field">
                 <label for="filterFrom">From</label>
-                <input
-                    type="text"
-                    id="filterFrom"
-                    placeholder="sender@example.com"
-                    [(ngModel)]="filterCriteria.from">
+                <input type="text" id="filterFrom" placeholder="sender@example.com" [(ngModel)]="filterCriteria.from">
             </div>
 
             <div class="filter-field">
                 <label for="filterTo">To</label>
-                <input
-                    type="text"
-                    id="filterTo"
-                    placeholder="recipient@example.com"
-                    [(ngModel)]="filterCriteria.to">
+                <input type="text" id="filterTo" placeholder="recipient@example.com" [(ngModel)]="filterCriteria.to">
             </div>
 
             <div class="filter-field">
                 <label for="filterSubject">Subject</label>
-                <input
-                    type="text"
-                    id="filterSubject"
-                    placeholder="Enter subject keywords"
+                <input type="text" id="filterSubject" placeholder="Enter subject keywords"
                     [(ngModel)]="filterCriteria.subject">
             </div>
 
             <div class="filter-field">
                 <label for="filterHasWords">Has the words</label>
-                <input
-                    type="text"
-                    id="filterHasWords"
-                    placeholder="Enter keywords to find"
+                <input type="text" id="filterHasWords" placeholder="Enter keywords to find"
                     [(ngModel)]="filterCriteria.hasWords">
             </div>
 
             <div class="filter-field">
                 <label for="filterDoesntHave">Doesn't have</label>
-                <input
-                    type="text"
-                    id="filterDoesntHave"
-                    placeholder="Enter words to exclude"
+                <input type="text" id="filterDoesntHave" placeholder="Enter words to exclude"
                     [(ngModel)]="filterCriteria.doesntHave">
             </div>
 

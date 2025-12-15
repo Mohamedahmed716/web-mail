@@ -62,6 +62,45 @@ export class Drafts implements OnInit {
     });
     this.loadFolders();
   }
+  sortAttribute: string = 'PRIORITY';
+  isAscending: boolean = false;
+
+  sortAttributes = [
+    { label: 'Date', value: 'DATE' },
+    { label: 'Priority', value: 'PRIORITY' },
+    { label: 'Receivers', value: 'RECEIVERS' },
+    { label: 'Subject', value: 'SUBJECT' },
+  ];
+
+  toggleDirection() {
+    this.isAscending = !this.isAscending;
+    this.loadEmails();
+  }
+
+  onAttributeChange() {
+    this.currentPage = 1;
+    this.loadEmails();
+  }
+
+  getBackendSortString(): string {
+    switch (this.sortAttribute) {
+      case 'DATE':
+        return this.isAscending ? 'DATE_OLDEST' : 'DATE_NEWEST';
+
+      case 'PRIORITY':
+        return this.isAscending ? 'PRIORITY_LOW' : 'PRIORITY_HIGH';
+
+      case 'RECEIVERS':
+        return this.isAscending ? 'RECEIVERS_ASC' : 'RECEIVERS_DESC';
+
+      case 'SUBJECT':
+        return this.isAscending ? 'SUBJECT_ASC' : 'SUBJECT_DESC';
+
+      default:
+        return 'DATE_NEWEST';
+    }
+  }
+
   loadFolders(): void {
     this.folderService.getAllFolders().subscribe({
       next: (data) => { this.folders = data; },
@@ -76,7 +115,7 @@ export class Drafts implements OnInit {
     this.isLoading = true;
     this.selectedEmail = null;
 
-    this.draftsService.getDraftEmails(this.currentPage, this.pageSize, 'DATE')
+    this.draftsService.getDraftEmails(this.currentPage, this.pageSize, this.getBackendSortString())
       .subscribe({
         next: (response: any) => {
           this.emails = response.data || response;

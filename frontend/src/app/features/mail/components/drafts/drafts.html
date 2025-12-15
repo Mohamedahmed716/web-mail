@@ -23,8 +23,38 @@
             </div>
 
             <div class="right-tools">
-                <button class="icon-btn" title="Sort"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
-                <button class="icon-btn" title="Filter" (click)="openFilterModal()">
+  <div class="sort-widget">
+                    <span class="sort-label">Sort by</span>
+
+                    <div class="sort-pill">
+                        <div class="select-container">
+                            <select class="hidden-select" [(ngModel)]="sortAttribute" (change)="onAttributeChange()">
+                                @for (attr of sortAttributes; track $index) {
+                                <option [value]="attr.value">{{ attr.label }}</option>
+                                }
+                            </select>
+                            <div class="select-visual">
+                                <span class="selected-text">
+                                    @for(attr of sortAttributes; track attr) {
+                                    @if(attr.value === sortAttribute) { {{ attr.label }} }
+                                    }
+                                </span>
+                                <i class="fa-solid fa-chevron-down xs-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="pill-separator"></div>
+
+                        <button class="direction-btn" (click)="toggleDirection()"
+                            [title]="isAscending ? 'Oldest first' : 'Newest first'">
+                            @if (isAscending) {
+                            <i class="fa-solid fa-arrow-up-long"></i>
+                            } @else {
+                            <i class="fa-solid fa-arrow-down-long"></i>
+                            }
+                        </button>
+                    </div>
+                </div>                <button class="icon-btn" title="Filter" (click)="openFilterModal()">
                     <i class="fa-solid fa-filter"></i>
                 </button>
                 <button class="icon-btn" title="Refresh" (click)="loadEmails()">

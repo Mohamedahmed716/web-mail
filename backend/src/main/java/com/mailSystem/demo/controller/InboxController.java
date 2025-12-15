@@ -27,6 +27,8 @@ public class InboxController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "DATE_NEWEST") String sort) {
 
+        System.out.println("🔥 DEBUG: Sort Parameter received: " + sort);
+
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Unauthorized: Invalid or missing token");

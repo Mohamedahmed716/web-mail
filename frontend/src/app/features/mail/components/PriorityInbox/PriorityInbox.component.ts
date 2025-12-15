@@ -39,6 +39,8 @@ export class PriorityInboxComponent implements OnInit {
     doesntHave: '',
     dateWithin: '1w'
   };
+   sortAttribute: string = 'PRIORITY'; 
+  isAscending: boolean = false;   
 
   constructor(
     private inboxService: InboxService,
@@ -51,6 +53,47 @@ export class PriorityInboxComponent implements OnInit {
     this.loadEmails();
     this.loadFolders();
   }
+  
+  sortAttributes = [
+    { label: 'Date', value: 'DATE' },
+    { label: 'Priority', value: 'PRIORITY' },
+    { label: 'Sender', value: 'SENDER' },
+    { label: 'Subject', value: 'SUBJECT' },
+
+  ];
+
+  toggleDirection() {
+    this.isAscending = !this.isAscending;
+    this.loadEmails(); 
+  }
+
+  onAttributeChange() {
+    this.currentPage = 1; 
+    this.loadEmails();
+  }
+
+  getBackendSortString(): string {
+    switch (this.sortAttribute) {
+      case 'DATE':
+        return this.isAscending ? 'DATE_OLDEST' : 'DATE_NEWEST';
+      
+      case 'PRIORITY':
+        
+        
+        return this.isAscending ? 'PRIORITY_LOW' : 'PRIORITY_HIGH';
+        
+      case 'SENDER':
+        return this.isAscending ? 'SENDER_ASC' : 'SENDER_DESC';
+        
+      case 'RECEIVERS':
+        return this.isAscending ? 'RECEIVERS_ASC' : 'RECEIVERS_DESC';
+        
+      default:
+        return 'PRIORITY_HIGH';
+    }
+  }
+
+
   loadFolders(): void {
     this.folderService.getAllFolders().subscribe({
       next: (data) => { this.folders = data; },

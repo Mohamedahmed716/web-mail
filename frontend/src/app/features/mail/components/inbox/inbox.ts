@@ -38,6 +38,10 @@ export class Inbox implements OnInit  {
     dateWithin: '1w'
   };
 
+  sortAttribute: string = 'DATE'; 
+  isAscending: boolean = false;   
+
+  
   constructor(private inboxService: InboxService,
         private trashService: TrashService,
         private folderService: FolderService ,
@@ -47,6 +51,48 @@ export class Inbox implements OnInit  {
     this.loadEmails();
     this.loadFolders();
   }
+
+  sortAttributes = [
+    { label: 'Date', value: 'DATE' },
+    { label: 'Priority', value: 'PRIORITY' },
+    { label: 'Sender', value: 'SENDER' },
+    {label: 'Subject', value: 'SUBJECT' },
+  ];
+
+  toggleDirection() {
+    this.isAscending = !this.isAscending;
+    this.loadEmails(); 
+  }
+
+  onAttributeChange() {
+    this.currentPage = 1; 
+    this.loadEmails();
+  }
+
+  getBackendSortString(): string {
+    switch (this.sortAttribute) {
+      case 'DATE':
+        return this.isAscending ? 'DATE_OLDEST' : 'DATE_NEWEST';
+      
+      case 'PRIORITY':
+        
+        
+        return this.isAscending ? 'PRIORITY_LOW' : 'PRIORITY_HIGH';
+        
+      case 'SENDER':
+        return this.isAscending ? 'SENDER_ASC' : 'SENDER_DESC';
+        
+      case 'SUBJECT':
+        return this.isAscending ? 'SUBJECT_ASC' : 'SUBJECT_DESC';
+        
+      default:
+        return 'DATE_NEWEST';
+    }
+  }
+
+
+
+
    loadFolders(): void {
     this.folderService.getAllFolders().subscribe({
       next: (data) => { this.folders = data; },
@@ -60,8 +106,9 @@ export class Inbox implements OnInit  {
   loadEmails(): void {
     this.isLoading = true;
     this.selectedEmail = null;
+    const sortParam = this.getBackendSortString();
 
-    this.inboxService.getInboxEmails(this.currentPage, this.pageSize, 'DATE')
+    this.inboxService.getInboxEmails(this.currentPage, this.pageSize, sortParam)
       .subscribe({
         next: (response: any) => {
           this.emails = response.data;
@@ -133,7 +180,6 @@ export class Inbox implements OnInit  {
     this.loadEmails();
   }
 
-  // Filter functionality
   openFilterModal(): void {
     this.showFilterModal = true;
   }
@@ -145,7 +191,6 @@ export class Inbox implements OnInit  {
   applyFilter(): void {
     this.isLoading = true;
 
-    // Build filter object (only send non-empty values)
     const filters: any = {};
 
     if (this.filterCriteria.from) filters.from = this.filterCriteria.from;

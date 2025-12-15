@@ -5,8 +5,8 @@ import { ComposeService } from '../../../../services/compose.service';
 import { SentService } from '../../../../services/sent.service';
 import { Email } from '../../../../shared/models/email';
 import { User } from '../../../../shared/models/user';
-import {HttpHeaders} from '@angular/common/http';
-import {EmailDisplayComponent} from '../EmailDisplay/EmailDisplay.component';
+import { HttpHeaders } from '@angular/common/http';
+import { EmailDisplayComponent } from '../EmailDisplay/EmailDisplay.component';
 import { TrashService } from '../../../../services/trash.service';
 import { ApiService } from '../../../../core/services/api.service';
 import { FolderService } from '../../../../services/folder';
@@ -16,7 +16,7 @@ import { FolderService } from '../../../../services/folder';
   standalone: true,
   imports: [CommonModule, FormsModule, EmailDisplayComponent],
   templateUrl: './sent.html',
-  styleUrls: ['./sent.css']
+  styleUrls: ['./sent.css'],
 })
 export class Sent implements OnInit {
   folders: string[] = [];
@@ -44,15 +44,15 @@ export class Sent implements OnInit {
     subject: '',
     hasWords: '',
     doesntHave: '',
-    dateWithin: '1w'
+    dateWithin: '1w',
   };
-
+ 
   constructor(
     private apiService: ApiService,
     private composeService: ComposeService,
     private trashService: TrashService,
     private sentService: SentService,
-    private folderService: FolderService ,
+    private folderService: FolderService
   ) {}
 
   ngOnInit(): void {
@@ -63,20 +63,62 @@ export class Sent implements OnInit {
     });
     this.loadFolders();
   }
+  sortAttribute: string = 'PRIORITY';
+  isAscending: boolean = false;
+
+  sortAttributes = [
+    { label: 'Date', value: 'DATE' },
+    { label: 'Priority', value: 'PRIORITY' },
+    { label: 'Receivers', value: 'RECEIVERS' },
+    { label: 'Subject', value: 'SUBJECT' },
+  ];
+
+  toggleDirection() {
+    this.isAscending = !this.isAscending;
+    this.loadEmails();
+  }
+
+  onAttributeChange() {
+    this.currentPage = 1;
+    this.loadEmails();
+  }
+
+  getBackendSortString(): string {
+    switch (this.sortAttribute) {
+      case 'DATE':
+        return this.isAscending ? 'DATE_OLDEST' : 'DATE_NEWEST';
+
+      case 'PRIORITY':
+        return this.isAscending ? 'PRIORITY_LOW' : 'PRIORITY_HIGH';
+
+      case 'RECEIVERS':
+        return this.isAscending ? 'RECEIVERS_ASC' : 'RECEIVERS_DESC';
+
+      case 'SUBJECT':
+        return this.isAscending ? 'SUBJECT_ASC' : 'SUBJECT_DESC';
+
+      default:
+        return 'DATE_NEWEST';
+    }
+  }
+
   loadFolders(): void {
     this.folderService.getAllFolders().subscribe({
-      next: (data) => { this.folders = data; },
-      error: (err) => { 
-        console.error('Failed to load folders:', err); 
+      next: (data) => {
+        this.folders = data;
+      },
+      error: (err) => {
+        console.error('Failed to load folders:', err);
         this.errorMessage = 'Could not load folder list.';
-      }
+      },
     });
   }
   loadEmails(): void {
     this.isLoading = true;
     this.selectedEmail = null;
 
-    this.sentService.getSentEmails(this.currentPage, this.pageSize, 'DATE')
+    this.sentService
+      .getSentEmails(this.currentPage, this.pageSize, this.getBackendSortString())
       .subscribe({
         next: (response: any) => {
           this.emails = response.data;
@@ -87,7 +129,7 @@ export class Sent implements OnInit {
           console.error(err);
           this.errorMessage = 'Failed to load emails';
           this.isLoading = false;
-        }
+        },
       });
   }
 
@@ -129,19 +171,18 @@ export class Sent implements OnInit {
   onSearch(): void {
     if (this.searchQuery.trim()) {
       this.isLoading = true;
-      this.sentService.searchSent(this.searchQuery, this.currentPage, this.pageSize)
-        .subscribe({
-          next: (response: any) => {
-            this.emails = response.data;
-            this.totalEmails = response.totalRecords;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            console.error('Search error:', err);
-            this.errorMessage = 'Failed to search emails';
-            this.isLoading = false;
-          }
-        });
+      this.sentService.searchSent(this.searchQuery, this.currentPage, this.pageSize).subscribe({
+        next: (response: any) => {
+          this.emails = response.data;
+          this.totalEmails = response.totalRecords;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Search error:', err);
+          this.errorMessage = 'Failed to search emails';
+          this.isLoading = false;
+        },
+      });
     } else {
       this.loadEmails();
     }
@@ -178,20 +219,19 @@ export class Sent implements OnInit {
     if (this.filterCriteria.doesntHave) filters.doesntHave = this.filterCriteria.doesntHave;
     if (this.filterCriteria.dateWithin) filters.dateWithin = this.filterCriteria.dateWithin;
 
-    this.sentService.filterSent(filters, this.currentPage, this.pageSize)
-      .subscribe({
-        next: (response: any) => {
-          this.emails = response.data;
-          this.totalEmails = response.totalRecords;
-          this.isLoading = false;
-          this.closeFilterModal();
-        },
-        error: (err) => {
-          console.error('Filter error:', err);
-          this.errorMessage = 'Failed to apply filters';
-          this.isLoading = false;
-        }
-      });
+    this.sentService.filterSent(filters, this.currentPage, this.pageSize).subscribe({
+      next: (response: any) => {
+        this.emails = response.data;
+        this.totalEmails = response.totalRecords;
+        this.isLoading = false;
+        this.closeFilterModal();
+      },
+      error: (err) => {
+        console.error('Filter error:', err);
+        this.errorMessage = 'Failed to apply filters';
+        this.isLoading = false;
+      },
+    });
   }
 
   clearFilter(): void {
@@ -201,7 +241,7 @@ export class Sent implements OnInit {
       subject: '',
       hasWords: '',
       doesntHave: '',
-      dateWithin: '1w'
+      dateWithin: '1w',
     };
   }
 
@@ -224,105 +264,109 @@ export class Sent implements OnInit {
   getPriorityLabel(priority: number | undefined): string {
     if (!priority) return 'medium';
     switch (priority) {
-      case 5: return 'critical';
-      case 4: return 'high';
-      case 3: return 'medium';
-      case 2: return 'low';
-      case 1: return 'low';
-      default: return 'medium';
+      case 5:
+        return 'critical';
+      case 4:
+        return 'high';
+      case 3:
+        return 'medium';
+      case 2:
+        return 'low';
+      case 1:
+        return 'low';
+      default:
+        return 'medium';
     }
   }
   toggleSelectEmail(emailId: string, event: Event) {
-  event.stopPropagation();
+    event.stopPropagation();
 
-  if (this.selectedEmailIds.includes(emailId)) {
-    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
-  } else {
-    this.selectedEmailIds.push(emailId);
+    if (this.selectedEmailIds.includes(emailId)) {
+      this.selectedEmailIds = this.selectedEmailIds.filter((id) => id !== emailId);
+    } else {
+      this.selectedEmailIds.push(emailId);
+    }
   }
-}
 
-deleteSelected() {
-  if (this.selectedEmailIds.length === 0) return;
+  deleteSelected() {
+    if (this.selectedEmailIds.length === 0) return;
 
-  const folder = "Sent";
+    const folder = 'Sent';
 
-  this.selectedEmailIds.forEach(id => {
-    this.trashService.moveToTrash(id, folder).subscribe(() => {
-      this.loadEmails();
+    this.selectedEmailIds.forEach((id) => {
+      this.trashService.moveToTrash(id, folder).subscribe(() => {
+        this.loadEmails();
+      });
     });
-  });
 
-  this.selectedEmailIds = [];
-}
-toggleSelectAll(event: any) {
-  if (event.target.checked) {
-    this.selectedEmailIds = this.emails.map(e => e.id);
-  } else {
     this.selectedEmailIds = [];
   }
-}
-moveSelectedEmails(targetFolder: string): void {
+  toggleSelectAll(event: any) {
+    if (event.target.checked) {
+      this.selectedEmailIds = this.emails.map((e) => e.id);
+    } else {
+      this.selectedEmailIds = [];
+    }
+  }
+  moveSelectedEmails(targetFolder: string): void {
     if (this.selectedEmailIds.length === 0) return;
 
     // --- 1. SETUP ---
     const totalMoves = this.selectedEmailIds.length;
     let successfulMoves = 0;
     let failed = false;
-    const sourceFolder = "sent";
+    const sourceFolder = 'sent';
     const selectedEmailIdToMove = this.selectedEmail?.id;
-    this.selectedEmail = null; 
+    this.selectedEmail = null;
     this.errorMessage = null;
 
     // --- 2. Iterate Over All Selected IDs ---
-    this.selectedEmailIds.forEach(idToMove => {
-        
-        // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
-        this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
-            next: () => {
-                successfulMoves++;
-                
-                // 3. CHECK COMPLETION (Runs on every success)
-                if (successfulMoves === totalMoves) {
-                    // All calls finished successfully
-                    this.loadEmails();
-                }
-            },
-            error: (err) => {
-                // Set flag to stop any subsequent refreshes if a failure occurs
-                if (!failed) {
-                    this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
-                    this.isLoading = false; // Stop loading immediately on first error
-                }
-                failed = true;
-                console.error(`Failed to move email ${idToMove}:`, err);
-                
-                // If the error happens on the very last move, we still need to refresh
-                if (successfulMoves + 1 === totalMoves) {
-                    // Since we already set failed=true, finishOperation will just refresh.
-                    this.loadEmails(); 
-                }
-            }
-        });
+    this.selectedEmailIds.forEach((idToMove) => {
+      // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
+      this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
+        next: () => {
+          successfulMoves++;
+
+          // 3. CHECK COMPLETION (Runs on every success)
+          if (successfulMoves === totalMoves) {
+            // All calls finished successfully
+            this.loadEmails();
+          }
+        },
+        error: (err) => {
+          // Set flag to stop any subsequent refreshes if a failure occurs
+          if (!failed) {
+            this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
+            this.isLoading = false; // Stop loading immediately on first error
+          }
+          failed = true;
+          console.error(`Failed to move email ${idToMove}:`, err);
+
+          // If the error happens on the very last move, we still need to refresh
+          if (successfulMoves + 1 === totalMoves) {
+            // Since we already set failed=true, finishOperation will just refresh.
+            this.loadEmails();
+          }
+        },
+      });
     });
-    
+
     // Clear selection immediately for a clean UI state
-    this.selectedEmailIds = []; 
-}
-handleMoveSelectionChange(event: Event): void {
-    
+    this.selectedEmailIds = [];
+  }
+  handleMoveSelectionChange(event: Event): void {
     // CRITICAL FIX: Cast the event target to HTMLSelectElement
     const target = event.target as HTMLSelectElement;
-    const targetFolder = target.value; 
+    const targetFolder = target.value;
 
     // Reset the select box immediately to allow re-selection
-    target.value = ''; 
+    target.value = '';
 
     if (targetFolder) {
-        // You can add confirmation here if needed
-        
-        // Call the multi-move logic you developed earlier
-        this.moveSelectedEmails(targetFolder); 
+      // You can add confirmation here if needed
+
+      // Call the multi-move logic you developed earlier
+      this.moveSelectedEmails(targetFolder);
     }
-}
+  }
 }
