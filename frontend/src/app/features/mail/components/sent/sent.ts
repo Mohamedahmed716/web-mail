@@ -264,14 +264,12 @@ export class Sent implements OnInit {
   getPriorityLabel(priority: number | undefined): string {
     if (!priority) return 'medium';
     switch (priority) {
-      case 5:
-        return 'critical';
       case 4:
-        return 'high';
+        return 'critical';
       case 3:
-        return 'medium';
+        return 'high';
       case 2:
-        return 'low';
+        return 'medium';
       case 1:
         return 'low';
       default:

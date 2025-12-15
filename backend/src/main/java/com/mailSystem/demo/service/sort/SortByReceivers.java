@@ -19,22 +19,22 @@ public class SortByReceivers implements ISortStrategy {
     @Override
     public List<Mail> sort(List<Mail> emails) {
 
-        Comparator<Mail> receiverComparator = Comparator.comparing((Mail m) -> {
+        Comparator<Mail> comparator = Comparator.comparing((Mail m) -> {
             List<String> list = m.getReceivers();
-
             if (list == null || list.isEmpty()) {
                 return "";
             }
-
             return list.get(0);
-
         }, String.CASE_INSENSITIVE_ORDER);
 
+
+        comparator = comparator.thenComparing(Mail::getTimestamp);
+
         if (!ascending) {
-            receiverComparator = receiverComparator.reversed();
+            comparator = comparator.reversed();
         }
 
-        emails.sort(receiverComparator);
+        emails.sort(comparator);
         return emails;
     }
 }

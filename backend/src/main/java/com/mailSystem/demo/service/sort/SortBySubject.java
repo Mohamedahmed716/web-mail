@@ -23,6 +23,7 @@ public class SortBySubject implements ISortStrategy {
                 Mail::getSubject,
                 String.CASE_INSENSITIVE_ORDER
         );
+        subjectComparator = subjectComparator.thenComparing(Mail::getTimestamp);
 
         if (!ascending) {
             subjectComparator = subjectComparator.reversed();

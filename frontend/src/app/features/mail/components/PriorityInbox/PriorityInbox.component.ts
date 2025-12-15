@@ -85,8 +85,8 @@ export class PriorityInboxComponent implements OnInit {
       case 'SENDER':
         return this.isAscending ? 'SENDER_ASC' : 'SENDER_DESC';
         
-      case 'RECEIVERS':
-        return this.isAscending ? 'RECEIVERS_ASC' : 'RECEIVERS_DESC';
+      case 'SUBJECT':
+        return this.isAscending ? 'SUBJECT_ASC' : 'SUBJECT_DESC';
         
       default:
         return 'PRIORITY_HIGH';
@@ -109,7 +109,7 @@ export class PriorityInboxComponent implements OnInit {
     this.selectedEmail = null;
 
     // Try priority inbox service first, fallback to regular inbox with priority sorting
-    this.priorityInboxService.getPriorityInboxEmails(this.currentPage, this.pageSize, 'PRIORITY')
+    this.priorityInboxService.getPriorityInboxEmails(this.currentPage, this.pageSize, this.getBackendSortString())
       .subscribe({
         next: (response: any) => {
           this.emails = response.data;

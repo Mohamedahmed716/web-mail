@@ -119,7 +119,7 @@
                         <span class="email-priority">
                             @switch (email.priority) {
                             @case (4) {
-                            <i class="fa-solid fa-exclamation-circle urgent-priority" title="Urgent Priority"></i>
+                            <i class="fa-solid fa-exclamation-circle critical-priority" title="Critical Priority"></i>
                             }
                             @case (3) {
                             <i class="fa-solid fa-exclamation-triangle high-priority" title="High Priority"></i>
@@ -131,7 +131,7 @@
                             <i class="fa-solid fa-circle-dot low-priority" title="Low Priority"></i>
                             }
                             @default {
-                            <i class="fa-solid fa-check-circle no-priority" title="No Priority"></i>
+                            <i class="fa-solid fa-check-circle no-priority" title="low Priority"></i>
                             }
                             }
                         </span>

@@ -23,6 +23,7 @@ public class SortBySender implements ISortStrategy {
                 Mail::getSender,
                 String.CASE_INSENSITIVE_ORDER
         );
+        senderComparator = senderComparator.thenComparing(Mail::getTimestamp);
 
         if (!ascending) {
             senderComparator = senderComparator.reversed();
