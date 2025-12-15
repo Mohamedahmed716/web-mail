@@ -36,21 +36,21 @@ public class SendService {
             }
         }
 
-        // 2. Prepare Mail Object
-        Mail mail = new Mail();
-
         // ID Logic: If an ID comes from the frontend, it might be a Draft we are now sending.
         // If it's empty/null, generate a new one.
         boolean wasDraft = (id != null && !id.isEmpty());
-        mail.setId(wasDraft ? id : UUID.randomUUID().toString());
-
-        mail.setSender(sender);
-        mail.setReceivers(receivers);
-        mail.setSubject(subject);
-        mail.setBody(body);
-        mail.setPriority(priority);
-        mail.setAttachmentNames(attachmentNames);
-        mail.setTimestamp(new Date());
+        Mail mail = Mail.builder()
+                .id((id != null && !id.isEmpty()) ? id : UUID.randomUUID().toString())
+                .sender(sender)
+                .receivers(receivers)
+                .subject(subject)
+                .body(body)
+                .priority(priority)
+                .attachmentNames(attachmentNames)
+                .timestamp(new Date())
+                // CRITICAL: Set folder to DRAFTS
+                .folder(Constants.DRAFTS)
+                .build();
 
         // CRITICAL: Set folder to SENT. FAL will see this and distribute copies to receivers.
         mail.setFolder(Constants.SENT);
