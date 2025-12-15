@@ -145,28 +145,35 @@ public class FileAccessLayer {
     }
 
     // Helper for distribution
+// Helper for distribution
     private void distributeToReceivers(Mail mail) throws IOException {
-        String originalFolder = mail.getFolder();
-        String sender = mail.getSender(); 
-
-        mail.setFolder(Constants.INBOX);
-
+        String sender = mail.getSender();       
         for (String receiver : mail.getReceivers()) {
             File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
-
 
             if (!receiverFolder.exists()) {
                 receiverFolder.mkdirs();
             }
+            File receiverFile = new File(receiverFolder, mail.getId() + ".json");          
+            Mail receiverMail = new Mail(); // Assuming empty constructor exists
+            // Copy all necessary fields
+            receiverMail.setId(mail.getId());
+            receiverMail.setSender(mail.getSender());
+            receiverMail.setReceivers(mail.getReceivers());
+            receiverMail.setSubject(mail.getSubject());
+            receiverMail.setBody(mail.getBody());
+            receiverMail.setTimestamp(mail.getTimestamp());
+            receiverMail.setAttachmentNames(mail.getAttachmentNames());
+            receiverMail.setPriority(mail.getPriority());
+            
+            // Set the correct folder for the receiver
+            receiverMail.setFolder(Constants.INBOX); 
 
-            File receiverFile = new File(receiverFolder, mail.getId() + ".json");
-            JsonMapper.getInstance().writeValue(receiverFile, mail);
-
+            // Write the COPY, not the original
+            JsonMapper.getInstance().writeValue(receiverFile, receiverMail);
 
             copyAttachments(sender, receiver, mail.getAttachmentNames());
         }
-
-        mail.setFolder(originalFolder);
     }
 
     public void saveAttachment(MultipartFile file, String userEmail) throws IOException {
