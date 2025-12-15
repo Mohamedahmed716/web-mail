@@ -71,8 +71,9 @@ public class FileAccessLayer {
                     if (file.getName().endsWith(".json")) {
                         try {
                             Mail mail = JsonMapper.getInstance().readValue(file, Mail.class);
+
+                            mail.setFolder(folderName);
                             mails.add(mail);
-                            System.out.println("DEBUG: Loaded mail successfully!");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -147,26 +148,24 @@ public class FileAccessLayer {
     // Helper for distribution
     private void distributeToReceivers(Mail mail) throws IOException {
         String originalFolder = mail.getFolder();
-        String sender = mail.getSender(); 
+        String sender = mail.getSender();
 
-        mail.setFolder(Constants.INBOX);
+        try {
+            mail.setFolder(Constants.INBOX); // Change to Inbox for receivers
 
-        for (String receiver : mail.getReceivers()) {
-            File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
+            for (String receiver : mail.getReceivers()) {
+                File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
+                if (!receiverFolder.exists()) receiverFolder.mkdirs();
 
+                File receiverFile = new File(receiverFolder, mail.getId() + ".json");
+                JsonMapper.getInstance().writeValue(receiverFile, mail);
 
-            if (!receiverFolder.exists()) {
-                receiverFolder.mkdirs();
+                copyAttachments(sender, receiver, mail.getAttachmentNames());
             }
-
-            File receiverFile = new File(receiverFolder, mail.getId() + ".json");
-            JsonMapper.getInstance().writeValue(receiverFile, mail);
-
-
-            copyAttachments(sender, receiver, mail.getAttachmentNames());
+        } finally {
+            // ALWAYS reset to original folder, even if an error occurs
+            mail.setFolder(originalFolder);
         }
-
-        mail.setFolder(originalFolder);
     }
 
     public void saveAttachment(MultipartFile file, String userEmail) throws IOException {
