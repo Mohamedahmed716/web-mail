@@ -42,21 +42,19 @@ public class DraftService {
             }
         }
 
-        // 2. Prepare Mail Object
-        Mail mail = new Mail();
-        // Use existing ID if provided (Update Draft), else generate new
-        mail.setId((id != null && !id.isEmpty()) ? id : UUID.randomUUID().toString());
-
-        mail.setSender(sender);
-        mail.setReceivers(receivers); // Can be empty for drafts
-        mail.setSubject(subject);
-        mail.setBody(body);
-        mail.setPriority(priority);
-        mail.setAttachmentNames(attachmentNames);
-        mail.setTimestamp(new Date());
-
-        // CRITICAL: Set folder to DRAFTS. FAL will only save locally.
-        mail.setFolder(Constants.DRAFTS);
+        // 2. Prepare Mail Object using Builder Pattern
+        Mail mail = Mail.builder()
+                .id((id != null && !id.isEmpty()) ? id : UUID.randomUUID().toString())
+                .sender(sender)
+                .receivers(receivers)
+                .subject(subject)
+                .body(body)
+                .priority(priority)
+                .attachmentNames(attachmentNames)
+                .timestamp(new Date())
+                // CRITICAL: Set folder to DRAFTS
+                .folder(Constants.DRAFTS)
+                .build();
 
         // 3. Save (Local only)
         fileAccessLayer.saveMail(mail);

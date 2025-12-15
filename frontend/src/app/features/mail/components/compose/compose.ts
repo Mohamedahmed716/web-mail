@@ -68,7 +68,7 @@ export class Compose implements OnInit {
           subject: '',
           body: '',
           priority: 3,
-          folder: 'Drafts',
+          folder: '',
           timestamp: new Date(),
           attachments: [],    // Start empty
           attachmentNames: [] // Start empty
@@ -150,6 +150,7 @@ export class Compose implements OnInit {
     console.log('Sending Token:', token);
     const headers = new HttpHeaders().set('Authorization', token);
 
+    this.email.folder = 'Sent'; // Set folder to Sent on sending
     const payload = this.prepareFormData(this.email);
 
     this.apiService.post('/send/sendEmail', payload, { headers, responseType: 'text'}).subscribe({
@@ -177,6 +178,7 @@ export class Compose implements OnInit {
     const token = localStorage.getItem('auth-token') || '';
     const headers = new HttpHeaders().set('Authorization', token);
 
+    this.email.folder = 'Drafts'; // Ensure folder is Drafts
     const payload = this.prepareFormData(this.email);
 
     this.apiService.post('/draft/saveDraft', payload, { headers, responseType: 'text' }).subscribe({

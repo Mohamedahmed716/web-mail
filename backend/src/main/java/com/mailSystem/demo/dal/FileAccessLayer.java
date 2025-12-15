@@ -71,8 +71,9 @@ public class FileAccessLayer {
                     if (file.getName().endsWith(".json")) {
                         try {
                             Mail mail = JsonMapper.getInstance().readValue(file, Mail.class);
+
+                            mail.setFolder(folderName);
                             mails.add(mail);
-                            System.out.println("DEBUG: Loaded mail successfully!");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -147,32 +148,24 @@ public class FileAccessLayer {
     // Helper for distribution
 // Helper for distribution
     private void distributeToReceivers(Mail mail) throws IOException {
-        String sender = mail.getSender();       
-        for (String receiver : mail.getReceivers()) {
-            File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
+        String originalFolder = mail.getFolder();
+        String sender = mail.getSender();
 
-            if (!receiverFolder.exists()) {
-                receiverFolder.mkdirs();
+        try {
+            mail.setFolder(Constants.INBOX); // Change to Inbox for receivers
+
+            for (String receiver : mail.getReceivers()) {
+                File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
+                if (!receiverFolder.exists()) receiverFolder.mkdirs();
+
+                File receiverFile = new File(receiverFolder, mail.getId() + ".json");
+                JsonMapper.getInstance().writeValue(receiverFile, mail);
+
+                copyAttachments(sender, receiver, mail.getAttachmentNames());
             }
-            File receiverFile = new File(receiverFolder, mail.getId() + ".json");          
-            Mail receiverMail = new Mail(); // Assuming empty constructor exists
-            // Copy all necessary fields
-            receiverMail.setId(mail.getId());
-            receiverMail.setSender(mail.getSender());
-            receiverMail.setReceivers(mail.getReceivers());
-            receiverMail.setSubject(mail.getSubject());
-            receiverMail.setBody(mail.getBody());
-            receiverMail.setTimestamp(mail.getTimestamp());
-            receiverMail.setAttachmentNames(mail.getAttachmentNames());
-            receiverMail.setPriority(mail.getPriority());
-            
-            // Set the correct folder for the receiver
-            receiverMail.setFolder(Constants.INBOX); 
-
-            // Write the COPY, not the original
-            JsonMapper.getInstance().writeValue(receiverFile, receiverMail);
-
-            copyAttachments(sender, receiver, mail.getAttachmentNames());
+        } finally {
+            // ALWAYS reset to original folder, even if an error occurs
+            mail.setFolder(originalFolder);
         }
     }
 
