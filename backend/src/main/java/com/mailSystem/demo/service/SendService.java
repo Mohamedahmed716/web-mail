@@ -7,6 +7,7 @@ import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.sort.ISortStrategy;
 import com.mailSystem.demo.service.sort.SortByDate;
 import com.mailSystem.demo.service.sort.SortByPriority;
+import com.mailSystem.demo.service.sort.SortFactory;
 import com.mailSystem.demo.utils.Constants;
 import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +72,8 @@ public class SendService {
     public InboxResponse loadSent(String userEmail, int page, int size, String sortType) {
         List<Mail> allMails = fileAccessLayer.loadMails(userEmail, Constants.SENT);
 
-        ISortStrategy sortStrategy;
-        if ("PRIORITY".equalsIgnoreCase(sortType)) {
-            sortStrategy = new SortByPriority();
-        } else {
-            sortStrategy = new SortByDate();
-        }
-        sortStrategy.sort(allMails);
+        SortFactory.getStrategy(sortType).sort(allMails);
+
 
         int total = allMails.size();
         List<Mail> pagedList = Pagination.slice(allMails, page, size);

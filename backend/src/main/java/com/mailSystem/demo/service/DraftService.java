@@ -7,6 +7,7 @@ import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.sort.ISortStrategy;
 import com.mailSystem.demo.service.sort.SortByDate;
 import com.mailSystem.demo.service.sort.SortByPriority;
+import com.mailSystem.demo.service.sort.SortFactory;
 import com.mailSystem.demo.utils.Constants;
 import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class DraftService {
     private InboxSearchService searchService;
 
     public void saveDraft(String sender, List<String> receivers, String subject, String body, int priority, List<MultipartFile> attachments, String id) throws IOException {
-        if(receivers.isEmpty() && subject.isEmpty() && body.isEmpty() && attachments == null) {
-            if(id != null) {
+        if (receivers.isEmpty() && subject.isEmpty() && body.isEmpty() && attachments == null) {
+            if (id != null) {
                 fileAccessLayer.deleteMail(sender, Constants.DRAFTS, id);
             }
             return;
@@ -72,13 +73,7 @@ public class DraftService {
     public InboxResponse getDraftEmails(String email, int page, int size, String sortType) {
         List<Mail> allMails = fileAccessLayer.loadMails(email, Constants.DRAFTS);
 
-        ISortStrategy sortStrategy;
-        if ("PRIORITY".equalsIgnoreCase(sortType)) {
-            sortStrategy = new SortByPriority();
-        } else {
-            sortStrategy = new SortByDate();
-        }
-        sortStrategy.sort(allMails);
+        SortFactory.getStrategy(sortType).sort(allMails);
 
         int total = allMails.size();
         List<Mail> pagedList = Pagination.slice(allMails, page, size);

@@ -7,6 +7,7 @@ import com.mailSystem.demo.model.Mail;
 import com.mailSystem.demo.service.sort.ISortStrategy;
 import com.mailSystem.demo.service.sort.SortByDate;
 import com.mailSystem.demo.service.sort.SortByPriority;
+import com.mailSystem.demo.service.sort.SortFactory;
 import com.mailSystem.demo.utils.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public class PriorityInboxService {
         // Always sort by priority for priority inbox, regardless of sortType parameter
         ISortStrategy sortStrategy = new SortByPriority();
         sortStrategy.sort(allMails);
+        SortFactory.getStrategy(sortType).sort(allMails);
+
 
         int total = allMails.size();
         List<Mail> pagedList = Pagination.slice(allMails, page, size);
