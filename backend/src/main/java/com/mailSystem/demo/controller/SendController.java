@@ -40,7 +40,8 @@ public class SendController {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            List<String> receivers = mapper.readValue(receiversJson, new TypeReference<List<String>>(){});
+            List<String> receivers = mapper.readValue(receiversJson, new TypeReference<List<String>>() {
+            });
 
             if (receivers == null || receivers.isEmpty()) {
                 return ResponseEntity.badRequest().body("Error: At least one receiver is required.");
@@ -76,7 +77,7 @@ public class SendController {
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "DATE") String sort) {
+            @RequestParam(defaultValue = "DATE_NEWEST") String sort) {
 
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

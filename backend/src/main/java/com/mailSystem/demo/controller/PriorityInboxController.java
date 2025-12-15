@@ -25,7 +25,7 @@ public class PriorityInboxController {
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "PRIORITY") String sort) {
+            @RequestParam(defaultValue = "PRIORITY_HIGH") String sort) {
 
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

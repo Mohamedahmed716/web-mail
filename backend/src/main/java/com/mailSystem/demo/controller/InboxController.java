@@ -25,7 +25,7 @@ public class InboxController {
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "DATE") String sort) {
+            @RequestParam(defaultValue = "DATE_NEWEST") String sort) {
 
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

@@ -44,7 +44,8 @@ public class DraftController {
         }
         try {
             ObjectMapper mapper = new ObjectMapper();
-            List<String> receivers = mapper.readValue(receiversJson, new TypeReference<List<String>>(){});
+            List<String> receivers = mapper.readValue(receiversJson, new TypeReference<List<String>>() {
+            });
 
             draftService.saveDraft(senderEmail, receivers, subject, body, priority, attachments, id);
 
@@ -66,7 +67,7 @@ public class DraftController {
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "DATE") String sort) {
+            @RequestParam(defaultValue = "DATE_NEWEST") String sort) {
 
         if (token == null || !UserContext.isValid(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
