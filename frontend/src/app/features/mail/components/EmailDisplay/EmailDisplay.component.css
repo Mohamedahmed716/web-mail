@@ -1,12 +1,31 @@
+/* Host element styling - makes Angular component participate in flex layout */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  /* Critical: allows flex children to shrink below content size */
+  overflow: hidden;
+}
+
 .display-container {
   padding: 24px 32px;
   color: #e5e7eb;
   max-width: 100%;
   background-color: #0b0e11;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  /* Critical: enables proper scrolling in flex children */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+}
+
+/* Email content wrapper - fills remaining space */
+.email-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* Header Area */
@@ -14,6 +33,8 @@
   border-bottom: 1px solid #1f2937;
   padding-bottom: 20px;
   margin-bottom: 24px;
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
 }
 
 .header-main {
@@ -23,13 +44,20 @@
   margin-bottom: 16px;
 }
 
-.subject { font-size: 1.25rem; font-weight: 600; margin: 0; color: white; line-height: 1.4; }
+.subject {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+  line-height: 1.4;
+}
 
 .actions .icon-btn {
   background: transparent;
   border: 1px solid #1f2937;
   color: #9ca3af;
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   margin-left: 6px;
   cursor: pointer;
@@ -38,24 +66,49 @@
   align-items: center;
   justify-content: center;
 }
-.actions .icon-btn:hover { background: #1f2937; color: white; }
+
+.actions .icon-btn:hover {
+  background: #1f2937;
+  color: white;
+}
 
 /* Sender Meta */
-.sender-meta { display: flex; align-items: center; gap: 12px; }
+.sender-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
 .avatar {
-  width: 40px; height: 40px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   border-radius: 50%;
   color: white;
-  display: flex; justify-content: center; align-items: center;
-  font-size: 1rem; font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
-.meta-info { display: flex; flex-direction: column; }
-.sender-name { font-weight: 600; font-size: 0.9rem; color: #ffffff; }
-.timestamp { font-size: 0.8rem; color: #9ca3af; margin-top: 2px; }
+.meta-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sender-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
 
 /* Body Content */
 .email-body {
@@ -64,9 +117,16 @@
   color: #d1d5db;
   margin-bottom: 32px;
   white-space: pre-wrap;
+  flex: 1;
+  /* Allows email body to fill remaining space */
 }
 
 /* Attachments Section */
+.attachments-section {
+  flex-shrink: 0;
+  /* Prevent shrinking when scrolling */
+}
+
 .attachments-section h3 {
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -76,7 +136,11 @@
   font-weight: 600;
 }
 
-.attachments-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+.attachments-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
 .attachment-card {
   background-color: #1a1d23;
@@ -84,89 +148,182 @@
   border-radius: 8px;
   width: 220px;
   padding: 10px;
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   transition: 0.2s;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.attachment-card:hover { border-color: #6366f1; transform: translateY(-1px); }
+.attachment-card:hover {
+  border-color: #6366f1;
+  transform: translateY(-1px);
+}
 
 /* File Types Styling */
 .file-icon {
-  width: 36px; height: 36px;
+  width: 36px;
+  height: 36px;
   background: rgba(99, 102, 241, 0.1);
   border-radius: 6px;
-  display: flex; justify-content: center; align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1.2rem;
   color: #6366f1;
 }
 
-.file-details { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
-.file-name { font-size: 0.85rem; font-weight: 500; color: #e5e7eb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.download-link { font-size: 0.7rem; color: #6366f1; text-decoration: none; margin-top: 2px; display: inline-block; }
-.download-link:hover { text-decoration: underline; }
+.file-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e5e7eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.download-link {
+  font-size: 0.7rem;
+  color: #6366f1;
+  text-decoration: none;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}
 
 /* Image Preview Styling */
-.image-type { padding: 0; height: 160px; flex-direction: column; align-items: stretch; }
-.preview-img { width: 100%; height: 100%; object-fit: cover; }
+.image-type {
+  padding: 0;
+  height: 160px;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .image-type .file-name {
-  position: absolute; bottom: 0; left: 0; right: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: rgba(0, 0, 0, 0.7);
-  padding: 6px; font-size: 0.8rem; text-align: center;
+  padding: 6px;
+  font-size: 0.8rem;
+  text-align: center;
 }
+
 .overlay-actions {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(108, 92, 231, 0.8);
-  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
-  opacity: 0; transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: 0.3s;
 }
-.attachment-card:hover .overlay-actions { opacity: 1; }
-.action-link { color: white; text-decoration: none; font-weight: bold; padding: 5px 10px; border: 1px solid white; border-radius: 20px; font-size: 0.8rem; }
-.action-link:hover { background: white; color: var(--primary); }
+
+.attachment-card:hover .overlay-actions {
+  opacity: 1;
+}
+
+.action-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px 10px;
+  border: 1px solid white;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.action-link:hover {
+  background: white;
+  color: var(--primary);
+}
 
 /* Reply Actions (Bottom) */
 .reply-actions {
   margin-top: 32px;
   padding-top: 16px;
   border-top: 1px solid #1f2937;
-  display: flex; gap: 12px;
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+  /* Prevent shrinking */
 }
 
 .btn-primary {
   flex: 1;
   background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
-  border: none; padding: 10px; border-radius: 6px;
-  font-weight: 600; cursor: pointer; transition: 0.2s;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
   font-size: 0.875rem;
 }
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
 
 .btn-secondary {
   background: transparent;
   color: #9ca3af;
   border: 1px solid #1f2937;
-  padding: 10px 20px; border-radius: 6px;
-  font-weight: 600; cursor: pointer; transition: 0.2s;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
   font-size: 0.875rem;
 }
-.btn-secondary:hover { border-color: #6b7280; color: #e5e7eb; background-color: #1f2937; }
+
+.btn-secondary:hover {
+  border-color: #6b7280;
+  color: #e5e7eb;
+  background-color: #1f2937;
+}
 
 /* Empty State */
 .empty-state {
   height: 100%;
-  display: flex; 
-  flex-direction: column; 
-  justify-content: center; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   color: #6b7280;
 }
-.empty-icon { 
-  font-size: 4rem; 
-  opacity: 0.2; 
-  margin-bottom: 20px; 
+
+.empty-icon {
+  font-size: 4rem;
+  opacity: 0.2;
+  margin-bottom: 20px;
 }
 
 /* Scrollbar for email display */
