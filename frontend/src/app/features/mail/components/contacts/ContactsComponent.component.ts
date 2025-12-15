@@ -17,6 +17,7 @@ export class ContactsComponent implements OnInit {
   filteredContacts: Contact[] = [];
   searchQuery: string = '';
   searchType: string = 'default'; // default, name, email
+  private searchTimeout: any;
   sortBy = 'name';
 
   showAddModal = false;
@@ -54,6 +55,18 @@ export class ContactsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onSearchInput() {
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    // Set new timeout for debouncing (300ms delay)
+    this.searchTimeout = setTimeout(() => {
+      this.onSearch();
+    }, 300);
   }
 
   onSearch() {

@@ -14,7 +14,7 @@
                         class="search-input"
                         placeholder="Search inbox..."
                         [(ngModel)]="searchQuery"
-                        (keyup.enter)="onSearch()">
+                        (input)="onSearchInput()">
                     <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -178,5 +178,55 @@
 
 <div class="filter-modal-overlay" *ngIf="showFilterModal" (click)="closeFilterModal()">
     <div class="filter-modal" (click)="stopProp($event)">
+        <div class="filter-header">
+            <h3>Filter Emails</h3>
+            <button class="close-btn" (click)="closeFilterModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
+
+        <div class="filter-body">
+            <div class="filter-field">
+                <label>From:</label>
+                <input type="text" [(ngModel)]="filterCriteria.from" placeholder="sender@example.com">
+            </div>
+
+            <div class="filter-field">
+                <label>To:</label>
+                <input type="text" [(ngModel)]="filterCriteria.to" placeholder="recipient@example.com">
+            </div>
+
+            <div class="filter-field">
+                <label>Subject:</label>
+                <input type="text" [(ngModel)]="filterCriteria.subject" placeholder="Subject contains...">
+            </div>
+
+            <div class="filter-field">
+                <label>Has words:</label>
+                <input type="text" [(ngModel)]="filterCriteria.hasWords" placeholder="Must contain these words">
+            </div>
+
+            <div class="filter-field">
+                <label>Doesn't have:</label>
+                <input type="text" [(ngModel)]="filterCriteria.doesntHave" placeholder="Must not contain these words">
+            </div>
+
+            <div class="filter-field">
+                <label>Date within:</label>
+                <select [(ngModel)]="filterCriteria.dateWithin">
+                    <option value="1d">1 day</option>
+                    <option value="1w">1 week</option>
+                    <option value="1m">1 month</option>
+                    <option value="3m">3 months</option>
+                    <option value="6m">6 months</option>
+                    <option value="1y">1 year</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-footer">
+            <button class="filter-btn secondary" (click)="clearFilter()">Clear</button>
+            <button class="filter-btn primary" (click)="applyFilter()">Apply Filter</button>
+        </div>
+    </div>
 </div>

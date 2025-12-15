@@ -25,6 +25,7 @@ export class Inbox implements OnInit  {
 
   // Search functionality
   searchQuery: string = '';
+  private searchTimeout: any;
 
   // Filter modal
   showFilterModal: boolean = false;
@@ -89,7 +90,19 @@ export class Inbox implements OnInit  {
     this.selectedEmail = email;
   }
 
-  // Search functionality
+  // Search functionality with debouncing
+  onSearchInput(): void {
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    // Set new timeout for debouncing (300ms delay)
+    this.searchTimeout = setTimeout(() => {
+      this.onSearch();
+    }, 300);
+  }
+
   onSearch(): void {
     if (this.searchQuery.trim()) {
       this.isLoading = true;
@@ -113,6 +126,10 @@ export class Inbox implements OnInit  {
 
   clearSearch(): void {
     this.searchQuery = '';
+    // Clear any pending search timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
     this.loadEmails();
   }
 

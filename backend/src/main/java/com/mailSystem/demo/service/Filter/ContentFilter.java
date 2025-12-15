@@ -1,10 +1,11 @@
-package com.mailSystem.demo.service.filter;
-
-import com.mailSystem.demo.model.Mail;
-import org.springframework.stereotype.Component;
+package com.mailSystem.demo.service.Filter;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.mailSystem.demo.model.Mail;
 
 /**
  * Filter emails by content (body)

@@ -1,7 +1,8 @@
-package com.mailSystem.demo.service.filter;
+package com.mailSystem.demo.service.Filter;
+
+import java.util.Set;
 
 import com.mailSystem.demo.model.Mail;
-import java.util.Set;
 
 /**
  * Filter Design Pattern Interface
