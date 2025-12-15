@@ -1,35 +1,380 @@
+/* ============================================
+   GLOBAL STYLES - Enhanced with Animations
+   Modern Dark Theme Email Client
+   ============================================ */
+
+/* Import Animation Library */
+@import 'styles/animations.css';
+
+/* ============================================
+   CSS CUSTOM PROPERTIES (Enhanced)
+   ============================================ */
 :root {
-  /* ألوان الخلفيات (Dark Theme) */
-  --bg-app: #0f1014;         /* الخلفية الأساسية الغامقة */
-  --bg-surface: #1e1e24;     /* خلفية القوائم والكروت */
-  --bg-hover: #272730;       /* لون الهوفر */
-  --bg-active: rgba(108, 92, 231, 0.1); /* لون العنصر المختار */
-  
-  /* ألوان النصوص */
+  /* Background Colors (Dark Theme) */
+  --bg-app: #0f1014;
+  --bg-surface: #1e1e24;
+  --bg-hover: #272730;
+  --bg-active: rgba(108, 92, 231, 0.1);
+  --bg-card: #1a1d23;
+  --bg-elevated: #111418;
+
+  /* Text Colors */
   --text-primary: #ffffff;
   --text-secondary: #8b8b99;
   --text-muted: #585866;
+  --text-disabled: #4b5563;
 
-  /* الألوان الأساسية (Accent) */
-  --primary: #6c5ce7;        /* البنفسجي المودرن */
+  /* Primary Colors (Accent) */
+  --primary: #6c5ce7;
+  --primary-rgb: 108, 92, 231;
   --primary-hover: #5b4cc4;
-  --border-color: #2d2d3a;   /* لون الخطوط الفاصلة */
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
 
-  /* ألوان الأولويات (Badges) */
+  /* Secondary Colors */
+  --secondary: #8b5cf6;
+  --cyan: #06b6d4;
+  --cyan-rgb: 6, 182, 212;
+
+  /* Border Colors */
+  --border-color: #2d2d3a;
+  --border-subtle: #1f2937;
+  --border-hover: #374151;
+
+  /* Priority Badge Colors */
   --urgent-color: #ff6b6b;
   --high-color: #feca57;
   --normal-color: #54a0ff;
   --low-color: #1dd1a1;
+
+  /* Status Colors */
+  --success: #10b981;
+  --success-rgb: 16, 185, 129;
+  --warning: #f59e0b;
+  --warning-rgb: 245, 158, 11;
+  --danger: #ef4444;
+  --danger-rgb: 239, 68, 68;
+  --info: #3b82f6;
+  --info-rgb: 59, 130, 246;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+  /* Animation Variables */
+  --anim-instant: 0.1s;
+  --anim-fast: 0.2s;
+  --anim-normal: 0.3s;
+  --anim-slow: 0.5s;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
 }
 
-/* تظبيط شكل السكرول بار عشان يبقى dark */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-app); }
-::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #666; }
+/* ============================================
+   BASE STYLES
+   ============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-body { 
-    background-color: var(--bg-app); 
-    color: var(--text-primary); 
-    font-family: 'Segoe UI', sans-serif; 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   SCROLLBAR STYLING (Enhanced)
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-app);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #444 var(--bg-app);
+}
+
+/* ============================================
+   SELECTION STYLING
+   ============================================ */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #fff;
+}
+
+/* ============================================
+   FOCUS STYLES (Accessibility)
+   ============================================ */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   LINK STYLES
+   ============================================ */
+a {
+  color: var(--primary-light);
+  text-decoration: none;
+  transition: color var(--anim-fast) ease;
+}
+
+a:hover {
+  color: var(--secondary);
+}
+
+/* ============================================
+   BUTTON BASE STYLES
+   ============================================ */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--anim-fast) var(--ease-out-quart);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============================================
+   INPUT BASE STYLES
+   ============================================ */
+input,
+select,
+textarea {
+  font-family: inherit;
+  transition: border-color var(--anim-fast) ease,
+    box-shadow var(--anim-fast) ease,
+    background-color var(--anim-fast) ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITY
+   ============================================ */
+.glass {
+  background: rgba(26, 29, 35, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================
+   GRADIENT BACKGROUNDS
+   ============================================ */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.gradient-radial {
+  background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+}
+
+/* ============================================
+   SUBTLE BACKGROUND PATTERN
+   ============================================ */
+.pattern-dots {
+  background-image: radial-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ============================================
+   CARD HOVER EFFECT
+   ============================================ */
+.card-interactive {
+  transition: transform var(--anim-fast) var(--ease-out-quart),
+    box-shadow var(--anim-fast) var(--ease-out-quart),
+    background-color var(--anim-fast) ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   BADGE PULSE ANIMATION
+   ============================================ */
+.badge-pulse {
+  position: relative;
+}
+
+.badge-pulse::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  animation: pulseRing 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  background: inherit;
+  opacity: 0;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   TEXT GRADIENT
+   ============================================ */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 50%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   SHIMMER LOADING EFFECT
+   ============================================ */
+.shimmer {
+  background: linear-gradient(90deg,
+      var(--bg-surface) 0%,
+      var(--bg-hover) 50%,
+      var(--bg-surface) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================
+   TOOLTIP STYLES
+   ============================================ */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-5px);
+  padding: 6px 12px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--anim-fast) var(--ease-out-quart);
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-subtle);
+}
+
+[data-tooltip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+/* ============================================
+   PAGE TRANSITION WRAPPER
+   ============================================ */
+.page-enter {
+  animation: fadeInUp var(--anim-normal) var(--ease-out-quart) forwards;
+}
+
+/* ============================================
+   ACCESSIBILITY: REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

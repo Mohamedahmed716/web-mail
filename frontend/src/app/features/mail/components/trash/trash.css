@@ -1,3 +1,7 @@
+/* ============================================
+   TRASH COMPONENT - Enhanced with Animations
+   ============================================ */
+
 .trash-container {
   height: 100%;
   display: flex;
@@ -13,10 +17,9 @@
   min-width: 320px;
   background-color: #0f1115;
   overflow: hidden;
-  transition: flex 0.3s ease;
+  transition: flex 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* When email is selected, compress the list */
 .trash-list-section.shrunk {
   flex: 0 0 420px;
   max-width: 600px;
@@ -30,9 +33,9 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  animation: slideInRight 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* --- 1. Toolbar with Search --- */
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -40,6 +43,7 @@
   padding: 16px 16px 12px 16px;
   flex-shrink: 0;
   border-bottom: 1px solid #1f2937;
+  animation: fadeInDown 0.4s ease forwards;
 }
 
 .left-tools {
@@ -56,7 +60,7 @@
   align-items: center;
   gap: 8px;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   min-width: 80px;
 }
 
@@ -64,12 +68,10 @@
   background-color: transparent;
   font-size: 0.7rem;
   padding: 0;
-  border-radius: 0;
   color: #6b7280;
   font-weight: 400;
 }
 
-/* Search Bar Design */
 .search-wrapper {
   position: relative;
   width: 100%;
@@ -82,7 +84,11 @@
   top: 50%;
   transform: translateY(-50%);
   color: #6b7280;
-  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.search-wrapper:focus-within i {
+  color: #ef4444;
 }
 
 .search-input {
@@ -90,16 +96,17 @@
   background-color: #1f2937;
   border: 1px solid transparent;
   padding: 10px 40px 10px 36px;
-  border-radius: 8px;
+  border-radius: 10px;
   color: #fff;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   font-size: 0.9rem;
 }
 
 .search-input:focus {
-  border-color: #4f46e5;
+  border-color: #ef4444;
   background-color: #111827;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15), 0 0 20px rgba(239, 68, 68, 0.1);
 }
 
 .clear-search {
@@ -112,52 +119,63 @@
   color: #6b7280;
   cursor: pointer;
   padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
+  border-radius: 4px;
 }
 
 .clear-search:hover {
   color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .right-tools {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .icon-btn {
   background: transparent;
   border: 1px solid #1f2937;
   color: #9ca3af;
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.875rem;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .icon-btn:hover {
   background-color: #1f2937;
   color: #fff;
+  transform: translateY(-1px);
 }
 
-/* --- 2. Action Bar --- */
+.icon-btn:active {
+  transform: translateY(0) scale(0.95);
+}
+
 .action-bar {
   display: flex;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-bottom: 1px solid #1f2937;
   font-size: 0.85rem;
   flex-shrink: 0;
+  animation: fadeIn 0.3s ease forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
 }
 
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.checkbox-wrapper:hover {
+  color: #e5e7eb;
 }
 
 .text-btn {
@@ -168,9 +186,9 @@
   cursor: pointer;
   font-weight: 500;
   font-size: 0.85rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .text-btn:hover {
@@ -183,7 +201,6 @@
   background-color: rgba(239, 68, 68, 0.1);
 }
 
-/* --- Email List --- */
 .email-list {
   flex: 1;
   overflow-y: auto;
@@ -192,30 +209,82 @@
 
 .email-item {
   display: flex;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-bottom: 1px solid #1a1d23;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
+  animation: fadeInUp 0.4s ease forwards;
+  animation-delay: calc(var(--index, 0) * 0.03s);
+  opacity: 0;
+}
+
+.email-item:nth-child(1) {
+  --index: 1;
+}
+
+.email-item:nth-child(2) {
+  --index: 2;
+}
+
+.email-item:nth-child(3) {
+  --index: 3;
+}
+
+.email-item:nth-child(4) {
+  --index: 4;
+}
+
+.email-item:nth-child(5) {
+  --index: 5;
+}
+
+.email-item:nth-child(6) {
+  --index: 6;
+}
+
+.email-item:nth-child(7) {
+  --index: 7;
+}
+
+.email-item:nth-child(8) {
+  --index: 8;
+}
+
+.email-item:nth-child(9) {
+  --index: 9;
+}
+
+.email-item:nth-child(10) {
+  --index: 10;
 }
 
 .email-item:hover {
   background-color: #16181d;
 }
 
-.email-item.active {
-  background-color: #1a1d23;
-  border-left: 3px solid #6366f1;
-}
-
-.email-item.active::before {
+.email-item::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(180deg, #ef4444 0%, #f87171 100%);
+  transform: scaleY(0);
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.email-item:hover::before {
+  transform: scaleY(0.5);
+}
+
+.email-item.active {
+  background-color: #1a1d23;
+}
+
+.email-item.active::before {
+  transform: scaleY(1);
 }
 
 .email-select {
@@ -225,9 +294,9 @@
 
 .email-content {
   flex: 1;
+  min-width: 0;
 }
 
-/* --- Typography & Badges --- */
 .email-top-row {
   display: flex;
   justify-content: space-between;
@@ -239,6 +308,11 @@
   color: #ffffff;
   font-weight: 600;
   font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.email-item:hover .sender-name {
+  color: #fca5a5;
 }
 
 .email-subject {
@@ -254,6 +328,11 @@
 .clip-icon {
   font-size: 0.75rem;
   color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.email-item:hover .clip-icon {
+  color: #ef4444;
 }
 
 .email-snippet {
@@ -265,9 +344,47 @@
   max-width: 100%;
 }
 
-/* --- Pagination --- */
+.email-time {
+  font-size: 0.75rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.email-priority {
+  margin-left: auto;
+  margin-right: 8px;
+  font-size: 0.9rem;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.email-item:hover .email-priority {
+  transform: scale(1.2);
+}
+
+.urgent-priority,
+.critical-priority {
+  color: #dc2626;
+}
+
+.high-priority {
+  color: #fb923c;
+}
+
+.medium-priority {
+  color: #60a5fa;
+}
+
+.low-priority {
+  color: #9ca3af;
+}
+
+.no-priority {
+  color: #4b5563;
+  opacity: 0.5;
+}
+
 .pagination {
-  padding: 10px 16px;
+  padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -282,16 +399,17 @@
   background: transparent;
   border: 1px solid #1f2937;
   color: #9ca3af;
-  padding: 4px 12px;
-  border-radius: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .pagination button:hover:not(:disabled) {
   background-color: #1f2937;
   color: #fff;
+  transform: translateY(-1px);
 }
 
 .pagination button:disabled {
@@ -299,7 +417,6 @@
   cursor: not-allowed;
 }
 
-/* --- Loading & Error States --- */
 .loading-state,
 .error-state {
   display: flex;
@@ -308,14 +425,17 @@
   padding: 40px;
   color: #9ca3af;
   font-size: 0.9rem;
-  gap: 8px;
+  gap: 10px;
+}
+
+.loading-state i {
+  animation: spin 1s linear infinite;
 }
 
 .error-state {
   color: #ef4444;
 }
 
-/* --- Empty State --- */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -323,40 +443,21 @@
   align-items: center;
   height: 100%;
   color: #6b7280;
-  gap: 12px;
+  gap: 16px;
+  animation: fadeIn 0.6s ease forwards;
 }
 
 .empty-icon {
-  font-size: 3rem;
-  opacity: 0.3;
+  font-size: 4rem;
+  opacity: 0.2;
+  animation: float 3s ease-in-out infinite;
 }
 
 .empty-state p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
-/* --- Email Time & Priority --- */
-.email-time {
-  font-size: 0.75rem;
-  color: #6b7280;
-  white-space: nowrap;
-}
-
-.email-priority {
-  margin-left: auto;
-  margin-right: 8px;
-  font-size: 0.9rem;
-}
-
-.critical-priority { color: #dc2626; }
-.urgent-priority { color: #dc2626; }
-.high-priority { color: #fb923c; }
-.medium-priority { color: #60a5fa; }
-.low-priority { color: #9ca3af; }
-.no-priority { color: #4b5563; opacity: 0.5; }
-
-/* --- Detail Toolbar --- */
 .detail-toolbar {
   display: flex;
   justify-content: space-between;
@@ -364,6 +465,7 @@
   padding: 15px 24px;
   border-bottom: 1px solid #1f2937;
   background-color: #0b0e11;
+  animation: fadeInDown 0.3s ease forwards;
 }
 
 .dt-left {
@@ -393,9 +495,9 @@
 
 .close-view-btn:hover {
   background-color: #374151;
+  transform: rotate(90deg);
 }
 
-/* --- FILTER MODAL --- */
 .filter-modal-overlay {
   position: fixed;
   top: 0;
@@ -407,37 +509,22 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(8px);
+  animation: overlayFadeIn 0.3s ease forwards;
 }
 
 .filter-modal {
   background-color: #1a1d23;
   border: 1px solid #374151;
-  border-radius: 12px;
+  border-radius: 16px;
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(239, 68, 68, 0.1);
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .filter-header {
@@ -461,16 +548,14 @@
   color: #9ca3af;
   cursor: pointer;
   padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all 0.2s;
+  border-radius: 8px;
+  transition: all 0.25s ease;
 }
 
 .close-btn:hover {
   background-color: #374151;
   color: #fff;
+  transform: rotate(90deg);
 }
 
 .filter-body {
@@ -481,6 +566,33 @@
 
 .filter-field {
   margin-bottom: 20px;
+  animation: fadeInUp 0.4s ease forwards;
+  animation-delay: calc(var(--field-index, 0) * 0.05s);
+  opacity: 0;
+}
+
+.filter-field:nth-child(1) {
+  --field-index: 1;
+}
+
+.filter-field:nth-child(2) {
+  --field-index: 2;
+}
+
+.filter-field:nth-child(3) {
+  --field-index: 3;
+}
+
+.filter-field:nth-child(4) {
+  --field-index: 4;
+}
+
+.filter-field:nth-child(5) {
+  --field-index: 5;
+}
+
+.filter-field:nth-child(6) {
+  --field-index: 6;
 }
 
 .filter-field:last-child {
@@ -500,18 +612,19 @@
   width: 100%;
   background-color: #111827;
   border: 1px solid #374151;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   color: #fff;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
   font-size: 0.9rem;
 }
 
 .filter-field input:focus,
 .filter-field select:focus {
-  border-color: #4f46e5;
+  border-color: #ef4444;
   background-color: #0f1115;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
 .filter-field input::placeholder {
@@ -528,12 +641,12 @@
 }
 
 .filter-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
   border: none;
 }
 
@@ -549,15 +662,16 @@
 }
 
 .filter-btn.primary {
-  background-color: #4f46e5;
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
   color: #fff;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .filter-btn.primary:hover {
-  background-color: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
 }
 
-/* --- Scrollbar Styling --- */
 .email-list::-webkit-scrollbar,
 .filter-body::-webkit-scrollbar {
   width: 6px;
@@ -579,7 +693,113 @@
   background: #374151;
 }
 
-/* --- Responsive adjustments --- */
+.icon-btn:focus,
+.text-btn:focus,
+.filter-btn:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #ef4444;
+}
+
+label {
+  cursor: pointer;
+  user-select: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
 @media (max-width: 1024px) {
   .trash-list-section {
     flex: 0 0 360px;
@@ -623,30 +843,4 @@
     width: 95%;
     margin: 20px;
   }
-}
-
-/* --- Focus states --- */
-.icon-btn:focus,
-.text-btn:focus,
-.filter-btn:focus {
-  outline: 2px solid #6366f1;
-  outline-offset: 2px;
-}
-
-input[type="checkbox"]:focus {
-  outline: 2px solid #6366f1;
-  outline-offset: 2px;
-}
-
-/* --- Selection styling --- */
-input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: #6366f1;
-}
-
-label {
-  cursor: pointer;
-  user-select: none;
 }

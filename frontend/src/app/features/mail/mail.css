@@ -1,8 +1,28 @@
+/* ============================================
+   MAIL LAYOUT - Enhanced with Animations
+   ============================================ */
+
 .mail-layout-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
   background-color: #0b0e11;
+  position: relative;
+}
+
+/* Subtle ambient background effect */
+.mail-layout-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .sidebar-area {
@@ -10,6 +30,9 @@
   flex-shrink: 0;
   border-right: 1px solid #1f2937;
   background-color: #0b0e11;
+  position: relative;
+  z-index: 10;
+  animation: slideInLeft 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 .content-area {
@@ -17,4 +40,70 @@
   overflow: hidden;
   position: relative;
   background-color: #0f1115;
+  z-index: 5;
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+/* Page transitions for router outlet content */
+.content-area ::ng-deep>* {
+  animation: pageEnter 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Keyframe Animations */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar-area {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .sidebar-area.open {
+    transform: translateX(0);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .content-area {
+    width: 100%;
+  }
 }

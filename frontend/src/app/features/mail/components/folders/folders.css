@@ -1,10 +1,9 @@
-/* =========================================
-   Sidebar Folder List Styles (To match Mailbox Theme)
-   ========================================= */
+/* ============================================
+   FOLDER LIST - Enhanced with Animations
+   ============================================ */
 
-/* Use the same colors for consistency */
 :root {
-    --color-background-sidebar: #1a1d23; /* Slightly lighter than mail view background */
+    --color-background-sidebar: #1a1d23;
     --color-background-item-hover: #1f2937;
     --color-text-default: #9ca3af;
     --color-text-active: #ffffff;
@@ -12,27 +11,28 @@
     --color-border: #1f2937;
 }
 
-/* --- Folder Management Header --- */
+/* Folder Management Header */
 .folder-management {
     padding: 15px 16px 10px;
     border-bottom: 1px solid var(--color-border);
     flex-shrink: 0;
+    animation: fadeInDown 0.4s ease forwards;
 }
 
 .folder-management h3 {
     color: var(--color-text-active);
     font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
 .add-folder-btn {
     width: 100%;
-    background-color: var(--color-accent-violet);
+    background: linear-gradient(135deg, var(--color-accent-violet) 0%, #8b5cf6 100%);
     color: #fff;
     border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
+    padding: 12px 15px;
+    border-radius: 10px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -40,28 +40,99 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: background-color 0.2s;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-folder-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: left 0.5s ease;
 }
 
 .add-folder-btn:hover {
-    background-color: #4f46e5; /* Slightly darker violet */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
 
+.add-folder-btn:hover::before {
+    left: 100%;
+}
 
-/* --- Folder List (ul) --- */
+.add-folder-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Folder List */
 .folder-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow-y: auto; /* Allow scrolling */
+    overflow-y: auto;
     flex-grow: 1;
+    padding: 8px 0;
 }
 
 .folder-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 2px 0;
+    margin: 2px 8px;
+    border-radius: 8px;
+    animation: fadeInLeft 0.4s ease forwards;
+    animation-delay: calc(var(--index, 0) * 0.05s);
+    opacity: 0;
+}
+
+/* Stagger animations */
+.folder-item:nth-child(1) {
+    --index: 1;
+}
+
+.folder-item:nth-child(2) {
+    --index: 2;
+}
+
+.folder-item:nth-child(3) {
+    --index: 3;
+}
+
+.folder-item:nth-child(4) {
+    --index: 4;
+}
+
+.folder-item:nth-child(5) {
+    --index: 5;
+}
+
+.folder-item:nth-child(6) {
+    --index: 6;
+}
+
+.folder-item:nth-child(7) {
+    --index: 7;
+}
+
+.folder-item:nth-child(8) {
+    --index: 8;
+}
+
+.folder-item:nth-child(9) {
+    --index: 9;
+}
+
+.folder-item:nth-child(10) {
+    --index: 10;
 }
 
 .folder-link {
@@ -70,55 +141,86 @@
     flex-grow: 1;
     text-decoration: none;
     color: var(--color-text-default);
-    padding: 10px 16px;
-    transition: background-color 0.2s, color 0.2s;
-    border-radius: 6px;
+    padding: 10px 12px;
+    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius: 8px;
     font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.folder-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: linear-gradient(180deg, var(--color-accent-violet) 0%, #8b5cf6 100%);
+    border-radius: 0 2px 2px 0;
+    transition: height 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .folder-link:hover {
     background-color: var(--color-background-item-hover);
     color: var(--color-text-active);
+    padding-left: 16px;
 }
 
-/* Styling for the active/selected folder */
+.folder-link:hover::before {
+    height: 60%;
+}
+
 .folder-link.active {
     background-color: var(--color-background-item-hover);
     color: var(--color-accent-violet);
     font-weight: 600;
 }
 
-/* Folder Icons */
+.folder-link.active::before {
+    height: 70%;
+}
+
 .folder-link i {
     font-size: 1rem;
     margin-right: 12px;
-    /* System folders get a slightly different color */
-    color: #4b5563; 
+    color: #4b5563;
+    transition: all 0.25s ease;
+}
+
+.folder-link:hover i {
+    color: #818cf8;
+    transform: scale(1.1);
 }
 
 .folder-link.active i {
     color: var(--color-accent-violet);
 }
 
-/* --- CRUD Actions (Pen/Trash Icons) --- */
+/* Folder Actions */
 .folder-actions {
-    display: none; /* Hidden by default */
+    display: none;
     gap: 4px;
-    padding-right: 10px;
+    padding-right: 8px;
 }
 
 .folder-item:hover .folder-actions {
-    display: flex; /* Show actions on hover */
+    display: flex;
+    animation: fadeIn 0.2s ease forwards;
 }
 
 .action-btn {
     background: transparent;
     border: none;
     color: var(--color-text-default);
-    padding: 4px;
-    border-radius: 4px;
+    padding: 6px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: color 0.2s, background-color 0.2s;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .action-btn:hover {
@@ -127,12 +229,151 @@
 }
 
 .action-btn.delete:hover {
-    color: #ef4444; /* Red for delete */
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
 }
 
-/* --- Modal Styles (Matching the Filter Modal) --- */
-/* The modal styles from the main component CSS should apply, but ensure 
-   the .modal-overlay, .modal-content, and button styles are globally
-   accessible or duplicated here if necessary for the folder CRUD modal. */
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: overlayFadeIn 0.3s ease forwards;
+}
 
-.modal-overlay { /* ... (etc. - ensure this section is in the CSS file that handles the modal) ... */ }
+.modal-content {
+    background: #1a1d23;
+    border: 1px solid #374151;
+    border-radius: 16px;
+    padding: 24px;
+    min-width: 350px;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(99, 102, 241, 0.1);
+    animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-content h3 {
+    color: #fff;
+    margin: 0 0 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px 14px;
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    transition: all 0.25s ease;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: var(--color-accent-violet);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.modal-actions .cancel-btn {
+    background: transparent;
+    border: 1px solid #374151;
+    color: #9ca3af;
+}
+
+.modal-actions .cancel-btn:hover {
+    background: #1f2937;
+    color: #fff;
+}
+
+.modal-actions .save-btn {
+    background: var(--color-accent-violet);
+    border: none;
+    color: #fff;
+}
+
+.modal-actions .save-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+/* Keyframe Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
