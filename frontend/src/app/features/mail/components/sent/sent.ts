@@ -101,18 +101,27 @@ export class Sent implements OnInit {
         return 'DATE_NEWEST';
     }
   }
+  private SYSTEM_FOLDERS = [
+  'Inbox', 'Sent', 'Drafts', 'Trash', 'Priority Inbox', 'Contacts'
+];
 
-  loadFolders(): void {
-    this.folderService.getAllFolders().subscribe({
-      next: (data) => {
-        this.folders = data;
-      },
-      error: (err) => {
-        console.error('Failed to load folders:', err);
-        this.errorMessage = 'Could not load folder list.';
-      },
-    });
-  }
+loadFolders(): void {
+  this.folderService.getAllFolders().subscribe({
+    next: (data) => {
+      // Create a lowercase version of system folders for safe comparison
+      const systemFoldersLower = this.SYSTEM_FOLDERS.map(f => f.toLowerCase());
+
+      // Filter the data: only keep folders NOT in the system list
+      this.folders = data.filter(folderName => 
+        !systemFoldersLower.includes(folderName.toLowerCase())
+      );
+    },
+    error: (err) => { 
+      console.error('Failed to load folders:', err); 
+      this.errorMessage = 'Could not load folder list.';
+    }
+  });
+}
   loadEmails(): void {
     this.isLoading = true;
     this.selectedEmail = null;

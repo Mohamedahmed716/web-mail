@@ -35,9 +35,17 @@ export class FolderService {
   }
 
   // PUT: /api/folders/{oldName} (Renames a folder)
-  renameFolder(oldName: string, newName: string): Observable<any> {
-    return this.http.put(`${this.base}/${oldName}`, { newName: newName }, this.auth());
-  }
+  renameFolder(oldName: string, newName: string): Observable<string> {
+  return this.http.put(
+    `${this.base}/${oldName}`, 
+    { newName: newName }, 
+    { 
+      ...this.auth(), 
+      // Add this line to handle non-JSON string responses from the server
+      responseType: 'text' 
+    }
+  ) as Observable<string>;
+}
 
   // DELETE: /api/folders/{folderName} (Deletes a folder)
   deleteFolder(folderName: string): Observable<any> {

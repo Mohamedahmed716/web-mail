@@ -85,7 +85,7 @@
                         <option value="" disabled selected>Move ({{ selectedEmailIds.length }})</option>
 
                         @for (folder of folders; track folder) {
-                            @if (folder.toLowerCase() !== "sent") {
+                            @if (folder.toLowerCase() !== "sent" ) {
                                 <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
                             }
                         }
