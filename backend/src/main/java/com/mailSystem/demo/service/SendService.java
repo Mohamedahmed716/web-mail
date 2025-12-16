@@ -55,6 +55,7 @@ public class SendService {
 
         // CRITICAL: Set folder to SENT. FAL will see this and distribute copies to receivers.
         mail.setFolder(Constants.SENT);
+        mail.setFirstFolder(Constants.SENT);
 
         // 3. Save (and Distribute)
         fileAccessLayer.saveMail(mail);
@@ -63,6 +64,7 @@ public class SendService {
         // because we just moved it to Sent.
         if (wasDraft) {
             fileAccessLayer.deleteMail(sender, Constants.DRAFTS, id);
+            mail.setFirstFolder(Constants.DRAFTS);
         }
     }
 

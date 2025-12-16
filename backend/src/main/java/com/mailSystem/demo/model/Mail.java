@@ -23,8 +23,9 @@ public class Mail {
     private List<String> attachmentNames;
     private String folder; // Inbox, Sent, Trash, etc.
     private Date trashEntryDate;
-    private String originalFolder;
+    private String parentFolder;
     private Boolean isRead; // Default is false (unread)
+    private String firstFolder;
 
     /**
      * Custom getter for isRead to handle null values from old JSON files.

@@ -56,6 +56,7 @@ public class DraftService {
                 // CRITICAL: Set folder to DRAFTS
                 .folder(Constants.DRAFTS)
                 .build();
+        mail.setFirstFolder(Constants.DRAFTS);
 
         // 3. Save (Local only)
         fileAccessLayer.saveMail(mail);

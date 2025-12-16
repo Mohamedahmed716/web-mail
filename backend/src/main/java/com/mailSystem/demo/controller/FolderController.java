@@ -115,4 +115,17 @@ public class FolderController {
                 targetFolder
         );
     }
+    @PostMapping("/return/{mailId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void returnToOriginalFolder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable String mailId,
+            @RequestParam("sourceFolder") String sourceFolder
+    ) {
+        folderService.returnToOriginalFolder(
+                getUser(token),
+                mailId,
+                sourceFolder
+        );
+    }
 }

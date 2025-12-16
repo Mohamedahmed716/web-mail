@@ -12,4 +12,5 @@ export interface Email {
   folder: string;
   attachmentNames?: string[];
   isRead?: boolean;  // Read status of the email
+  firstFolder?: string;
 }

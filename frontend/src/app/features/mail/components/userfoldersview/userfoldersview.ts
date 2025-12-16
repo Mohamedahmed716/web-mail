@@ -5,13 +5,14 @@ import { FormsModule } from '@angular/forms'; // <-- Required for [(ngModel)]
 import { Subscription } from 'rxjs';
 import { FolderService } from '../../../../services/folder'; 
 import { TrashService } from '../../../../services/trash.service';
+import { EmailDisplayComponent } from '../EmailDisplay/EmailDisplay.component';
 
 
 @Component({
   selector: 'app-mailbox-view',
   standalone: true,
   // ADD FormsModule for ngModel, and EmailDisplayComponent when ready
-  imports: [CommonModule, RouterModule, FormsModule], 
+  imports: [CommonModule, RouterModule, FormsModule,EmailDisplayComponent], 
   templateUrl: './userfoldersview.html',
   styleUrls: ['./userfoldersview.css']
 })
@@ -19,6 +20,7 @@ export class UserFoldersView implements OnInit, OnDestroy {
   folders: string[] = []; 
   // --- Core Folder State (Existing) ---
   currentFolderName: string = '';
+  firstFolderName: string = '';
   emails: any[] = [];
   isLoading: boolean = true;
   errorMessage: string | null = null;
@@ -81,17 +83,39 @@ export class UserFoldersView implements OnInit, OnDestroy {
     this.totalEmails = 0;
     this.totalPages = 1;
   }
-  
+  private SYSTEM_FOLDERS = [
+  'Inbox', 'Sent', 'Drafts', 'Trash', 'Priority Inbox', 'Contacts'
+];
   // --- Core Data Loading ---
   loadFolders(): void {
-    this.folderService.getAllFolders().subscribe({
-      next: (data) => { this.folders = data; },
-      error: (err) => { 
-        console.error('Failed to load folders:', err); 
-        this.errorMessage = 'Could not load folder list.';
-      }
-    });
-  }
+  this.folderService.getAllFolders().subscribe({
+    next: (data) => {
+      // 1. Create a lowercase version of system folders for safe comparison
+      const systemFoldersLower = this.SYSTEM_FOLDERS.map(f => f.toLowerCase());
+      
+      // 2. Get the lowercase name of the firstFolder (if an email is selected)
+      const firstFolderLower = this.selectedEmail?.firstFolder?.toLowerCase();
+
+      // 3. Filter the data
+      this.folders = data.filter(folderName => {
+        const currentLower = folderName.toLowerCase();
+        
+        // CONDITION: 
+        // If it matches the firstFolder, keep it.
+        // Otherwise, only keep it if it's NOT in the system list.
+        if (firstFolderLower && currentLower === firstFolderLower) {
+          return true; 
+        }
+        
+        return !systemFoldersLower.includes(currentLower);
+      });
+    },
+    error: (err) => { 
+      console.error('Failed to load folders:', err); 
+      this.errorMessage = 'Could not load folder list.';
+    }
+  });
+}
   loadEmailsForFolder(folderName: string): void {
     this.isLoading = true; 
     this.errorMessage = null;
@@ -122,9 +146,9 @@ export class UserFoldersView implements OnInit, OnDestroy {
 
   selectEmail(email: any): void {
     this.selectedEmail = email;
+    this.firstFolderName=email.firstFolder
     // You might add logic here to mark the email as 'read'
   }
-
   closeEmail(): void {
     this.selectedEmail = null;
   }
@@ -222,20 +246,32 @@ moveSelectedEmails(targetFolder: string): void {
     this.selectedEmailIds = []; 
 }
 handleMoveSelectionChange(event: Event): void {
-    
-    // CRITICAL FIX: Cast the event target to HTMLSelectElement
     const target = event.target as HTMLSelectElement;
-    const targetFolder = target.value; 
+    const targetValue = target.value; 
 
-    // Reset the select box immediately to allow re-selection
+    // Reset the select box immediately
     target.value = ''; 
 
-    if (targetFolder) {
-        // You can add confirmation here if needed
-        
-        // Call the multi-move logic you developed earlier
-        this.moveSelectedEmails(targetFolder); 
+    if (targetValue === 'original') {
+        // Trigger your specific return logic
+        this.returnSelectedToOriginalFolder();
+    } else if (targetValue) {
+        // Trigger the standard move logic
+        this.moveSelectedEmails(targetValue); 
     }
+}
+returnSelectedToOriginalFolder() {
+  if (this.selectedEmailIds.length === 0) return;
+
+  const folder = this.currentFolderName;
+
+  this.selectedEmailIds.forEach(id => {
+    this.folderService.returnToOriginalFolder(id, folder).subscribe(() => {
+      this.loadEmailsForFolder(folder);
+    });
+  });
+
+  this.selectedEmailIds = [];
 }
 
   // --- Toolbar & Search Actions ---

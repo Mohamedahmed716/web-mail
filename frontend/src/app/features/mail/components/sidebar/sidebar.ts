@@ -25,7 +25,7 @@ export class Sidebar {
 
     { label: 'Trash', icon: 'fa-trash', route: '/mail/trash'},
     { label: 'Contacts', icon: 'fa-address-book', route: '/mail/contacts'},
-    { label: 'Folders', icon: 'fa-address-book', route: '/mail/folders'},
+    { label: 'Folders', icon: 'fa-solid fa-folder', route: '/mail/folders'},
   ];
 
   currentUser = localStorage.getItem('auth-user') ? JSON.parse(localStorage.getItem('auth-user')!) : null;

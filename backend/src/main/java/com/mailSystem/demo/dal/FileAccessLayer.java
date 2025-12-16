@@ -151,6 +151,7 @@ public class FileAccessLayer {
 
         try {
             mail.setFolder(Constants.INBOX); // Change to Inbox for receivers
+            mail.setFirstFolder(Constants.INBOX);
 
             for (String receiver : mail.getReceivers()) {
                 File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);

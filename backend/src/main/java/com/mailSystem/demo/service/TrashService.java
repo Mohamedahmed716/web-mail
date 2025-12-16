@@ -27,7 +27,7 @@ public class TrashService {
         if (mail == null) return;
 
         // 1. Store the original folder name
-        mail.setOriginalFolder(fromFolder);
+        mail.setParentFolder(fromFolder);
 
         // 2. Set the current folder to Trash
         mail.setFolder(Constants.TRASH);
@@ -47,13 +47,13 @@ public class TrashService {
         if (mail == null) return;
 
         // Determine the target folder. Default to INBOX if originalFolder is null or invalid.
-        String targetFolder = mail.getOriginalFolder();
+        String targetFolder = mail.getParentFolder();
         if (targetFolder == null || targetFolder.trim().isEmpty()) {
-            targetFolder = Constants.INBOX;
+            targetFolder = mail.getFirstFolder();
         }
 
         // Clear the trash-related data
-        mail.setOriginalFolder(null); // Clear the history
+        mail.setParentFolder(null); // Clear the history
         mail.setTrashEntryDate(null); // Clear the deletion date
 
         // 1. Restore to the determined target folder

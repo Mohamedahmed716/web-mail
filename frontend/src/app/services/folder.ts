@@ -79,5 +79,13 @@ export class FolderService {
         params: params 
     });
   }
+  returnToOriginalFolder(mailId: string, sourceFolder: string,): Observable<any> {
+    const params = { sourceFolder: sourceFolder };
+    
+    return this.http.post(`${this.base}/return/${mailId}`, null, { 
+        ...this.auth(), 
+        params: params 
+    });
+  }
   
 }

@@ -78,11 +78,11 @@ public class FolderService {
         }
         fileAccessLayer.saveAllUserFolders(userEmail, folders);
 
-        // 4b. Move all emails from this folder to the Trash
+        // 4b. Move all emails from this folder to the
         List<Mail> mailsToMove = fileAccessLayer.loadMails(userEmail, folderName);
         for (Mail mail : mailsToMove) {
-            mail.setFolder(Constants.INBOX);
-            fileAccessLayer.saveMailToFolder(userEmail, Constants.INBOX, mail);
+            mail.setFolder(mail.getFirstFolder());
+            fileAccessLayer.saveMailToFolder(userEmail, mail.getFirstFolder(), mail);
             fileAccessLayer.deleteMail(userEmail, folderName, mail.getId());
         }
 
@@ -101,12 +101,22 @@ public class FolderService {
 
         Mail mail = fileAccessLayer.getMailById(userEmail, fromFolder, mailId);
         if (mail == null) return;
-        mail.setOriginalFolder(null);
+        mail.setParentFolder(fromFolder);
         mail.setFolder(targetFolder);
         if(targetFolder.equals(Constants.TRASH)){
               mail.setTrashEntryDate(new Date());}
 
         fileAccessLayer.saveMailToFolder(userEmail, targetFolder, mail);
+        fileAccessLayer.deleteMail(userEmail, fromFolder, mailId);
+    }
+    public void returnToOriginalFolder(String userEmail, String mailId, String fromFolder) {
+
+        Mail mail = fileAccessLayer.getMailById(userEmail, fromFolder, mailId);
+        if (mail == null) return;
+        mail.setParentFolder(null);
+        mail.setFolder(mail.getFirstFolder());
+
+        fileAccessLayer.saveMailToFolder(userEmail, mail.getFirstFolder(), mail);
         fileAccessLayer.deleteMail(userEmail, fromFolder, mailId);
     }
 }
