@@ -53,7 +53,6 @@
                 <option [value]="folder.toLowerCase()">Move to {{ folder }}</option>
             }
         }
-        <option value="trash">Move to Trash</option>
     </select>
 </div>
                 <button class="text-btn danger" (click)="deleteSelected()" [disabled]="selectedEmailIds.length === 0">
