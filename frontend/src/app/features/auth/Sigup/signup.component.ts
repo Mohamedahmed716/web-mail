@@ -46,6 +46,7 @@ export class SignupComponent implements OnInit {
         email: ['', [Validators.required, noAtSignValidator]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
+        favoriteMovie: ['', Validators.required], // Security question for password reset
         terms: [false, Validators.requiredTrue],
       },
       { validators: this.passwordMatchValidator }
@@ -108,6 +109,7 @@ export class SignupComponent implements OnInit {
       name: `${val.firstName} ${val.lastName}`,
       email: fullEmail,
       password: val.password,
+      favoriteMovie: val.favoriteMovie, // Security question answer for password reset
     };
 
     this.authService.register(userPayload).subscribe({

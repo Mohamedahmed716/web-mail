@@ -48,7 +48,6 @@ public class FileAccessLayer {
         }
     }
 
-
     public List<Mail> loadMails(String email, String folderName) {
         File folder = new File(Constants.DATA_DIR + "/" + email + "/" + folderName);
         List<Mail> mails = new ArrayList<>();
@@ -115,15 +114,14 @@ public class FileAccessLayer {
         new File(userPath, Constants.CONTACTS).mkdirs();
     }
 
-
-
     public void saveMail(Mail mail) throws IOException {
         String sender = mail.getSender();
         String folderName = mail.getFolder(); // "Sent", "Drafts", etc.
 
         // 1. Save to the Sender's specific folder
         File senderFolder = new File(Constants.DATA_DIR + "/" + sender + "/" + folderName);
-        if (!senderFolder.exists()) senderFolder.mkdirs();
+        if (!senderFolder.exists())
+            senderFolder.mkdirs();
 
         // If ID exists, this OVERWRITES the file (Update Draft logic)
         File senderFile = new File(senderFolder, mail.getId() + ".json");
@@ -146,7 +144,7 @@ public class FileAccessLayer {
     }
 
     // Helper for distribution
-// Helper for distribution
+    // Helper for distribution
     private void distributeToReceivers(Mail mail) throws IOException {
         String originalFolder = mail.getFolder();
         String sender = mail.getSender();
@@ -156,7 +154,8 @@ public class FileAccessLayer {
 
             for (String receiver : mail.getReceivers()) {
                 File receiverFolder = new File(Constants.DATA_DIR + "/" + receiver + "/" + Constants.INBOX);
-                if (!receiverFolder.exists()) receiverFolder.mkdirs();
+                if (!receiverFolder.exists())
+                    receiverFolder.mkdirs();
 
                 File receiverFile = new File(receiverFolder, mail.getId() + ".json");
                 JsonMapper.getInstance().writeValue(receiverFile, mail);
@@ -181,9 +180,11 @@ public class FileAccessLayer {
 
         file.transferTo(dest);
     }
+
     public Mail getMailById(String userEmail, String folderName, String mailId) {
         File file = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName + "/" + mailId + ".json");
-        if (!file.exists()) return null;
+        if (!file.exists())
+            return null;
 
         try {
             return JsonMapper.getInstance().readValue(file, Mail.class);
@@ -192,9 +193,10 @@ public class FileAccessLayer {
         }
     }
 
-    //copy attachments from sender to receiver
+    // copy attachments from sender to receiver
     private void copyAttachments(String senderEmail, String receiverEmail, List<String> attachmentNames) {
-        if (attachmentNames == null || attachmentNames.isEmpty()) return;
+        if (attachmentNames == null || attachmentNames.isEmpty())
+            return;
 
         File senderAttachDir = new File(Constants.DATA_DIR + "/" + senderEmail + "/Attachments");
         File receiverAttachDir = new File(Constants.DATA_DIR + "/" + receiverEmail + "/Attachments");
@@ -204,7 +206,8 @@ public class FileAccessLayer {
         }
 
         for (String fileName : attachmentNames) {
-            if (fileName.startsWith("http") || fileName.startsWith("https")) continue;
+            if (fileName.startsWith("http") || fileName.startsWith("https"))
+                continue;
 
             File sourceFile = new File(senderAttachDir, fileName);
             File destFile = new File(receiverAttachDir, fileName);
@@ -214,18 +217,19 @@ public class FileAccessLayer {
                     java.nio.file.Files.copy(
                             sourceFile.toPath(),
                             destFile.toPath(),
-                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                    );
+                            java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
+
     public void saveMailToFolder(String userEmail, String folderName, Mail mail) {
         try {
             File folder = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName);
-            if (!folder.exists()) folder.mkdirs();
+            if (!folder.exists())
+                folder.mkdirs();
 
             File file = new File(folder, mail.getId() + ".json");
             JsonMapper.getInstance().writeValue(file, mail);
@@ -234,7 +238,6 @@ public class FileAccessLayer {
             e.printStackTrace();
         }
     }
-
 
     // Helper to get the path to the custom folders metadata file
     private File getFoldersFile(String userEmail) {
@@ -251,7 +254,8 @@ public class FileAccessLayer {
                 return new ArrayList<>();
             }
             // Uses TypeReference for deserializing List<String>
-            return JsonMapper.getInstance().readValue(file, new TypeReference<List<String>>() {});
+            return JsonMapper.getInstance().readValue(file, new TypeReference<List<String>>() {
+            });
         } catch (IOException e) {
             throw new RuntimeException("Failed to load user folders for: " + userEmail, e);
         }
@@ -297,7 +301,8 @@ public class FileAccessLayer {
         File folderDir = new File(Constants.DATA_DIR + "/" + userEmail + "/" + sanitizedName);
 
         if (folderDir.exists()) {
-            // This also handles accidental creation of system folders (e.g., if user tries to create a folder named "Inbox")
+            // This also handles accidental creation of system folders (e.g., if user tries
+            // to create a folder named "Inbox")
             throw new IllegalArgumentException("Folder already exists: " + folderName);
         }
 
@@ -316,6 +321,28 @@ public class FileAccessLayer {
         }
 
         return sanitizedName;
+    }
+
+    /**
+     * Update an existing user in the index.json file
+     */
+    public boolean updateUser(User updatedUser) {
+        List<User> users = loadAllUsers();
+
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getEmail().equalsIgnoreCase(updatedUser.getEmail())) {
+                users.set(i, updatedUser);
+
+                File indexFile = new File(Constants.DATA_DIR, Constants.USERS_FILE);
+                try {
+                    JsonMapper.getInstance().writeValue(indexFile, users);
+                    return true;
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to update user", e);
+                }
+            }
+        }
+        return false;
     }
 
 }

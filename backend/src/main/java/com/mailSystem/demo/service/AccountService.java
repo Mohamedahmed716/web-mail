@@ -67,4 +67,53 @@ public class AccountService {
     public List<User> getAllAccounts() {
         return fileAccessLayer.loadAllUsers();
     }
+
+    /**
+     * Find a user by their email address
+     */
+    public User findByEmail(String email) {
+        List<User> users = fileAccessLayer.loadAllUsers();
+
+        String searchEmail = email;
+        if (searchEmail != null && !searchEmail.contains("@")) {
+            searchEmail = searchEmail + Constants.DOMAIN;
+        }
+        final String finalEmail = searchEmail;
+
+        return users.stream()
+                .filter(u -> u.getEmail().equalsIgnoreCase(finalEmail))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Verify security question answer (favorite movie)
+     * Case-insensitive and trims whitespace
+     */
+    public boolean verifySecurityQuestion(String email, String favoriteMovieAnswer) {
+        User user = findByEmail(email);
+        if (user == null || user.getFavoriteMovie() == null) {
+            return false;
+        }
+
+        String storedAnswer = user.getFavoriteMovie().trim().toLowerCase();
+        String providedAnswer = favoriteMovieAnswer.trim().toLowerCase();
+
+        return storedAnswer.equals(providedAnswer);
+    }
+
+    /**
+     * Reset password for a user after security verification
+     */
+    public boolean resetPassword(String email, String newPassword) {
+        User user = findByEmail(email);
+        if (user == null) {
+            return false;
+        }
+
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(hashedPassword);
+
+        return fileAccessLayer.updateUser(user);
+    }
 }

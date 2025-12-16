@@ -14,4 +14,5 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String favoriteMovie; // Security question answer for password reset
 }

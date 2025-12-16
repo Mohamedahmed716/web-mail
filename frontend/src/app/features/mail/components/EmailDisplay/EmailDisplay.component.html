@@ -69,10 +69,19 @@
           </div>
         </div>
         }
-
-
-
+        @if (getFileType(file) === 'link') {
+        <div class="attachment-card link-type">
+            <div class="link-icon">🔗</div>
+            <div class="link-details">
+              <a [href]="file" target="_blank" class="link-url">{{ getFileName(file) }}</a>
+            </div>
+          </div>
         }
+        }
+
+
+
+        
       </div>
     </div>
     }
