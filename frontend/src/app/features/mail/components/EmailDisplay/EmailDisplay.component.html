@@ -6,24 +6,26 @@
     <div class="email-header">
       <div class="header-main">
         <h2 class="subject">{{ mail.subject }}</h2>
-
       </div>
 
       <div class="sender-meta">
         <div class="avatar">
-          {{ (mail.sender|| mail.sender || '?').charAt(0).toUpperCase() }}
+          {{ (mail.sender || '?').charAt(0).toUpperCase() }}
         </div>
+
         <div class="meta-info">
           <span class="sender-name">
-            {{ mail.sender || mail.sender }}
+            {{ mail.sender }}
           </span>
+
           <span class="email-receivers">To:
-            @if(type==="inbox"||type==="priority") {
+            @if(type === "inbox" || type === "priority") {
             me
             } @else {
-            {{mail.receivers.join(', ')}}
+            {{ mail.receivers ? mail.receivers.join(', ') : '' }}
             }
           </span>
+
           <span class="timestamp">
             {{ mail.timestamp | date:'medium' }}
           </span>
@@ -32,55 +34,50 @@
     </div>
 
     <div class="email-body">
-      <p>{{ mail.body }}</p>
+      <p style="white-space: pre-wrap;">{{ mail.body }}</p>
     </div>
 
     @if (mail.attachmentNames && mail.attachmentNames.length > 0) {
     <div class="attachments-section">
       <h3>
-        📎 Attachments ({{ mail.attachmentNames.length}})
+        📎 Attachments ({{ mail.attachmentNames.length }})
       </h3>
 
       <div class="attachments-grid">
         @for (file of mail.attachmentNames; track $index) {
-
         @if (getFileType(file) === 'image') {
         <div class="attachment-card image-type">
           <img [src]="getAttachmentUrl(file)" alt="attachment" class="preview-img">
 
           <div class="overlay-actions">
             <a [href]="getAttachmentUrl(file)" target="_blank" class="action-link">👁️ View</a>
-            <a [href]="getAttachmentUrl(file)" download class="action-link">⬇️ Save</a>
+
+            <a [href]="getAttachmentUrl(file, true)" class="action-link">⬇️ Save</a>
           </div>
           <span class="file-name">{{ getFileName(file) }}</span>
         </div>
         }
 
-        @if (getFileType(file) === 'link') {
-        <div class="attachment-card link-type">
-          <div class="file-icon">🔗</div>
-          <div class="file-details">
-            <span class="file-name">{{ file }}</span>
-            <a [href]="file" target="_blank" class="download-link">Open Link ↗️</a>
-          </div>
-        </div>
-        }
+        
 
-        @if (getFileType(file) === 'file') {
+        @if (getFileType(file) === 'file'|| getFileType(file) === 'pdf') {
         <div class="attachment-card file-type">
           <div class="file-icon">📄</div>
           <div class="file-details">
             <span class="file-name">{{ getFileName(file) }}</span>
-            <a [href]="getAttachmentUrl(file)" download class="download-link">Download ⬇️</a>
+            <a [href]="getAttachmentUrl(file, true)" class="download-link">Download ⬇️</a>
           </div>
         </div>
         }
+
+
 
         }
       </div>
     </div>
     }
-    @if (type === 'inbox' || type === 'priority-inbox') {
+
+    @if (type === 'inbox' || type === 'priority-inbox' || type === 'priority') {
     <div class="reply-actions">
       <button class="btn-primary" (click)="openReply()">↩️ Reply</button>
     </div>

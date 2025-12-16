@@ -14,30 +14,35 @@ export class EmailDisplayComponent implements OnInit {
   @Input() mail: Email | null = null;
   @Input() type: string = '';
 
-  constructor(private composeService: ComposeService) { }
+  private readonly API_URL = 'http://localhost:8080/api/attachments/download';
+
+  constructor(private composeService: ComposeService) {}
 
   ngOnInit() {}
-  getFileType(fileName: any): 'image' | 'link' | 'file' {
 
+
+  getFileType(fileName: any): 'image' | 'link' | 'pdf' | 'file' {
     if (!fileName) return 'file';
 
-    if (fileName.startsWith('http') || fileName.startsWith('https')) {
+    if (typeof fileName === 'string' && (fileName.startsWith('http') || fileName.startsWith('https'))) {
       return 'link';
     }
 
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
     const lowerName = fileName.toLowerCase();
 
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
     if (imageExtensions.some((ext: string) => lowerName.endsWith(ext))) {
       return 'image';
+    }
+
+    if (lowerName.endsWith('.pdf')) {
+      return 'pdf';
     }
 
     return 'file';
   }
 
   getFileName(fileName: any): string {
-
-
     if (typeof fileName === 'string' && fileName.startsWith('http')) return 'External Link';
 
     if (typeof fileName === 'string') {
@@ -45,38 +50,42 @@ export class EmailDisplayComponent implements OnInit {
     }
     return 'Unknown File';
   }
-
-  getAttachmentUrl(fileName: any): string {
-
-
+// زودنا parameter اختياري اسمه downloadMode
+  getAttachmentUrl(fileName: any, downloadMode: boolean = false): string {
+    
     if (typeof fileName === 'string' && fileName.startsWith('http')) return fileName;
 
     const sender = this.mail?.sender;
-    const senderEmail =
-      sender && typeof sender === 'object' && 'email' in sender ? (sender as any).email : sender;
+    const senderEmail = sender && typeof sender === 'object' && 'email' in sender ? (sender as any).email : sender;
 
-    return `http://localhost:8080/api/attachments/download?file=${fileName}&email=${senderEmail}`;
+    let url = `${this.API_URL}?file=${fileName}&email=${senderEmail}`;
+
+    // لو عايز تحميل، زود المود في الرابط
+    if (downloadMode) {
+      url += '&mode=download';
+    }
+
+    return url;
   }
 
-  openReply(){
-    const recievers = this.mail?.sender ? [this.mail.sender] : [];
+  openReply() {
+    const receivers = this.mail?.sender ? [this.mail.sender] : [];
     let draft: Email = {
       id: '',
       sender: '',
-      receivers: recievers,
+      receivers: receivers,
       subject: this.mail?.subject ? `Re: ${this.mail.subject}` : '',
       body: '',
       priority: 3,
       folder: 'Drafts',
       timestamp: new Date(),
-      attachments: [],    // Start empty
-      attachmentNames: [] // Start empty
+      attachments: [],    
+      attachmentNames: [] 
     };
     this.composeService.openCompose(draft);
   }
 
-  openDraft(){
+  openDraft() {
     this.composeService.openCompose(this.mail);
   }
-
 }
