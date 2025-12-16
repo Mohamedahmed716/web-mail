@@ -45,6 +45,7 @@ export class Sent implements OnInit {
     hasWords: '',
     doesntHave: '',
     dateWithin: '1w',
+    hasAttachment: ''
   };
  
   constructor(
@@ -227,6 +228,7 @@ loadFolders(): void {
     if (this.filterCriteria.hasWords) filters.hasWords = this.filterCriteria.hasWords;
     if (this.filterCriteria.doesntHave) filters.doesntHave = this.filterCriteria.doesntHave;
     if (this.filterCriteria.dateWithin) filters.dateWithin = this.filterCriteria.dateWithin;
+    if (this.filterCriteria.hasAttachment) filters.hasAttachment = this.filterCriteria.hasAttachment;
 
     this.sentService.filterSent(filters, this.currentPage, this.pageSize).subscribe({
       next: (response: any) => {
@@ -251,6 +253,7 @@ loadFolders(): void {
       hasWords: '',
       doesntHave: '',
       dateWithin: '1w',
+      hasAttachment: ''
     };
   }
 

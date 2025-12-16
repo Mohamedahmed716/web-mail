@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpHeaders } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { ComposeService } from '../../../../services/compose.service';
 import { ApiService } from '../../../../core/services/api.service';
 import { Email } from '../../../../shared/models/email';
 import { ToastService } from '../../../../core/services/toast-service';
+import { ContactService, Contact } from '../../../../services/contact-service';
 
 @Component({
   selector: 'app-compose',
@@ -14,15 +15,31 @@ import { ToastService } from '../../../../core/services/toast-service';
   templateUrl: './compose.html',
   styleUrls: ['./compose.css']
 })
-export class Compose implements OnInit {
+export class Compose implements OnInit, OnDestroy {
   isVisible = false;
   email: Email | undefined;
 
   receiverEmails: string = '';
 
-  constructor(private composeService: ComposeService, private apiService: ApiService, private toastService: ToastService) {}
+  // Autocomplete properties
+  showContactDropdown = false;
+  filteredContacts: Contact[] = [];
+  allContacts: Contact[] = [];
+  currentInputValue = '';
+  searchTimeout: any;
+  selectedContactIndex = -1;
+
+  constructor(
+    private composeService: ComposeService,
+    private apiService: ApiService,
+    private toastService: ToastService,
+    private contactService: ContactService
+  ) {}
 
   ngOnInit() {
+    // Load contacts for autocomplete
+    this.loadContacts();
+
     // 1. Handle Visibility (Open/Close Modal)
     this.composeService.isOpen$.subscribe(open => {
       this.isVisible = open;
@@ -222,5 +239,185 @@ export class Compose implements OnInit {
 
     // Note: We rely on garbage collection, but ideally you revokeURL after use
     // setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
+  }
+
+  // Contact autocomplete methods
+  loadContacts() {
+    // Load a small set of contacts for initial display
+    this.contactService.getAllContacts().subscribe({
+      next: (contacts) => {
+        this.allContacts = contacts;
+      },
+      error: (err) => {
+        console.error('Failed to load contacts:', err);
+      }
+    });
+  }
+
+  onToFieldInput(event: any) {
+    const value = event.target.value;
+    this.receiverEmails = value;
+    this.currentInputValue = value;
+
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    // Get the current word being typed (after the last comma)
+    const lastCommaIndex = value.lastIndexOf(',');
+    const currentWord = value.substring(lastCommaIndex + 1).trim();
+
+    if (currentWord.length >= 1) {
+      // Debounce the search to avoid too many API calls
+      this.searchTimeout = setTimeout(() => {
+        this.searchContacts(currentWord);
+      }, 300);
+    } else {
+      this.showContactDropdown = false;
+    }
+  }
+
+  searchContacts(query: string) {
+    // Use backend search for better performance
+    this.contactService.searchContacts(query, 'default').subscribe({
+      next: (contacts) => {
+        this.filteredContacts = contacts; // Show all matching contacts
+        this.showContactDropdown = this.filteredContacts.length > 0;
+        this.selectedContactIndex = -1; // Reset selection
+
+      },
+      error: (err) => {
+        console.error('Failed to search contacts:', err);
+        // Fallback to local filtering if search fails
+        this.filterContactsLocally(query);
+      }
+    });
+  }
+
+  filterContactsLocally(query: string) {
+    const lowerQuery = query.toLowerCase();
+    this.filteredContacts = this.allContacts.filter(contact => {
+      // Search in contact name
+      const nameMatch = contact.name.toLowerCase().includes(lowerQuery);
+      
+      // Search in contact emails - ONLY in username part (before @), ignore domain completely
+      const emailMatch = contact.emails.some(email => {
+        const emailLower = email.toLowerCase();
+        
+        // Always search only the username part (before @), ignore domain completely
+        const atIndex = emailLower.indexOf('@');
+        if (atIndex > 0) {
+          const username = emailLower.substring(0, atIndex);
+          return username.includes(lowerQuery);
+        }
+        
+        // If no @ found, search the whole string (shouldn't happen with valid emails)
+        return emailLower.includes(lowerQuery);
+      });
+      
+      return nameMatch || emailMatch;
+    }); // Show all matching contacts
+    this.showContactDropdown = this.filteredContacts.length > 0;
+    this.selectedContactIndex = -1; // Reset selection
+
+  }
+
+  selectContact(contact: Contact) {
+    // Get the primary email (first email in the array)
+    const selectedEmail = contact.emails[0];
+    this.selectContactEmail(contact, selectedEmail);
+  }
+
+  selectContactEmail(contact: Contact, selectedEmail: string) {
+    // Find the last comma position to replace the current word
+    const lastCommaIndex = this.receiverEmails.lastIndexOf(',');
+
+    if (lastCommaIndex >= 0) {
+      // Replace the current word after the last comma
+      this.receiverEmails = this.receiverEmails.substring(0, lastCommaIndex + 1) + ' ' + selectedEmail;
+    } else {
+      // No comma found, replace the entire field
+      this.receiverEmails = selectedEmail;
+    }
+
+    // Add comma and space for next recipient
+    this.receiverEmails += ', ';
+
+    this.showContactDropdown = false;
+  }
+
+  hideContactDropdown() {
+    // Small delay to allow click events on dropdown items
+    setTimeout(() => {
+      this.showContactDropdown = false;
+    }, 150);
+  }
+
+  onToFieldFocus() {
+    // Show dropdown if there's a current query
+    const lastCommaIndex = this.receiverEmails.lastIndexOf(',');
+    const currentWord = this.receiverEmails.substring(lastCommaIndex + 1).trim();
+
+    if (currentWord.length >= 1) {
+      this.searchContacts(currentWord);
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (!this.showContactDropdown || this.filteredContacts.length === 0) {
+      return;
+    }
+
+    // Calculate total number of email options
+    const totalOptions = this.filteredContacts.reduce((sum, contact) => sum + contact.emails.length, 0);
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.selectedContactIndex = Math.min(this.selectedContactIndex + 1, totalOptions - 1);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.selectedContactIndex = Math.max(this.selectedContactIndex - 1, -1);
+        break;
+      case 'Enter':
+        event.preventDefault();
+        if (this.selectedContactIndex >= 0) {
+          this.selectContactByIndex(this.selectedContactIndex);
+        }
+        break;
+      case 'Escape':
+        this.showContactDropdown = false;
+        this.selectedContactIndex = -1;
+        break;
+    }
+  }
+
+  selectContactByIndex(index: number) {
+    let currentIndex = 0;
+    for (const contact of this.filteredContacts) {
+      for (const email of contact.emails) {
+        if (currentIndex === index) {
+          this.selectContactEmail(contact, email);
+          return;
+        }
+        currentIndex++;
+      }
+    }
+  }
+
+  getGlobalIndex(contactIndex: number, emailIndex: number): number {
+    let globalIndex = 0;
+    for (let i = 0; i < contactIndex; i++) {
+      globalIndex += this.filteredContacts[i].emails.length;
+    }
+    return globalIndex + emailIndex;
+  }
+
+  ngOnDestroy() {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
   }
 }

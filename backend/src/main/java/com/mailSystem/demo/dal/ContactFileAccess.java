@@ -84,8 +84,21 @@ public class ContactFileAccess {
     public List<Contact> searchByEmail(String userEmail, String searchTerm) {
         return loadUserContacts(userEmail).stream()
                 .filter(c -> c.getEmails() != null &&
-                        c.getEmails().stream().anyMatch(email -> 
-                            email.toLowerCase().contains(searchTerm.toLowerCase())))
+                        c.getEmails().stream().anyMatch(email -> {
+                            // Always search only the username part (before @), ignore domain completely
+                            String emailToSearch = email.toLowerCase();
+                            String searchTermLower = searchTerm.toLowerCase();
+                            
+                            // Extract username part (before @) for matching
+                            int atIndex = emailToSearch.indexOf("@");
+                            if (atIndex > 0) {
+                                String username = emailToSearch.substring(0, atIndex);
+                                return username.contains(searchTermLower);
+                            }
+                            
+                            // If no @ found, search the whole string (shouldn't happen with valid emails)
+                            return emailToSearch.contains(searchTermLower);
+                        }))
                 .collect(Collectors.toList());
     }
 }

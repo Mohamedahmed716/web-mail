@@ -417,6 +417,76 @@ button {
   }
 }
 
+/* Contact Dropdown Styles */
+.to-field-container {
+  position: relative;
+}
+.contact-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+
+  max-height: 200px;
+  overflow-y: auto;
+
+  animation: dropdownSlideIn 0.2s ease forwards;
+}
+
+.contact-list {
+  padding: 4px 0;
+}
+
+.contact-group {
+  border-bottom: 1px solid #374151;
+}
+
+.contact-group:last-child {
+  border-bottom: none;
+}
+
+.contact-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.contact-item:hover,
+.contact-item.selected {
+  background: #374151;
+  border-left-color: #6366f1;
+}
+
+.contact-name {
+  font-weight: 600;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.contact-email {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .modal-container {
@@ -429,4 +499,16 @@ button {
   .form-row {
     flex-direction: column;
   }
+
+  .contact-dropdown {
+    min-width: 250px;
+  }
+}
+.to-field-container {
+  position: relative;
+}
+
+/* Push Subject down when dropdown is open */
+.to-field-container.dropdown-open {
+  margin-bottom: 210px; /* slightly > dropdown max-height */
 }

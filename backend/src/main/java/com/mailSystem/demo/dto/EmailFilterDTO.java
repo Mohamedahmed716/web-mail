@@ -13,6 +13,7 @@ public class EmailFilterDTO {
     private String hasWords;       // Words that must be in body/subject
     private String doesntHave;     // Words that must NOT be in body/subject
     private String dateWithin;     // Date range: 1d, 3d, 1w, 2w, 1m, 3m, 6m, 1y
+    private String hasAttachment;  // Attachment filter: "true", "false", or empty for any
 
     // Pagination
     private Integer page = 1;
@@ -28,6 +29,7 @@ public class EmailFilterDTO {
                 (subject != null && !subject.isEmpty()) ||
                 (hasWords != null && !hasWords.isEmpty()) ||
                 (doesntHave != null && !doesntHave.isEmpty()) ||
+                (hasAttachment != null && !hasAttachment.isEmpty()) ||
                 (searchQuery != null && !searchQuery.isEmpty());
     }
 }

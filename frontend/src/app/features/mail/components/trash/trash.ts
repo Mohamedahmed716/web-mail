@@ -104,7 +104,8 @@ export class Trash implements OnInit {
     subject: '',
     hasWords: '',
     doesntHave: '',
-    dateWithin: '1w'
+    dateWithin: '1w',
+    hasAttachment: ''
   };
 
   changePage(step: number): void {
@@ -185,6 +186,7 @@ export class Trash implements OnInit {
     if (this.filterCriteria.hasWords) filters.hasWords = this.filterCriteria.hasWords;
     if (this.filterCriteria.doesntHave) filters.doesntHave = this.filterCriteria.doesntHave;
     if (this.filterCriteria.dateWithin) filters.dateWithin = this.filterCriteria.dateWithin;
+    if (this.filterCriteria.hasAttachment) filters.hasAttachment = this.filterCriteria.hasAttachment;
 
     this.trash.filterTrash(filters, this.currentPage, this.pageSize)
       .subscribe({
@@ -209,7 +211,8 @@ export class Trash implements OnInit {
       subject: '',
       hasWords: '',
       doesntHave: '',
-      dateWithin: '1w'
+      dateWithin: '1w',
+      hasAttachment: ''
     };
   }
 

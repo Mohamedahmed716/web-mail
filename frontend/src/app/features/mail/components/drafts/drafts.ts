@@ -42,7 +42,8 @@ export class Drafts implements OnInit {
     subject: '',
     hasWords: '',
     doesntHave: '',
-    dateWithin: '1w'
+    dateWithin: '1w',
+    hasAttachment: ''
   };
 
   constructor(
@@ -241,6 +242,7 @@ loadFolders(): void {
     if (this.filterCriteria.hasWords) filters.hasWords = this.filterCriteria.hasWords;
     if (this.filterCriteria.doesntHave) filters.doesntHave = this.filterCriteria.doesntHave;
     if (this.filterCriteria.dateWithin) filters.dateWithin = this.filterCriteria.dateWithin;
+    if (this.filterCriteria.hasAttachment) filters.hasAttachment = this.filterCriteria.hasAttachment;
 
     this.draftsService.filterDrafts(filters, this.currentPage, this.pageSize)
       .subscribe({
@@ -266,7 +268,8 @@ loadFolders(): void {
       subject: '',
       hasWords: '',
       doesntHave: '',
-      dateWithin: '1w'
+      dateWithin: '1w',
+      hasAttachment: ''
     };
   }
 

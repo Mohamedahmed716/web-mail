@@ -152,6 +152,15 @@
                     <option value="1m">1 month</option>
                 </select>
             </div>
+
+            <div class="filter-field">
+                <label>Has attachment:</label>
+                <select [(ngModel)]="filterCriteria.hasAttachment">
+                    <option value="">Any</option>
+                    <option value="true">With attachments</option>
+                    <option value="false">Without attachments</option>
+                </select>
+            </div>
         </div>
         <div class="filter-footer">
             <button class="filter-btn secondary" (click)="clearFilter()">Clear</button>
