@@ -69,7 +69,7 @@ public class FolderService {
         fileAccessLayer.saveAllUserFolders(userEmail, folders);
     }
 
-    // 4. DELETE: Removes folder, moves contents to INBOX, and deletes directory
+    // 4. DELETE: Removes folder, moves contents to inbox, and deletes directory
     public void deleteFolder(String userEmail, String folderName) {
         // 4a. Remove folder name from metadata
         List<String> folders = fileAccessLayer.loadUserFolders(userEmail);
@@ -81,8 +81,8 @@ public class FolderService {
         // 4b. Move all emails from this folder to the Trash
         List<Mail> mailsToMove = fileAccessLayer.loadMails(userEmail, folderName);
         for (Mail mail : mailsToMove) {
-            mail.setFolder(Constants.TRASH);
-            fileAccessLayer.saveMailToFolder(userEmail, Constants.TRASH, mail);
+            mail.setFolder(Constants.INBOX);
+            fileAccessLayer.saveMailToFolder(userEmail, Constants.INBOX, mail);
             fileAccessLayer.deleteMail(userEmail, folderName, mail.getId());
         }
 
@@ -101,9 +101,8 @@ public class FolderService {
 
         Mail mail = fileAccessLayer.getMailById(userEmail, fromFolder, mailId);
         if (mail == null) return;
-
+        mail.setOriginalFolder(null);
         mail.setFolder(targetFolder);
-        mail.setOriginalFolder(targetFolder);
         if(targetFolder.equals(Constants.TRASH)){
               mail.setTrashEntryDate(new Date());}
 
