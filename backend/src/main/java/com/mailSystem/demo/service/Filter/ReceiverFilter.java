@@ -28,12 +28,27 @@ public class ReceiverFilter implements IEmailFilter {
                 .filter(mail -> mail.getReceivers() != null &&
                         mail.getReceivers().stream()
                                 .anyMatch(r -> r != null &&
-                                        r.toLowerCase().contains(receiver)))
+                                        matchesEmailUsername(r.toLowerCase(), receiver)))
                 .collect(Collectors.toSet());
     }
     
     @Override
     public String getFilterName() {
         return "RECEIVER_FILTER";
+    }
+    
+    /**
+     * Helper method to match email username part only (ignore domain)
+     */
+    private boolean matchesEmailUsername(String email, String searchTerm) {
+        // Always search only the username part (before @), ignore domain completely
+        int atIndex = email.indexOf("@");
+        if (atIndex > 0) {
+            String username = email.substring(0, atIndex);
+            return username.contains(searchTerm);
+        }
+        
+        // If no @ found, search the whole string (shouldn't happen with valid emails)
+        return email.contains(searchTerm);
     }
 }

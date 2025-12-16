@@ -25,7 +25,14 @@ public class AttachmentFilter implements IEmailFilter {
             return emails;
         }
         
-        boolean hasAttachment = Boolean.parseBoolean(criteria.toString());
+        String criteriaStr = criteria.toString().trim();
+        
+        // If criteria is empty or "any", return all emails (no filtering)
+        if (criteriaStr.isEmpty() || criteriaStr.equalsIgnoreCase("any")) {
+            return emails;
+        }
+        
+        boolean hasAttachment = Boolean.parseBoolean(criteriaStr);
         
         return emails.stream()
                 .filter(mail -> {

@@ -24,7 +24,8 @@ public class EmailFilterManager {
             ReceiverFilter receiverFilter,
             IEmailFilter subjectFilter,
             ContentFilter contentFilter,
-            DateRangeFilter dateRangeFilter) {
+            DateRangeFilter dateRangeFilter,
+            AttachmentFilter attachmentFilter) {
         
         // Register all filters
         registerFilter(senderFilter);
@@ -32,6 +33,7 @@ public class EmailFilterManager {
         registerFilter(subjectFilter);
         registerFilter(contentFilter);
         registerFilter(dateRangeFilter);
+        registerFilter(attachmentFilter);
     }
     
     /**
@@ -80,6 +82,11 @@ public class EmailFilterManager {
         // Apply date range filter
         if (filterDTO.getDateWithin() != null && !filterDTO.getDateWithin().isEmpty()) {
             result = filters.get("DATE_RANGE_FILTER").apply(result, filterDTO.getDateWithin());
+        }
+        
+        // Apply attachment filter
+        if (filterDTO.getHasAttachment() != null && !filterDTO.getHasAttachment().isEmpty()) {
+            result = filters.get("ATTACHMENT_FILTER").apply(result, filterDTO.getHasAttachment());
         }
         
         return result;

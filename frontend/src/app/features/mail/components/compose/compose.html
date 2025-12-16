@@ -10,9 +10,36 @@
 
       <div class="modal-body">
 
-        <div class="form-group">
+        <div class="form-group to-field-container"
+             [class.dropdown-open]="showContactDropdown">
           <label>To</label>
-          <input type="text" [(ngModel)]="receiverEmails" placeholder="recipient@example.com, another@example.com">
+          <input
+            type="text"
+            [(ngModel)]="receiverEmails"
+            placeholder="recipient@example.com, another@example.com"
+            (input)="onToFieldInput($event)"
+            (focus)="onToFieldFocus()"
+            (blur)="hideContactDropdown()"
+            (keydown)="onKeyDown($event)"
+            #toInput>
+
+          <!-- Contact Dropdown -->
+          <div class="contact-dropdown" *ngIf="showContactDropdown && filteredContacts.length > 0">
+            <div class="contact-list">
+              <div
+                *ngFor="let contact of filteredContacts; let contactIndex = index"
+                class="contact-group">
+                <div
+                  *ngFor="let email of contact.emails; let emailIndex = index"
+                  class="contact-item"
+                  [class.selected]="getGlobalIndex(contactIndex, emailIndex) === selectedContactIndex"
+                  (mousedown)="selectContactEmail(contact, email)">
+                  <div class="contact-name">{{ contact.name }}</div>
+                  <div class="contact-email">{{ email }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="form-row">

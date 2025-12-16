@@ -44,7 +44,8 @@ export class UserFoldersView implements OnInit, OnDestroy {
     subject: '',
     hasWords: '',
     doesntHave: '',
-    dateWithin: '1w' // Default
+    dateWithin: '1w', // Default
+    hasAttachment: ''
   };
 
   constructor(
@@ -263,7 +264,7 @@ handleMoveSelectionChange(event: Event): void {
 
   clearFilter(): void {
     this.filterCriteria = { // Reset to defaults
-        from: '', to: '', subject: '', hasWords: '', doesntHave: '', dateWithin: '1w'
+        from: '', to: '', subject: '', hasWords: '', doesntHave: '', dateWithin: '1w', hasAttachment: ''
     };
     // Close modal and reload immediately if desired, or wait for explicit Apply
     this.applyFilter(); 
