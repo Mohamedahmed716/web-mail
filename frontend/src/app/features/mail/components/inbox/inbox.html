@@ -10,7 +10,7 @@
                 <div class="search-wrapper" *ngIf="!selectedEmail">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" class="search-input" placeholder="Search inbox..." [(ngModel)]="searchQuery"
-                        (input)="onSearchInput()">
+                        (input)="onSearch()">
                     <button class="clear-search" *ngIf="searchQuery" (click)="clearSearch()">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -105,7 +105,8 @@
 
             @for (email of emails; track email.id) {
 
-            <div class="email-item" (click)="selectEmail(email)" [class.active]="selectedEmail?.id === email.id">
+            <div class="email-item" (click)="selectEmail(email)" [class.active]="selectedEmail?.id === email.id"
+                [class.unread]="!email.isRead">
 
                 <div class="email-select" (click)="stopProp($event)">
                     <input type="checkbox" [checked]="selectedEmailIds.includes(email.id)"
@@ -114,7 +115,9 @@
 
                 <div class="email-content">
                     <div class="email-top-row">
-                        <span class="sender-name">{{ email.sender }}</span>
+                        <span class="sender-name">
+                            <span class="unread-indicator" *ngIf="!email.isRead"></span> {{ email.sender }}
+                        </span>
 
                         <span class="email-priority">
                             @switch (email.priority) {

@@ -19,7 +19,7 @@
             </div>
 
             <div class="right-tools">
-                 <div class="sort-widget">
+                <div class="sort-widget">
                     <span class="sort-label">Sort by</span>
 
                     <div class="sort-pill">
@@ -106,7 +106,8 @@
 
             @for (email of emails; track email.id) {
 
-            <div class="email-item" (click)="selectEmail(email)" [class.active]="selectedEmail?.id === email.id">
+            <div class="email-item" (click)="selectEmail(email)" [class.active]="selectedEmail?.id === email.id"
+                [class.unread]="email.isRead === false">
 
                 <div class="email-select" (click)="stopProp($event)">
                     <input type="checkbox" [checked]="selectedEmailIds.includes(email.id)"
@@ -116,7 +117,10 @@
                 <div class="email-content">
 
                     <div class="email-top-row">
-                        <span class="sender-name">{{ email.sender }}</span>
+                        <span class="sender-name">
+                            <span class="unread-indicator" *ngIf="email.isRead === false"></span>
+                            {{ email.sender }}
+                        </span>
 
                         <span class="email-priority">
                             @switch (email.priority) {

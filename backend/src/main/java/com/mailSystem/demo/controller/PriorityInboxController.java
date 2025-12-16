@@ -101,4 +101,32 @@ public class PriorityInboxController {
                     .body("Error filtering priority emails: " + e.getMessage());
         }
     }
+
+    /**
+     * Mark an email as read
+     */
+    @PutMapping("/{mailId}/read")
+    public ResponseEntity<?> markAsRead(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable String mailId) {
+
+        if (token == null || !UserContext.isValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized: Invalid or missing token");
+        }
+
+        String email = UserContext.getUser(token);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found for this token");
+        }
+
+        boolean success = priorityInboxService.markAsRead(email, mailId);
+        if (success) {
+            return ResponseEntity.ok().body("Email marked as read");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Email not found");
+        }
+    }
 }

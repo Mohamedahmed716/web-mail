@@ -12,7 +12,7 @@ import { FolderService } from '../../../../services/folder';
   templateUrl: './inbox.html',
   styleUrls: ['./inbox.css'],
 })
-export class Inbox implements OnInit  {
+export class Inbox implements OnInit {
   folders: string[] = [];
   selectedEmailIds: string[] = [];
   emails: Email[] = [];
@@ -38,13 +38,13 @@ export class Inbox implements OnInit  {
     dateWithin: '1w'
   };
 
-  sortAttribute: string = 'DATE'; 
-  isAscending: boolean = false;   
+  sortAttribute: string = 'DATE';
+  isAscending: boolean = false;
 
-  
+
   constructor(private inboxService: InboxService,
-        private trashService: TrashService,
-        private folderService: FolderService ,
+    private trashService: TrashService,
+    private folderService: FolderService,
   ) { }
 
   ngOnInit(): void {
@@ -56,16 +56,16 @@ export class Inbox implements OnInit  {
     { label: 'Date', value: 'DATE' },
     { label: 'Priority', value: 'PRIORITY' },
     { label: 'Sender', value: 'SENDER' },
-    {label: 'Subject', value: 'SUBJECT' },
+    { label: 'Subject', value: 'SUBJECT' },
   ];
 
   toggleDirection() {
     this.isAscending = !this.isAscending;
-    this.loadEmails(); 
+    this.loadEmails();
   }
 
   onAttributeChange() {
-    this.currentPage = 1; 
+    this.currentPage = 1;
     this.loadEmails();
   }
 
@@ -73,18 +73,18 @@ export class Inbox implements OnInit  {
     switch (this.sortAttribute) {
       case 'DATE':
         return this.isAscending ? 'DATE_OLDEST' : 'DATE_NEWEST';
-      
+
       case 'PRIORITY':
-        
-        
+
+
         return this.isAscending ? 'PRIORITY_LOW' : 'PRIORITY_HIGH';
-        
+
       case 'SENDER':
         return this.isAscending ? 'SENDER_ASC' : 'SENDER_DESC';
-        
+
       case 'SUBJECT':
         return this.isAscending ? 'SUBJECT_ASC' : 'SUBJECT_DESC';
-        
+
       default:
         return 'DATE_NEWEST';
     }
@@ -93,11 +93,11 @@ export class Inbox implements OnInit  {
 
 
 
-   loadFolders(): void {
+  loadFolders(): void {
     this.folderService.getAllFolders().subscribe({
       next: (data) => { this.folders = data; },
-      error: (err) => { 
-        console.error('Failed to load folders:', err); 
+      error: (err) => {
+        console.error('Failed to load folders:', err);
         this.errorMessage = 'Could not load folder list.';
       }
     });
@@ -132,11 +132,27 @@ export class Inbox implements OnInit  {
       this.loadEmails();
     }
   }
-
   selectEmail(email: Email): void {
     this.selectedEmail = email;
-  }
 
+    
+    if (!email.isRead) {
+
+      email.isRead = true;
+
+
+      this.inboxService.markAsRead(email.id).subscribe({
+        next: () => {
+          console.log('Email marked as read on server');
+        },
+        error: (err) => {
+          console.error('Failed to mark email as read:', err);
+
+          email.isRead = false;
+        }
+      });
+    }
+  }
   // Search functionality with debouncing
   onSearchInput(): void {
     // Clear previous timeout
@@ -235,37 +251,37 @@ export class Inbox implements OnInit  {
   stopProp(event: Event): void {
     event.stopPropagation();
   }
-toggleSelectEmail(emailId: string, event: Event) {
-  event.stopPropagation();
+  toggleSelectEmail(emailId: string, event: Event) {
+    event.stopPropagation();
 
-  if (this.selectedEmailIds.includes(emailId)) {
-    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
-  } else {
-    this.selectedEmailIds.push(emailId);
+    if (this.selectedEmailIds.includes(emailId)) {
+      this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
+    } else {
+      this.selectedEmailIds.push(emailId);
+    }
   }
-}
 
-deleteSelected() {
-  if (this.selectedEmailIds.length === 0) return;
+  deleteSelected() {
+    if (this.selectedEmailIds.length === 0) return;
 
-  const folder = "inbox";
+    const folder = "inbox";
 
-  this.selectedEmailIds.forEach(id => {
-    this.trashService.moveToTrash(id, folder).subscribe(() => {
-      this.loadEmails();
+    this.selectedEmailIds.forEach(id => {
+      this.trashService.moveToTrash(id, folder).subscribe(() => {
+        this.loadEmails();
+      });
     });
-  });
 
-  this.selectedEmailIds = [];
-}
-toggleSelectAll(event: any) {
-  if (event.target.checked) {
-    this.selectedEmailIds = this.emails.map(e => e.id);
-  } else {
     this.selectedEmailIds = [];
   }
-}
-moveSelectedEmails(targetFolder: string): void {
+  toggleSelectAll(event: any) {
+    if (event.target.checked) {
+      this.selectedEmailIds = this.emails.map(e => e.id);
+    } else {
+      this.selectedEmailIds = [];
+    }
+  }
+  moveSelectedEmails(targetFolder: string): void {
     if (this.selectedEmailIds.length === 0) return;
 
     // --- 1. SETUP ---
@@ -274,60 +290,60 @@ moveSelectedEmails(targetFolder: string): void {
     let failed = false;
     const sourceFolder = "inbox";
     const selectedEmailIdToMove = this.selectedEmail?.id;
-    this.selectedEmail = null; 
+    this.selectedEmail = null;
     this.errorMessage = null;
 
     // --- 2. Iterate Over All Selected IDs ---
     this.selectedEmailIds.forEach(idToMove => {
-        
-        // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
-        this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
-            next: () => {
-                successfulMoves++;
-                
-                // 3. CHECK COMPLETION (Runs on every success)
-                if (successfulMoves === totalMoves) {
-                    // All calls finished successfully
-                    this.loadEmails();
-                }
-            },
-            error: (err) => {
-                // Set flag to stop any subsequent refreshes if a failure occurs
-                if (!failed) {
-                    this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
-                    this.isLoading = false; // Stop loading immediately on first error
-                }
-                failed = true;
-                console.error(`Failed to move email ${idToMove}:`, err);
-                
-                // If the error happens on the very last move, we still need to refresh
-                if (successfulMoves + 1 === totalMoves) {
-                    // Since we already set failed=true, finishOperation will just refresh.
-                    this.loadEmails(); 
-                }
-            }
-        });
+
+      // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
+      this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
+        next: () => {
+          successfulMoves++;
+
+          // 3. CHECK COMPLETION (Runs on every success)
+          if (successfulMoves === totalMoves) {
+            // All calls finished successfully
+            this.loadEmails();
+          }
+        },
+        error: (err) => {
+          // Set flag to stop any subsequent refreshes if a failure occurs
+          if (!failed) {
+            this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
+            this.isLoading = false; // Stop loading immediately on first error
+          }
+          failed = true;
+          console.error(`Failed to move email ${idToMove}:`, err);
+
+          // If the error happens on the very last move, we still need to refresh
+          if (successfulMoves + 1 === totalMoves) {
+            // Since we already set failed=true, finishOperation will just refresh.
+            this.loadEmails();
+          }
+        }
+      });
     });
-    
+
     // Clear selection immediately for a clean UI state
-    this.selectedEmailIds = []; 
-}
-handleMoveSelectionChange(event: Event): void {
-    
+    this.selectedEmailIds = [];
+  }
+  handleMoveSelectionChange(event: Event): void {
+
     // CRITICAL FIX: Cast the event target to HTMLSelectElement
     const target = event.target as HTMLSelectElement;
-    const targetFolder = target.value; 
+    const targetFolder = target.value;
 
     // Reset the select box immediately to allow re-selection
-    target.value = ''; 
+    target.value = '';
 
     if (targetFolder) {
-        // You can add confirmation here if needed
-        
-        // Call the multi-move logic you developed earlier
-        this.moveSelectedEmails(targetFolder); 
+      // You can add confirmation here if needed
+
+      // Call the multi-move logic you developed earlier
+      this.moveSelectedEmails(targetFolder);
     }
-}
+  }
 
 
 }

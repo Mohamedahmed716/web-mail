@@ -268,6 +268,26 @@ public class FileAccessLayer {
         }
     }
 
+    /**
+     * Update the read status of a specific mail
+     */
+    public boolean updateMailReadStatus(String userEmail, String folderName, String mailId, boolean isRead) {
+        File file = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName + "/" + mailId + ".json");
+        if (!file.exists()) {
+            return false;
+        }
+
+        try {
+            Mail mail = JsonMapper.getInstance().readValue(file, Mail.class);
+            mail.setIsRead(isRead);
+            JsonMapper.getInstance().writeValue(file, mail);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // 3. CREATE/ADD: Creates the physical directory and updates the metadata file
     public String addFolder(String userEmail, String folderName) {
         // 3a. Sanitize folderName (important for file paths!)

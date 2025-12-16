@@ -91,4 +91,11 @@ public class InboxService {
 
         return new InboxResponse(pagedList, total);
     }
+
+    /**
+     * Mark an email as read
+     */
+    public boolean markAsRead(String userEmail, String mailId) {
+        return fileAccessLayer.updateMailReadStatus(userEmail, "Inbox", mailId, true);
+    }
 }

@@ -39,21 +39,21 @@ export class PriorityInboxComponent implements OnInit {
     doesntHave: '',
     dateWithin: '1w'
   };
-   sortAttribute: string = 'PRIORITY'; 
-  isAscending: boolean = false;   
+  sortAttribute: string = 'PRIORITY';
+  isAscending: boolean = false;
 
   constructor(
     private inboxService: InboxService,
     private priorityInboxService: PriorityInboxService,
     private trashService: TrashService,
-    private folderService: FolderService ,
-  ) {}
+    private folderService: FolderService,
+  ) { }
 
   ngOnInit(): void {
     this.loadEmails();
     this.loadFolders();
   }
-  
+
   sortAttributes = [
     { label: 'Date', value: 'DATE' },
     { label: 'Priority', value: 'PRIORITY' },
@@ -64,11 +64,11 @@ export class PriorityInboxComponent implements OnInit {
 
   toggleDirection() {
     this.isAscending = !this.isAscending;
-    this.loadEmails(); 
+    this.loadEmails();
   }
 
   onAttributeChange() {
-    this.currentPage = 1; 
+    this.currentPage = 1;
     this.loadEmails();
   }
 
@@ -76,18 +76,18 @@ export class PriorityInboxComponent implements OnInit {
     switch (this.sortAttribute) {
       case 'DATE':
         return this.isAscending ? 'DATE_OLDEST' : 'DATE_NEWEST';
-      
+
       case 'PRIORITY':
-        
-        
+
+
         return this.isAscending ? 'PRIORITY_LOW' : 'PRIORITY_HIGH';
-        
+
       case 'SENDER':
         return this.isAscending ? 'SENDER_ASC' : 'SENDER_DESC';
-        
+
       case 'SUBJECT':
         return this.isAscending ? 'SUBJECT_ASC' : 'SUBJECT_DESC';
-        
+
       default:
         return 'PRIORITY_HIGH';
     }
@@ -97,8 +97,8 @@ export class PriorityInboxComponent implements OnInit {
   loadFolders(): void {
     this.folderService.getAllFolders().subscribe({
       next: (data) => { this.folders = data; },
-      error: (err) => { 
-        console.error('Failed to load folders:', err); 
+      error: (err) => {
+        console.error('Failed to load folders:', err);
         this.errorMessage = 'Could not load folder list.';
       }
     });
@@ -146,7 +146,38 @@ export class PriorityInboxComponent implements OnInit {
   }
 
   selectEmail(email: Email): void {
-    this.selectedEmail = email;
+    // Mark as read if not already read
+    if (!email.isRead) {
+      // Find the index of the email in the array
+      const emailIndex = this.emails.findIndex(e => e.id === email.id);
+
+      if (emailIndex !== -1) {
+        // Create a new object with isRead = true and update the array
+        const updatedEmail = { ...this.emails[emailIndex], isRead: true };
+        this.emails[emailIndex] = updatedEmail;
+
+        // Set selectedEmail to the new updated object
+        this.selectedEmail = updatedEmail;
+
+        // Call the API to persist the change
+        this.priorityInboxService.markAsRead(email.id).subscribe({
+          next: () => {
+            console.log('Email marked as read');
+          },
+          error: (err) => {
+            console.error('Failed to mark email as read:', err);
+            // Revert local state on error
+            const revertedEmail = { ...this.emails[emailIndex], isRead: false };
+            this.emails[emailIndex] = revertedEmail;
+            this.selectedEmail = revertedEmail;
+          }
+        });
+      } else {
+        this.selectedEmail = email;
+      }
+    } else {
+      this.selectedEmail = email;
+    }
   }
 
   // Search functionality with debouncing
@@ -279,39 +310,39 @@ export class PriorityInboxComponent implements OnInit {
     return Math.ceil(this.totalEmails / this.pageSize);
   }
   toggleSelectEmail(emailId: string, event: Event) {
-  event.stopPropagation();
+    event.stopPropagation();
 
-  if (this.selectedEmailIds.includes(emailId)) {
-    this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
-  } else {
-    this.selectedEmailIds.push(emailId);
+    if (this.selectedEmailIds.includes(emailId)) {
+      this.selectedEmailIds = this.selectedEmailIds.filter(id => id !== emailId);
+    } else {
+      this.selectedEmailIds.push(emailId);
+    }
   }
-}
   stopProp(event: Event): void {
     event.stopPropagation();
   }
 
-deleteSelected() {
-  if (this.selectedEmailIds.length === 0) return;
+  deleteSelected() {
+    if (this.selectedEmailIds.length === 0) return;
 
-  const folder = "inbox";
+    const folder = "inbox";
 
-  this.selectedEmailIds.forEach(id => {
-    this.trashService.moveToTrash(id, folder).subscribe(() => {
-      this.loadEmails();
+    this.selectedEmailIds.forEach(id => {
+      this.trashService.moveToTrash(id, folder).subscribe(() => {
+        this.loadEmails();
+      });
     });
-  });
 
-  this.selectedEmailIds = [];
-}
-toggleSelectAll(event: any) {
-  if (event.target.checked) {
-    this.selectedEmailIds = this.emails.map(e => e.id);
-  } else {
     this.selectedEmailIds = [];
   }
-}
-moveSelectedEmails(targetFolder: string): void {
+  toggleSelectAll(event: any) {
+    if (event.target.checked) {
+      this.selectedEmailIds = this.emails.map(e => e.id);
+    } else {
+      this.selectedEmailIds = [];
+    }
+  }
+  moveSelectedEmails(targetFolder: string): void {
     if (this.selectedEmailIds.length === 0) return;
 
     // --- 1. SETUP ---
@@ -320,60 +351,60 @@ moveSelectedEmails(targetFolder: string): void {
     let failed = false;
     const sourceFolder = "inbox";
     const selectedEmailIdToMove = this.selectedEmail?.id;
-    this.selectedEmail = null; 
+    this.selectedEmail = null;
     this.errorMessage = null;
 
     // --- 2. Iterate Over All Selected IDs ---
     this.selectedEmailIds.forEach(idToMove => {
-        
-        // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
-        this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
-            next: () => {
-                successfulMoves++;
-                
-                // 3. CHECK COMPLETION (Runs on every success)
-                if (successfulMoves === totalMoves) {
-                    // All calls finished successfully
-                    this.loadEmails();
-                }
-            },
-            error: (err) => {
-                // Set flag to stop any subsequent refreshes if a failure occurs
-                if (!failed) {
-                    this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
-                    this.isLoading = false; // Stop loading immediately on first error
-                }
-                failed = true;
-                console.error(`Failed to move email ${idToMove}:`, err);
-                
-                // If the error happens on the very last move, we still need to refresh
-                if (successfulMoves + 1 === totalMoves) {
-                    // Since we already set failed=true, finishOperation will just refresh.
-                    this.loadEmails(); 
-                }
-            }
-        });
+
+      // **CRITICAL FIX:** Pass the specific ID from the loop (idToMove)
+      this.folderService.singleMoveEmail(idToMove, sourceFolder, targetFolder).subscribe({
+        next: () => {
+          successfulMoves++;
+
+          // 3. CHECK COMPLETION (Runs on every success)
+          if (successfulMoves === totalMoves) {
+            // All calls finished successfully
+            this.loadEmails();
+          }
+        },
+        error: (err) => {
+          // Set flag to stop any subsequent refreshes if a failure occurs
+          if (!failed) {
+            this.errorMessage = `Failed to move some emails. Check connection or folder access.`;
+            this.isLoading = false; // Stop loading immediately on first error
+          }
+          failed = true;
+          console.error(`Failed to move email ${idToMove}:`, err);
+
+          // If the error happens on the very last move, we still need to refresh
+          if (successfulMoves + 1 === totalMoves) {
+            // Since we already set failed=true, finishOperation will just refresh.
+            this.loadEmails();
+          }
+        }
+      });
     });
-    
+
     // Clear selection immediately for a clean UI state
-    this.selectedEmailIds = []; 
-}
-handleMoveSelectionChange(event: Event): void {
-    
+    this.selectedEmailIds = [];
+  }
+  handleMoveSelectionChange(event: Event): void {
+
     // CRITICAL FIX: Cast the event target to HTMLSelectElement
     const target = event.target as HTMLSelectElement;
-    const targetFolder = target.value; 
+    const targetFolder = target.value;
 
     // Reset the select box immediately to allow re-selection
-    target.value = ''; 
+    target.value = '';
 
     if (targetFolder) {
-        // You can add confirmation here if needed
-        
-        // Call the multi-move logic you developed earlier
-        this.moveSelectedEmails(targetFolder); 
+      // You can add confirmation here if needed
+
+      // Call the multi-move logic you developed earlier
+      this.moveSelectedEmails(targetFolder);
     }
-}
+  }
 
 
 

@@ -58,4 +58,13 @@ export class PriorityInboxService {
       params: params
     });
   }
+
+  /**
+   * Mark an email as read
+   */
+  markAsRead(mailId: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${mailId}/read`, {}, {
+      headers: this.getHeaders()
+    });
+  }
 }
