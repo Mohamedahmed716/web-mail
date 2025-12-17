@@ -9,17 +9,21 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './folders.html',
-  styleUrls: ['./folders.css']
+  styleUrls: ['./folders.css'],
 })
 export class FolderListComponent implements OnInit {
-  private SYSTEM_FOLDERS = [
-      'Inbox', 'Sent', 'Drafts', 'Trash', 'Priority Inbox', 'Contacts'
-  ];
-  folders: string[] = []; 
+  private SYSTEM_FOLDERS = ['Inbox', 'Sent', 'Drafts', 'Trash', 'Priority Inbox', 'Contacts'];
+  folders: string[] = [];
+
+  // Existing Modal State
   showModal: boolean = false;
-  editingFolder: string | null = null; 
+  editingFolder: string | null = null;
   newFolderName: string = '';
   errorMessage: string = '';
+
+  // New Delete Modal State
+  showDeleteModal: boolean = false;
+  folderToDelete: string | null = null;
 
   constructor(private folderService: FolderService) {}
 
@@ -28,22 +32,19 @@ export class FolderListComponent implements OnInit {
   }
 
   loadFolders(): void {
-  this.folderService.getAllFolders().subscribe({
-    next: (data) => {
-      // Create a lowercase version of system folders for safe comparison
-      const systemFoldersLower = this.SYSTEM_FOLDERS.map(f => f.toLowerCase());
-
-      // Filter the data: only keep folders NOT in the system list
-      this.folders = data.filter(folderName => 
-        !systemFoldersLower.includes(folderName.toLowerCase())
-      );
-    },
-    error: (err) => { 
-      console.error('Failed to load folders:', err); 
-      this.errorMessage = 'Could not load folder list.';
-    }
-  });
-}
+    this.folderService.getAllFolders().subscribe({
+      next: (data) => {
+        const systemFoldersLower = this.SYSTEM_FOLDERS.map((f) => f.toLowerCase());
+        this.folders = data.filter(
+          (folderName) => !systemFoldersLower.includes(folderName.toLowerCase())
+        );
+      },
+      error: (err) => {
+        console.error('Failed to load folders:', err);
+        this.errorMessage = 'Could not load folder list.';
+      },
+    });
+  }
 
   // --- CRUD Modal Handlers ---
   openCreateModal(): void {
@@ -68,7 +69,6 @@ export class FolderListComponent implements OnInit {
     }
 
     if (this.editingFolder) {
-      // RENAME OPERATION
       this.folderService.renameFolder(this.editingFolder, this.newFolderName).subscribe({
         next: () => {
           this.loadFolders();
@@ -76,29 +76,46 @@ export class FolderListComponent implements OnInit {
         },
         error: (err) => {
           this.errorMessage = err.error.message || 'Failed to rename folder.';
-        }
+        },
       });
     } else {
-      // CREATE OPERATION
       this.folderService.createFolder(this.newFolderName).subscribe({
         next: () => {
           this.loadFolders();
           this.showModal = false;
         },
         error: (err) => {
-          this.errorMessage = err.error.message || 'Failed to create folder. Name may already exist.';
-        }
+          this.errorMessage =
+            err.error.message || 'Failed to create folder. Name may already exist.';
+        },
       });
     }
   }
 
+  // Updated Delete Logic
   deleteFolder(folderName: string): void {
-    if (confirm(`Are you sure you want to delete the folder "${folderName}"? All contained emails will be moved to their original folders.`)) {
-      this.folderService.deleteFolder(folderName).subscribe({
-        next: () => { this.loadFolders(); },
-        error: (err) => { alert(err.error.message || 'Failed to delete folder.'); }
+    this.folderToDelete = folderName;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete(): void {
+    if (this.folderToDelete) {
+      this.folderService.deleteFolder(this.folderToDelete).subscribe({
+        next: () => {
+          this.loadFolders();
+          this.closeDeleteModal();
+        },
+        error: (err) => {
+          this.errorMessage = err.error.message || 'Failed to delete folder.';
+          this.closeDeleteModal();
+        },
       });
     }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.folderToDelete = null;
   }
 
   isSystemFolder(folderName: string): boolean {

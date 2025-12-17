@@ -430,3 +430,19 @@
     transform: scale(1) translateY(0);
   }
 }
+.modal-footer .btn.danger {
+  background: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.modal-footer .btn.danger:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+}
+
+.modal-footer .btn.danger:active {
+  transform: translateY(0);
+}
