@@ -1,6 +1,5 @@
 <!-- src/app/pages/contacts/contacts.component.html -->
 <div class="contacts-page">
-
   <!-- Header -->
   <div class="page-header">
     <div class="container">
@@ -11,8 +10,8 @@
         </div>
         <button class="btn-outline" (click)="goToInbox()">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect width="20" height="16" x="2" y="4" rx="2"/>
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
           </svg>
           Back to Inbox
         </button>
@@ -21,7 +20,6 @@
   </div>
 
   <div class="container">
-
     <div *ngIf="error" class="error-banner">{{ error }}</div>
     <div *ngIf="loading" class="loading-state">Loading contacts...</div>
 
@@ -30,9 +28,15 @@
       <div class="toolbar">
         <div class="search-section">
           <div class="search-box compact">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.35-4.35"/>
+            <svg
+              class="search-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
             </svg>
             <input
               type="text"
@@ -42,8 +46,12 @@
               class="search-input compact hover-glow"
             />
           </div>
-          
-          <select [(ngModel)]="searchType" (change)="onSearchTypeChange()" class="search-type-select compact">
+
+          <select
+            [(ngModel)]="searchType"
+            (change)="onSearchTypeChange()"
+            class="search-type-select compact"
+          >
             <option value="default">Name & Email</option>
             <option value="name">Name Only</option>
             <option value="email">Email Only</option>
@@ -57,8 +65,14 @@
           </select>
 
           <button (click)="openAddModal()" class="btn-primary compact gradient-neon strong-glow">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12h14"/>
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 5v14M5 12h14" />
             </svg>
             Add Contact
           </button>
@@ -69,39 +83,66 @@
       <div class="glass-panel table-wrapper">
         <table class="contacts-table">
           <thead>
-          <tr>
-            <th>Name</th>
-            <th>Emails</th>
-            <th class="actions-header">Actions</th>
-          </tr>
+            <tr>
+              <th>Name</th>
+              <th>Emails</th>
+              <th class="actions-header">Actions</th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let contact of filteredContacts; trackBy: trackByContactId" class="table-row compact">
-            <td class="cell-name">{{ contact.name }}</td>
-            <td class="cell-emails">
-              <div class="email-tags">
-                <span *ngFor="let email of contact.emails" class="email-tag small">{{ email }}</span>
-              </div>
-            </td>
-            <td class="cell-actions">
-              <div class="action-buttons-horizontal">
-                <button (click)="openEditModal(contact)" class="action-btn tiny edit" title="Edit">
-                  <svg class="icon-tiny" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                  </svg>
-                </button>
-                <button (click)="deleteContact(contact)" class="action-btn tiny delete" title="Delete">
-                  <svg class="icon-tiny" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/>
-                  </svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="filteredContacts.length === 0">
-            <td colspan="3" class="empty-state">No contacts found</td>
-          </tr>
+            <tr
+              *ngFor="let contact of filteredContacts; trackBy: trackByContactId"
+              class="table-row compact"
+            >
+              <td class="cell-name">{{ contact.name }}</td>
+              <td class="cell-emails">
+                <div class="email-tags">
+                  <span *ngFor="let email of contact.emails" class="email-tag small">{{
+                    email
+                  }}</span>
+                </div>
+              </td>
+              <td class="cell-actions">
+                <div class="action-buttons-horizontal">
+                  <button
+                    (click)="openEditModal(contact)"
+                    class="action-btn tiny edit"
+                    title="Edit"
+                  >
+                    <svg
+                      class="icon-tiny"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="deleteContact(contact)"
+                    class="action-btn tiny delete"
+                    title="Delete"
+                  >
+                    <svg
+                      class="icon-tiny"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredContacts.length === 0">
+              <td colspan="3" class="empty-state">No contacts found</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -114,8 +155,14 @@
       <div class="modal-header">
         <h2>{{ editingContact ? 'Edit Contact' : 'Add Contact' }}</h2>
         <button (click)="closeModal()" class="close-btn">
-          <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6 6 18M6 6l12 12"/>
+          <svg
+            class="icon-small"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -129,28 +176,53 @@
         <div class="form-group">
           <label>Email Addresses</label>
           <div class="email-list-input">
-            <div *ngFor="let email of formEmails; let i = index; trackBy: trackByIndex" class="email-row">
+            <div
+              *ngFor="let email of formEmails; let i = index; trackBy: trackByIndex"
+              class="email-row"
+            >
               <div class="input-icon-wrapper">
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect width="20" height="16" x="2" y="4" rx="2"/>
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                <svg
+                  class="input-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                 </svg>
                 <input
                   type="email"
                   [(ngModel)]="formEmails[i]"
-                  placeholder="john@example.com"
+                  placeholder="john@wegmail.com"
                   class="form-input with-icon hover-glow"
                 />
               </div>
-              <button *ngIf="formEmails.length > 1" (click)="removeEmailField(i)" class="remove-email-btn">
-                <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 6 6 18M6 6l12 12"/>
+              <button
+                *ngIf="formEmails.length > 1"
+                (click)="removeEmailField(i)"
+                class="remove-email-btn"
+              >
+                <svg
+                  class="icon-small"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M18 6 6 18M6 6l12 12" />
                 </svg>
               </button>
             </div>
             <button (click)="addEmailField()" class="add-email-btn">
-              <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12h14"/>
+              <svg
+                class="icon-small"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14M5 12h14" />
               </svg>
               Add another email
             </button>
@@ -174,14 +246,25 @@
         <h3>Delete Contact</h3>
       </div>
       <div class="confirm-body">
-        <p>Are you sure you want to delete <strong>{{ contactToDelete?.name }}</strong>?</p>
+        <p>
+          Are you sure you want to delete <strong>{{ contactToDelete?.name }}</strong
+          >?
+        </p>
         <p>This action cannot be undone.</p>
       </div>
       <div class="confirm-footer">
         <button (click)="cancelDelete()" class="btn-outline">Cancel</button>
         <button (click)="confirmDelete()" class="btn-primary btn-danger">
-          <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/>
+          <svg
+            class="icon-small"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"
+            />
           </svg>
           Delete
         </button>
