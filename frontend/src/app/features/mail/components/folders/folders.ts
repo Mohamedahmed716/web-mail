@@ -93,7 +93,7 @@ export class FolderListComponent implements OnInit {
   }
 
   deleteFolder(folderName: string): void {
-    if (confirm(`Are you sure you want to delete the folder "${folderName}"? All contained emails will be moved to the Inbox.`)) {
+    if (confirm(`Are you sure you want to delete the folder "${folderName}"? All contained emails will be moved to their original folders.`)) {
       this.folderService.deleteFolder(folderName).subscribe({
         next: () => { this.loadFolders(); },
         error: (err) => { alert(err.error.message || 'Failed to delete folder.'); }

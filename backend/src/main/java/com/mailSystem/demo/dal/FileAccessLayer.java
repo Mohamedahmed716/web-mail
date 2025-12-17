@@ -345,5 +345,22 @@ public class FileAccessLayer {
         }
         return false;
     }
+    /**
+     * Checks if a specific folder exists physically on the disk for a given user.
+     * * @param userEmail The email of the user owning the folder.
+     * @param folderName The name of the folder to check (e.g., "Inbox", "Work").
+     * @return true if the folder exists and is a directory; false otherwise.
+     */
+    public boolean folderExists(String userEmail, String folderName) {
+        if (userEmail == null || folderName == null) {
+            return false;
+        }
+
+        // Construct the path: DATA_DIR / userEmail / folderName
+        File folder = new File(Constants.DATA_DIR + "/" + userEmail + "/" + folderName);
+
+        // Check if it exists and is indeed a directory
+        return folder.exists() && folder.isDirectory();
+    }
 
 }

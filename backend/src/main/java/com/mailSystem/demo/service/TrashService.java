@@ -46,23 +46,28 @@ public class TrashService {
         Mail mail = fileAccessLayer.getMailById(userEmail, Constants.TRASH, mailId);
         if (mail == null) return;
 
-        // Determine the target folder. Default to INBOX if originalFolder is null or invalid.
-        String targetFolder = mail.getParentFolder();
-        if (targetFolder == null || targetFolder.trim().isEmpty()) {
-            targetFolder = mail.getFirstFolder();
+        String targetFolder = null;
+
+        // 1. Check if the folder it was JUST in still exists
+        String parent = mail.getParentFolder();
+        if (parent != null && fileAccessLayer.folderExists(userEmail, parent)) {
+            targetFolder = parent;
+        }
+        // 2. If parent is gone, check if the original folder (firstFolder) still exists
+        else {
+            String original = mail.getFirstFolder();
+            if (original != null && fileAccessLayer.folderExists(userEmail, original)) {
+                targetFolder = original;
+            }
         }
 
-        // Clear the trash-related data
-        mail.setParentFolder(null); // Clear the history
-        mail.setTrashEntryDate(null); // Clear the deletion date
-
-        // 1. Restore to the determined target folder
+        // Clear trash metadata
+        mail.setParentFolder(null);
+        mail.setTrashEntryDate(null);
         mail.setFolder(targetFolder);
 
-        // 2. Save into the target folder
+        // Save and cleanup
         fileAccessLayer.saveMailToFolder(userEmail, targetFolder, mail);
-
-        // 3. Remove from the Trash folder
         fileAccessLayer.deleteMail(userEmail, Constants.TRASH, mailId);
     }
 
