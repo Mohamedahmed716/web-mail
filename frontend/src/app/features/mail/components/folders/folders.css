@@ -1,379 +1,432 @@
 /* ============================================
    FOLDER LIST - Enhanced with Animations
+   (UNCHANGED SECTION)
    ============================================ */
 
 :root {
-    --color-background-sidebar: #1a1d23;
-    --color-background-item-hover: #1f2937;
-    --color-text-default: #9ca3af;
-    --color-text-active: #ffffff;
-    --color-accent-violet: #6366f1;
-    --color-border: #1f2937;
+  --color-background-sidebar: #1a1d23;
+  --color-background-item-hover: #1f2937;
+  --color-text-default: #9ca3af;
+  --color-text-active: #ffffff;
+  --color-accent-violet: #6366f1;
+  --color-border: #1f2937;
 }
 
 /* Folder Management Header */
 .folder-management {
-    padding: 15px 16px 10px;
-    border-bottom: 1px solid var(--color-border);
-    flex-shrink: 0;
-    animation: fadeInDown 0.4s ease forwards;
+  padding: 15px 16px 10px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  animation: fadeInDown 0.4s ease forwards;
 }
 
 .folder-management h3 {
-    color: var(--color-text-active);
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 12px;
+  color: var(--color-text-active);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 .add-folder-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--color-accent-violet) 0%, #8b5cf6 100%);
-    color: #fff;
-    border: none;
-    padding: 12px 15px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-    position: relative;
-    overflow: hidden;
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-accent-violet) 0%, #8b5cf6 100%);
+  color: #fff;
+  border: none;
+  padding: 12px 15px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .add-folder-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.2),
-            transparent);
-    transition: left 0.5s ease;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
 
 .add-folder-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
 
 .add-folder-btn:hover::before {
-    left: 100%;
+  left: 100%;
 }
 
 .add-folder-btn:active {
-    transform: translateY(0) scale(0.98);
+  transform: translateY(0) scale(0.98);
 }
 
 /* Folder List */
 .folder-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto;
-    flex-grow: 1;
-    padding: 8px 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 8px 0;
 }
 
 .folder-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 2px 8px;
-    border-radius: 8px;
-    animation: fadeInLeft 0.4s ease forwards;
-    animation-delay: calc(var(--index, 0) * 0.05s);
-    opacity: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2px 8px;
+  border-radius: 8px;
+  animation: fadeInLeft 0.4s ease forwards;
+  animation-delay: calc(var(--index, 0) * 0.05s);
+  opacity: 0;
 }
 
 /* Stagger animations */
 .folder-item:nth-child(1) {
-    --index: 1;
+  --index: 1;
 }
-
 .folder-item:nth-child(2) {
-    --index: 2;
+  --index: 2;
 }
-
 .folder-item:nth-child(3) {
-    --index: 3;
+  --index: 3;
 }
-
 .folder-item:nth-child(4) {
-    --index: 4;
+  --index: 4;
 }
-
 .folder-item:nth-child(5) {
-    --index: 5;
+  --index: 5;
 }
-
 .folder-item:nth-child(6) {
-    --index: 6;
+  --index: 6;
 }
-
 .folder-item:nth-child(7) {
-    --index: 7;
+  --index: 7;
 }
-
 .folder-item:nth-child(8) {
-    --index: 8;
+  --index: 8;
 }
-
 .folder-item:nth-child(9) {
-    --index: 9;
+  --index: 9;
 }
-
 .folder-item:nth-child(10) {
-    --index: 10;
+  --index: 10;
 }
 
 .folder-link {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    text-decoration: none;
-    color: var(--color-text-default);
-    padding: 10px 12px;
-    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    position: relative;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  text-decoration: none;
+  color: var(--color-text-default);
+  padding: 10px 12px;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .folder-link::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 0;
-    background: linear-gradient(180deg, var(--color-accent-violet) 0%, #8b5cf6 100%);
-    border-radius: 0 2px 2px 0;
-    transition: height 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: linear-gradient(180deg, var(--color-accent-violet) 0%, #8b5cf6 100%);
+  border-radius: 0 2px 2px 0;
+  transition: height 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .folder-link:hover {
-    background-color: var(--color-background-item-hover);
-    color: var(--color-text-active);
-    padding-left: 16px;
+  background-color: var(--color-background-item-hover);
+  color: var(--color-text-active);
+  padding-left: 16px;
 }
 
 .folder-link:hover::before {
-    height: 60%;
+  height: 60%;
 }
 
 .folder-link.active {
-    background-color: var(--color-background-item-hover);
-    color: var(--color-accent-violet);
-    font-weight: 600;
+  background-color: var(--color-background-item-hover);
+  color: var(--color-accent-violet);
+  font-weight: 600;
 }
 
 .folder-link.active::before {
-    height: 70%;
+  height: 70%;
 }
 
 .folder-link i {
-    font-size: 1rem;
-    margin-right: 12px;
-    color: #4b5563;
-    transition: all 0.25s ease;
+  font-size: 1rem;
+  margin-right: 12px;
+  color: #4b5563;
+  transition: all 0.25s ease;
 }
 
 .folder-link:hover i {
-    color: #818cf8;
-    transform: scale(1.1);
+  color: #818cf8;
+  transform: scale(1.1);
 }
 
 .folder-link.active i {
-    color: var(--color-accent-violet);
+  color: var(--color-accent-violet);
 }
 
 /* Folder Actions */
 .folder-actions {
-    display: none;
-    gap: 4px;
-    padding-right: 8px;
+  display: none;
+  gap: 4px;
+  padding-right: 8px;
 }
 
 .folder-item:hover .folder-actions {
-    display: flex;
-    animation: fadeIn 0.2s ease forwards;
+  display: flex;
+  animation: fadeIn 0.2s ease forwards;
 }
 
 .action-btn {
-    background: transparent;
-    border: none;
-    color: var(--color-text-default);
-    padding: 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-text-default);
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn:hover {
-    background-color: var(--color-background-item-hover);
-    color: var(--color-text-active);
+  background-color: var(--color-background-item-hover);
+  color: var(--color-text-active);
 }
 
 .action-btn.delete:hover {
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
+
+/* ============================================
+   MODAL / POPUP STYLING - REWRITTEN TO MATCH IMAGE
+   ============================================ */
 
 /* Modal Overlay */
 .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    animation: overlayFadeIn 0.3s ease forwards;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: overlayFadeIn 0.3s ease forwards;
 }
 
+/* Modal Content Container */
 .modal-content {
-    background: #1a1d23;
-    border: 1px solid #374151;
-    border-radius: 16px;
-    padding: 24px;
-    min-width: 350px;
-    box-shadow:
-        0 25px 50px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(99, 102, 241, 0.1);
-    animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  /* Matching the deep dark background from image */
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 400px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.05); /* Subtle violet rim */
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  display: flex;
+  flex-direction: column;
 }
 
-.modal-content h3 {
-    color: #fff;
-    margin: 0 0 20px;
-    font-size: 1.2rem;
-    font-weight: 600;
+/* Header Section */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.modal-content input {
-    width: 100%;
-    padding: 12px 14px;
-    background: #111827;
-    border: 1px solid #374151;
-    border-radius: 10px;
-    color: #fff;
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-    transition: all 0.25s ease;
+.modal-header h3 {
+  color: #e6edf3;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
-.modal-content input:focus {
-    outline: none;
-    border-color: var(--color-accent-violet);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
 }
 
-.modal-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
+.close-btn:hover {
+  color: #e6edf3;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.modal-actions button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
+/* Body Section & Inputs */
+.modal-body {
+  margin-bottom: 30px;
 }
 
-.modal-actions .cancel-btn {
-    background: transparent;
-    border: 1px solid #374151;
-    color: #9ca3af;
+.modal-body label {
+  display: block;
+  color: #8b949e;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
 }
 
-.modal-actions .cancel-btn:hover {
-    background: #1f2937;
-    color: #fff;
+.modal-body input {
+  width: 100%;
+  /* Dark input background matching image */
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: #e6edf3;
+  font-size: 0.95rem;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
 }
 
-.modal-actions .save-btn {
-    background: var(--color-accent-violet);
-    border: none;
-    color: #fff;
+.modal-body input::placeholder {
+  color: #484f58;
 }
 
-.modal-actions .save-btn:hover {
-    background: #4f46e5;
-    transform: translateY(-1px);
+/* Focused State - The glowing violet outline */
+.modal-body input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Footer & Buttons */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-footer button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Cancel / Secondary Button */
+.modal-footer .btn.secondary {
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+}
+
+.modal-footer .btn.secondary:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+/* Create / Primary Button - The violet button */
+.modal-footer .btn.primary {
+  background: #6366f1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.modal-footer .btn.primary:hover {
+  background: #565add;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+}
+
+.modal-footer .btn.primary:active {
+  transform: translateY(0);
+}
+
+.error-text {
+  color: #ff7b72;
+  font-size: 0.85rem;
+  margin-top: 8px;
 }
 
 /* Keyframe Animations */
 @keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes overlayFadeIn {
-    from {
-        opacity: 0;
-        backdrop-filter: blur(0);
-    }
-
-    to {
-        opacity: 1;
-        backdrop-filter: blur(8px);
-    }
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(5px);
+  }
 }
 
 @keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
