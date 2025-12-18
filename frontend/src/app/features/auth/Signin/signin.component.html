@@ -1,6 +1,15 @@
 <div *ngIf="showSuccessToast" class="toast-notification">
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
     <polyline points="22 4 12 14.01 9 11.01"></polyline>
   </svg>
@@ -11,40 +20,85 @@
   <div class="auth-card">
     <div class="card-header">
       <div class="icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+          ></path>
           <polyline points="22,6 12,13 2,6"></polyline>
         </svg>
       </div>
       <h2>Welcome Back</h2>
-      <p>Sign in to access your mailbox</p>
+      <p>Sign in to access your WeMail</p>
     </div>
 
     <div class="card-body">
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="text" id="email" formControlName="email" class="rounded-input"
-            [class.error-border]="hasError('email')" placeholder="you@example.com" />
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="rounded-input"
+            [class.error-border]="hasError('email')"
+            placeholder="you@example.com"
+          />
           <div *ngIf="hasError('email')" class="field-error-text">Email is required</div>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
           <div class="input-container">
-            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-              class="rounded-input" [class.error-border]="hasError('password')" placeholder="Enter your password" />
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="rounded-input"
+              [class.error-border]="hasError('password')"
+              placeholder="Enter your password"
+            />
             <button type="button" class="eye-btn" (click)="togglePassword()">
-              <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                *ngIf="!showPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
-              <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                *ngIf="showPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                <path
+                  d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+                />
                 <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
                 <line x1="2" x2="22" y1="2" y2="22" />
               </svg>
@@ -64,9 +118,19 @@
         <button type="submit" class="submit-btn" [disabled]="isLoading">
           <span *ngIf="!isLoading">Sign In</span>
           <span *ngIf="isLoading">Signing In...</span>
-          <svg *ngIf="!isLoading" class="btn-arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
+          <svg
+            *ngIf="!isLoading"
+            class="btn-arrow"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
@@ -87,7 +151,11 @@
           Google
         </button>
         <button type="button" class="social-btn">
-          <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" width="18" />
+          <img
+            src="https://www.svgrepo.com/show/475647/facebook-color.svg"
+            alt="Facebook"
+            width="18"
+          />
           Facebook
         </button>
       </div>
