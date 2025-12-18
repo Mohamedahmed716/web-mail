@@ -345,9 +345,11 @@ public class FileAccessLayer {
         }
         return false;
     }
+
     /**
      * Checks if a specific folder exists physically on the disk for a given user.
      * * @param userEmail The email of the user owning the folder.
+     *
      * @param folderName The name of the folder to check (e.g., "Inbox", "Work").
      * @return true if the folder exists and is a directory; false otherwise.
      */
