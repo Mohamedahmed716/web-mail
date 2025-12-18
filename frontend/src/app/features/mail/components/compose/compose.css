@@ -1,5 +1,5 @@
 /* ============================================
-   COMPOSE MODAL - Enhanced with Animations
+   COMPOSE MODAL - FIXED SCROLLING & LAYOUT
    ============================================ */
 
 /* Full Screen Overlay */
@@ -19,26 +19,36 @@
   animation: overlayFadeIn 0.3s ease forwards;
 }
 
-/* Modal Box */
+/* Modal Box - The fixed shell */
 .modal-container {
   width: 650px;
   max-width: 95vw;
-  height: 550px;
+  height: 550px;       /* Fixed height */
   max-height: 90vh;
   background: linear-gradient(180deg, #0d1117 0%, #0b0e11 100%);
   border: 1px solid #1f2937;
   border-radius: 16px;
-  display: flex;
-  flex-direction: column;
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(99, 102, 241, 0.1),
     0 0 60px rgba(99, 102, 241, 0.15);
   animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  overflow: hidden;
+  overflow: hidden;    /* Keeps everything inside the border-radius */
+  display: flex;       /* Vital for the child wrapper */
+  flex-direction: column;
 }
 
-/* Header */
+/* --- THE MISSING PIECE --- */
+/* This wrapper must fill the container and manage the layout */
+.modal-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;        /* Force it to fill the 550px container */
+  width: 100%;
+  overflow: hidden;    /* Prevents layout blowouts */
+}
+
+/* Header - Stays at top */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -47,8 +57,34 @@
   border-bottom: 1px solid #1f2937;
   background: rgba(17, 20, 24, 0.8);
   backdrop-filter: blur(10px);
+  flex-shrink: 0;      /* Never shrink the header */
 }
 
+/* Body Area - Scrolls properly now */
+.modal-body {
+  padding: 24px;
+  flex-grow: 1;        /* Take all available space between header and footer */
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;    /* Enable scrollbar ONLY here */
+  min-height: 0;       /* Critical flexbox fix for scrolling */
+}
+
+/* Footer - Stays at bottom */
+.modal-footer {
+  padding: 18px 24px;
+  border-top: 1px solid #1f2937;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(17, 20, 24, 0.8);
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;      /* Never shrink/hide the buttons */
+  margin-top: auto;    /* Extra safety to push to bottom */
+}
+
+/* --- Content Styles (Inputs, etc) --- */
 .modal-header h3 {
   margin: 0;
   font-size: 1.15rem;
@@ -80,54 +116,32 @@
   transform: rotate(90deg);
 }
 
-/* Body Area */
-.modal-body {
-  padding: 24px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  overflow-y: auto;
-}
-
-/* Inputs */
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  animation: fadeInUp 0.4s ease forwards;
-  animation-delay: calc(var(--index, 0) * 0.05s);
-  opacity: 0;
-}
-
-.form-group:nth-child(1) {
-  --index: 1;
-}
-
-.form-group:nth-child(2) {
-  --index: 2;
-}
-
-.form-group:nth-child(3) {
-  --index: 3;
-}
-
-.form-group:nth-child(4) {
-  --index: 4;
+  flex-shrink: 0; /* Don't squash inputs */
+  /* Removed opacity animation to prevent flickering issues during updates */
 }
 
 .form-row {
   display: flex;
   gap: 16px;
+  flex-shrink: 0;
 }
 
 .grow {
   flex-grow: 1;
 }
 
+/* Textarea Container - Flexible height with limits */
 .flex-grow {
   flex-grow: 1;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;   /* Minimum size so it's readable */
+  height: auto;
+  flex-shrink: 0;      /* Ensure it pushes the scroll view */
 }
 
 label {
@@ -160,35 +174,17 @@ textarea::placeholder {
 
 textarea {
   resize: none;
+  flex-grow: 1;
   height: 100%;
   line-height: 1.6;
 }
 
-input:hover,
-textarea:hover,
-select:hover {
-  border-color: #4b5563;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
+input:hover, textarea:hover, select:hover { border-color: #4b5563; }
+input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15),
-    0 0 20px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 0 20px rgba(99, 102, 241, 0.1);
   background-color: #1a1f27;
-}
-
-/* Footer */
-.modal-footer {
-  padding: 18px 24px;
-  border-top: 1px solid #1f2937;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(17, 20, 24, 0.8);
-  backdrop-filter: blur(10px);
 }
 
 .right-actions {
@@ -196,7 +192,6 @@ select:focus {
   gap: 12px;
 }
 
-/* Buttons */
 button {
   padding: 10px 20px;
   border-radius: 10px;
@@ -244,10 +239,7 @@ button {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s ease;
 }
 
@@ -255,14 +247,8 @@ button {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
-
-.btn-primary:hover::before {
-  left: 100%;
-}
-
-.btn-primary:active {
-  transform: translateY(0) scale(0.98);
-}
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:active { transform: translateY(0) scale(0.98); }
 
 /* Attachment Section */
 .attachment-section {
@@ -270,9 +256,7 @@ button {
   flex-direction: column;
   gap: 10px;
   margin-bottom: 8px;
-  animation: fadeIn 0.4s ease forwards;
-  animation-delay: 0.3s;
-  opacity: 0;
+  flex-shrink: 0;
 }
 
 .attach-btn {
@@ -314,7 +298,6 @@ button {
   align-items: center;
   gap: 8px;
   border: 1px solid #374151;
-  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   transition: all 0.2s ease;
 }
 
@@ -348,167 +331,51 @@ button {
   transition: all 0.2s ease;
   font-weight: 500;
 }
+.clickable:hover { color: #93c5fd; text-decoration: underline; }
 
-.clickable:hover {
-  color: #93c5fd;
-  text-decoration: underline;
-}
-
-/* Keyframe Animations */
-@keyframes overlayFadeIn {
-  from {
-    opacity: 0;
-    backdrop-filter: blur(0);
-  }
-
-  to {
-    opacity: 1;
-    backdrop-filter: blur(8px);
-  }
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes popIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-
-  70% {
-    transform: scale(1.05);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Contact Dropdown Styles */
-.to-field-container {
-  position: relative;
-}
+/* Contact Dropdown Styles - Kept safe */
+.to-field-container { position: relative; }
 .contact-dropdown {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   width: 100%;
-
   background: #1f2937;
   border: 1px solid #374151;
   border-radius: 8px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   z-index: 10000;
-
   max-height: 200px;
   overflow-y: auto;
-
   animation: dropdownSlideIn 0.2s ease forwards;
 }
 
-.contact-list {
-  padding: 4px 0;
-}
-
-.contact-group {
-  border-bottom: 1px solid #374151;
-}
-
-.contact-group:last-child {
-  border-bottom: none;
-}
-
+.contact-list { padding: 4px 0; }
+.contact-group { border-bottom: 1px solid #374151; }
+.contact-group:last-child { border-bottom: none; }
 .contact-item {
   padding: 8px 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
 }
-
-.contact-item:hover,
-.contact-item.selected {
+.contact-item:hover, .contact-item.selected {
   background: #374151;
   border-left-color: #6366f1;
 }
+.contact-name { font-weight: 600; color: #e5e7eb; font-size: 0.9rem; }
+.contact-email { color: #9ca3af; font-size: 0.8rem; margin-top: 2px; }
 
-.contact-name {
-  font-weight: 600;
-  color: #e5e7eb;
-  font-size: 0.9rem;
-}
-
-.contact-email {
-  color: #9ca3af;
-  font-size: 0.8rem;
-  margin-top: 2px;
-}
-
-@keyframes dropdownSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Animations */
+@keyframes overlayFadeIn { from { opacity: 0; backdrop-filter: blur(0); } to { opacity: 1; backdrop-filter: blur(8px); } }
+@keyframes modalSlideIn { from { opacity: 0; transform: scale(0.9) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes dropdownSlideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .modal-container {
-    width: 100%;
-    height: 100%;
-    max-height: 100vh;
-    border-radius: 0;
-  }
-
-  .form-row {
-    flex-direction: column;
-  }
-
-  .contact-dropdown {
-    min-width: 250px;
-  }
-}
-.to-field-container {
-  position: relative;
+  .modal-container { width: 100%; height: 100%; max-height: 100vh; border-radius: 0; }
+  .form-row { flex-direction: column; }
+  .contact-dropdown { min-width: 250px; }
 }
 
-/* Push Subject down when dropdown is open */
-.to-field-container.dropdown-open {
-  margin-bottom: 210px; /* slightly > dropdown max-height */
-}
+.to-field-container.dropdown-open { margin-bottom: 210px; }
